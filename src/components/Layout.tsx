@@ -8,6 +8,8 @@ import {
   BarChart3,
   Settings,
   Menu,
+  Database,
+  Users,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -19,6 +21,8 @@ const Layout = () => {
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Sales", href: "/sales", icon: ShoppingCart },
     { name: "Products", href: "/products", icon: Package },
+    { name: "Stock", href: "/reports?tab=stock", icon: Database },
+    { name: "CRM", href: "/reports?tab=crm", icon: Users },
     { name: "Reports", href: "/reports", icon: BarChart3 },
     { name: "Settings", href: "/settings", icon: Settings },
   ];
