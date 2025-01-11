@@ -1,112 +1,35 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Package,
-  Database,
-  Users,
-  BarChart3,
-  Settings,
-  Menu,
-  ChevronDown,
-  Building2,
-  UserPlus,
-  ClipboardList,
-  ArrowUpDown,
-  Send,
-  Heart,
-  RefreshCw,
-  FileText,
-  MapPin,
-} from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-
+import navigation from "@/common/navigation";
+import userStore from "@/store/user.store";
+import { Navigate } from "react-router-dom";
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { user } = userStore();
   const location = useLocation();
 
   // Define the navigation structure with parent routes and subroutes
-  const navigation = [
-    {
-      name: "Dashboard",
-      href: "/",
-      icon: LayoutDashboard,
-    },
-    {
-      header: "Manage Product",
-      name: "Products",
-      icon: Package,
-      subroutes: [
-        { name: "Products List", href: "/products", icon: ClipboardList },
-        { name: "Product Variation", href: "/products/variation", icon: ArrowUpDown },
-      ],
-    },
-    {
-      header: "Manage Stock",
-      name: "Stock",
-      icon: Database,
-      subroutes: [
-        { name: "Manage Stock", href: "/reports?tab=stock", icon: Database },
-        { name: "Stock Adjustment", href: "/stock/adjustment", icon: RefreshCw },
-        { name: "Stock Transfer", href: "/stock/transfer", icon: Send },
-      ],
-    },
-    {
-      header: "Manage Sale",
-      name: "Sales",
-      icon: ShoppingCart,
-      subroutes: [
-        { name: "Sales", href: "/sales", icon: Heart },
-        { name: "Sale Return", href: "/sales/return", icon: RefreshCw },
-        { name: "Quotation", href: "/sales/quotation", icon: FileText },
-      ],
-    },
-    {
-      header: "CRM",
-      name: "CRM",
-      icon: Users,
-      subroutes: [
-        { name: "Customers", href: "/reports?tab=crm", icon: Users },
-        { name: "User List", href: "/crm/users", icon: UserPlus },
-      ],
-    },
-    {
-      name: "Reports",
-      href: "/reports",
-      icon: BarChart3,
-    },
-    {
-      header: "General Module",
-      name: "General",
-      icon: Building2,
-      subroutes: [
-        { name: "Locations", href: "/locations", icon: MapPin },
-      ],
-    },
-    {
-      name: "Settings",
-      href: "/settings",
-      icon: Settings,
-    },
-  ];
 
   // Track which sections are expanded
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
   const toggleSection = (sectionName: string) => {
-    setExpandedSections(prev =>
+    setExpandedSections((prev) =>
       prev.includes(sectionName)
-        ? prev.filter(name => name !== sectionName)
+        ? prev.filter((name) => name !== sectionName)
         : [...prev, sectionName]
     );
   };
+  // this is a guard, if the user detail is not in memory, then route the user to the confirm-role page
+  if (!user) return <Navigate to={"/confirm-role"} />;
 
   return (
     <div className="min-h-screen">
@@ -124,7 +47,7 @@ const Layout = () => {
           <nav className="flex-1 space-y-1 px-2 py-4">
             {navigation.map((item) => {
               const Icon = item.icon;
-              
+
               if (item.subroutes) {
                 const isExpanded = expandedSections.includes(item.name);
                 return (
