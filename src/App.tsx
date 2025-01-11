@@ -22,8 +22,15 @@ const App = () => (
           <Route element={<Layout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/sales" element={<Sales />} />
+            <Route path="/sales/return" element={<div>Sale Return</div>} />
+            <Route path="/sales/quotation" element={<div>Quotation</div>} />
             <Route path="/products" element={<Products />} />
+            <Route path="/products/variation" element={<div>Product Variation</div>} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/stock/adjustment" element={<div>Stock Adjustment</div>} />
+            <Route path="/stock/transfer" element={<div>Stock Transfer</div>} />
+            <Route path="/crm/users" element={<div>User List</div>} />
+            <Route path="/locations" element={<div>Locations</div>} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
