@@ -6,6 +6,7 @@ import Reports from "@/pages/Reports";
 import Sales from "@/pages/Sales";
 import Settings from "@/pages/Settings";
 import { Route } from "react-router-dom";
+import { ForgetPassword, Login } from "./pages/auth";
 const getAdminRoutes = (role: Role) => (
   // NOTE, there is no need for the / in the nested routes, because router-dom, addes it.
   <Route path={`/${role}`} element={<Layout />}>
@@ -24,4 +25,11 @@ const getAdminRoutes = (role: Role) => (
   </Route>
 );
 
-export { getAdminRoutes };
+
+const getAuthRoutes = () => (
+  <Route>
+    <Route path="/login" element={<Login />} />
+    <Route path="/forgot-password" element={<ForgetPassword />} />
+  </Route>
+);
+export { getAdminRoutes, getAuthRoutes };

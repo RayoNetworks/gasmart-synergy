@@ -1,3 +1,5 @@
-const ForgetPassword =() => {
- 
-}
+const ForgetPassword = () => {
+ return <></>
+};
+
+export default ForgetPassword;

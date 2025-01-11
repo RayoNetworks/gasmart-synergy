@@ -11,12 +11,11 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import ConfirmRole from "./pages/ConfirmRole";
 import { Role } from "./lib/types";
-import { getAdminRoutes } from "./Routes";
+import { getAdminRoutes, getAuthRoutes } from "./Routes";
 
 const queryClient = new QueryClient();
 
 // Define the routes configuration
-
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -25,12 +24,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route>
-            <Route />
-          </Route>
+          {/* this is for the auth page */}
+          {getAuthRoutes()}
           {/* Public route for role confirmation */}
           <Route path="/confirm-role" element={<ConfirmRole />} />
-
           {/* Role-based routes */}
           {getAdminRoutes("admin")}
           {/* {getRoutes("cashier")}

@@ -37,7 +37,7 @@ const Login = () => {
           description: "Login successful!",
         });
         
-        navigate("/admin/dashboard");
+        navigate("/confirm-rol");
       } catch (error: any) {
         toast({
           variant: "destructive",
