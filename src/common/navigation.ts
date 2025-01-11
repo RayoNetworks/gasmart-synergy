@@ -28,7 +28,7 @@ const navigation = [
     name: "Products",
     icon: Package,
     subroutes: [
-      { name: "Products List", href: "/products", icon: ClipboardList },
+      { name: "Products List", href: "/admin/products", icon: ClipboardList },
       {
         name: "Product Variation",
         href: "/admin/products/variation",
