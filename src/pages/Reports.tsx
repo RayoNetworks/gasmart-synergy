@@ -7,12 +7,13 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 import {
@@ -25,79 +26,48 @@ import {
 } from "@/components/ui/table";
 
 const Reports = () => {
-  // Sample data - in a real app, this would come from your backend
-  const salesData = [
-    { month: "Jan", sales: 4000000 },
-    { month: "Feb", sales: 3000000 },
-    { month: "Mar", sales: 2000000 },
-    { month: "Apr", sales: 2780000 },
-    { month: "May", sales: 1890000 },
-    { month: "Jun", sales: 2390000 },
+  // Sample data for last 10 days sales and purchases
+  const last10DaysData = [
+    { date: "Jan 1", sales: 4, purchases: 3 },
+    { date: "Jan 2", sales: 6, purchases: 4 },
+    { date: "Jan 3", sales: 8, purchases: 5 },
+    { date: "Jan 4", sales: 15, purchases: 8 },
+    { date: "Jan 5", sales: 12, purchases: 7 },
+    { date: "Jan 6", sales: 5, purchases: 4 },
+    { date: "Jan 7", sales: 13, purchases: 9 },
+    { date: "Jan 8", sales: 8, purchases: 6 },
+    { date: "Jan 9", sales: 6, purchases: 4 },
+    { date: "Jan 10", sales: 4, purchases: 3 },
   ];
 
-  const stockData = [
+  // Sample data for top selling products
+  const topSellingProducts = [
     {
-      id: 1,
-      product: "LPG Cylinder 13kg",
-      currentStock: 48,
-      reorderPoint: 20,
-      status: "Healthy",
+      product: "LPG Cylinder 12.5kg",
+      quantity: 70,
+      total: 816634,
     },
     {
-      id: 2,
-      product: "LPG Cylinder 5kg",
-      currentStock: 12,
-      reorderPoint: 15,
-      status: "Low Stock",
+      product: "LPG Cylinder 6kg",
+      quantity: 36,
+      total: 1309564,
     },
     {
-      id: 3,
-      product: "Diesel",
-      currentStock: 2500,
-      reorderPoint: 1000,
-      status: "Healthy",
+      product: "Gas Stove Double Burner",
+      quantity: 33,
+      total: 1341340,
     },
     {
-      id: 4,
-      product: "Petrol",
-      currentStock: 1800,
-      reorderPoint: 1000,
-      status: "Healthy",
+      product: "Gas Regulator",
+      quantity: 16,
+      total: 1435426,
+    },
+    {
+      product: "Hose Pipe (2m)",
+      quantity: 15,
+      total: 1523426,
     },
   ];
-
-  const customerData = [
-    {
-      id: 1,
-      name: "John Smith",
-      totalPurchases: 12500000,
-      lastPurchase: "2024-03-15",
-      type: "Business",
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      totalPurchases: 8200000,
-      lastPurchase: "2024-03-18",
-      type: "Residential",
-    },
-    {
-      id: 3,
-      name: "Tech Solutions Inc",
-      totalPurchases: 25000000,
-      lastPurchase: "2024-03-20",
-      type: "Business",
-    },
-    {
-      id: 4,
-      name: "Mike Wilson",
-      totalPurchases: 3500000,
-      lastPurchase: "2024-03-19",
-      type: "Residential",
-    },
-  ];
-
-  // ... keep existing code (JSX structure)
 
   return (
     <div className="space-y-6">
@@ -111,23 +81,71 @@ const Reports = () => {
         </TabsList>
 
         <TabsContent value="sales" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Monthly Sales Overview</CardTitle>
-              <CardDescription>Monthly sales performance analysis</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={salesData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis tickFormatter={(value) => `₦${(value / 1000000).toFixed(1)}M`} />
-                  <Tooltip formatter={(value) => [`₦${value.toLocaleString()}`, "Sales"]} />
-                  <Bar dataKey="sales" fill="#facc15" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 md:grid-cols-7">
+            <Card className="md:col-span-5">
+              <CardHeader>
+                <CardTitle>Last 10 Day's Sales & Purchases</CardTitle>
+                <CardDescription>Daily comparison of sales and purchase activities</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={last10DaysData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value) => [`${value} units`]}
+                      labelStyle={{ color: "#000" }}
+                    />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="sales" 
+                      stroke="#facc15" 
+                      strokeWidth={2}
+                      dot={{ fill: "#facc15" }}
+                      name="Sales"
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="purchases" 
+                      stroke="#000000" 
+                      strokeWidth={2}
+                      dot={{ fill: "#000000" }}
+                      name="Purchases"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card className="md:col-span-2">
+              <CardHeader>
+                <CardTitle>Top Selling Products</CardTitle>
+                <CardDescription>Best performing items</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Product</TableHead>
+                      <TableHead className="text-right">Qty</TableHead>
+                      <TableHead className="text-right">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {topSellingProducts.map((product) => (
+                      <TableRow key={product.product}>
+                        <TableCell className="font-medium">{product.product}</TableCell>
+                        <TableCell className="text-right">{product.quantity}</TableCell>
+                        <TableCell className="text-right">₦{product.total.toLocaleString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="stock" className="space-y-4">
