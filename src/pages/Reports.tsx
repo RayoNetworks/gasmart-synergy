@@ -27,12 +27,12 @@ import {
 const Reports = () => {
   // Sample data - in a real app, this would come from your backend
   const salesData = [
-    { month: "Jan", sales: 4000 },
-    { month: "Feb", sales: 3000 },
-    { month: "Mar", sales: 2000 },
-    { month: "Apr", sales: 2780 },
-    { month: "May", sales: 1890 },
-    { month: "Jun", sales: 2390 },
+    { month: "Jan", sales: 4000000 },
+    { month: "Feb", sales: 3000000 },
+    { month: "Mar", sales: 2000000 },
+    { month: "Apr", sales: 2780000 },
+    { month: "May", sales: 1890000 },
+    { month: "Jun", sales: 2390000 },
   ];
 
   const stockData = [
@@ -70,32 +70,34 @@ const Reports = () => {
     {
       id: 1,
       name: "John Smith",
-      totalPurchases: 12500,
+      totalPurchases: 12500000,
       lastPurchase: "2024-03-15",
       type: "Business",
     },
     {
       id: 2,
       name: "Sarah Johnson",
-      totalPurchases: 8200,
+      totalPurchases: 8200000,
       lastPurchase: "2024-03-18",
       type: "Residential",
     },
     {
       id: 3,
       name: "Tech Solutions Inc",
-      totalPurchases: 25000,
+      totalPurchases: 25000000,
       lastPurchase: "2024-03-20",
       type: "Business",
     },
     {
       id: 4,
       name: "Mike Wilson",
-      totalPurchases: 3500,
+      totalPurchases: 3500000,
       lastPurchase: "2024-03-19",
       type: "Residential",
     },
   ];
+
+  // ... keep existing code (JSX structure)
 
   return (
     <div className="space-y-6">
@@ -119,8 +121,8 @@ const Reports = () => {
                 <BarChart data={salesData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
+                  <YAxis tickFormatter={(value) => `₦${(value / 1000000).toFixed(1)}M`} />
+                  <Tooltip formatter={(value) => [`₦${value.toLocaleString()}`, "Sales"]} />
                   <Bar dataKey="sales" fill="#facc15" />
                 </BarChart>
               </ResponsiveContainer>
@@ -189,7 +191,7 @@ const Reports = () => {
                   {customerData.map((customer) => (
                     <TableRow key={customer.id}>
                       <TableCell className="font-medium">{customer.name}</TableCell>
-                      <TableCell>${customer.totalPurchases.toLocaleString()}</TableCell>
+                      <TableCell>₦{customer.totalPurchases.toLocaleString()}</TableCell>
                       <TableCell>{customer.lastPurchase}</TableCell>
                       <TableCell>
                         <span
