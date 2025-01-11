@@ -20,7 +20,7 @@ import {
 const navigation = [
   {
     name: "Dashboard",
-    href: "/",
+    href: "/admin",
     icon: LayoutDashboard,
   },
   {
@@ -90,5 +90,7 @@ const navigation = [
     icon: Settings,
   },
 ];
+
+
 
 export default navigation;

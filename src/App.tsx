@@ -11,27 +11,12 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import ConfirmRole from "./pages/ConfirmRole";
 import { Role } from "./lib/types";
+import { getAdminRoutes } from "./Routes";
 
 const queryClient = new QueryClient();
 
 // Define the routes configuration
-const getRoutes = (role: Role) => (
-// NOTE, there is no need for the / in the nested routes, because router-dom, addes it.
-  <Route path={`/${role}`} element={<Layout />}>
-    <Route index element={<Dashboard />} />
-    <Route path="sales" element={<Sales />} />
-    <Route path="sales/return" element={<div>Sale Return</div>} />
-    <Route path="sales/quotation" element={<div>Quotation</div>} />
-    <Route path="products" element={<Products />} />
-    <Route path="products/variation" element={<div>Product Variation</div>} />
-    <Route path="reports" element={<Reports />} />
-    <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
-    <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
-    <Route path="crm/users" element={<div>User List</div>} />
-    <Route path="locations" element={<div>Locations</div>} />
-    <Route path="settings" element={<Settings />} />
-  </Route>
-);
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -40,17 +25,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route>
+            <Route />
+          </Route>
           {/* Public route for role confirmation */}
           <Route path="/confirm-role" element={<ConfirmRole />} />
-          
+
           {/* Role-based routes */}
-          {getRoutes("admin")}
-          {getRoutes("cashier")}
-          {getRoutes("auditor")}
+          {getAdminRoutes("admin")}
+          {/* {getRoutes("cashier")}
+          {getRoutes("auditor")} */}
 
           {/* Redirect root to confirm-role */}
           <Route path="/" element={<Navigate to="/confirm-role" replace />} />
-          
+
           {/* Catch all route - redirect to confirm-role */}
           <Route path="*" element={<Navigate to="/confirm-role" replace />} />
         </Routes>
