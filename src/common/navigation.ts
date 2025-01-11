@@ -15,6 +15,7 @@ import {
   Users,
   BarChart3,
   Settings,
+  GitBranch,
 } from "lucide-react";
 
 const navigation = [
@@ -81,7 +82,7 @@ const navigation = [
     icon: Building2,
     subroutes: [
       { name: "Locations", href: "/admin/locations", icon: MapPin },
-      { name: "Branch", href: "/admin/branch", icon: MapPin },
+      { name: "Branch", href: "/admin/branch", icon: GitBranch },
     ],
   },
   {
@@ -90,7 +91,5 @@ const navigation = [
     icon: Settings,
   },
 ];
-
-
 
 export default navigation;
