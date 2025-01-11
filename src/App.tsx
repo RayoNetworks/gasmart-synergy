@@ -14,8 +14,8 @@ import { Role } from "./lib/types";
 
 const queryClient = new QueryClient();
 
-// Helper component to create role-based routes
-const RoleBasedRoutes = ({ role }: { role: Role }) => (
+// Define the routes configuration
+const getRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<Layout />}>
     <Route index element={<Dashboard />} />
     <Route path="sales" element={<Sales />} />
@@ -43,9 +43,9 @@ const App = () => (
           <Route path="/confirm-role" element={<ConfirmRole />} />
           
           {/* Role-based routes */}
-          <RoleBasedRoutes role="admin" />
-          <RoleBasedRoutes role="cashier" />
-          <RoleBasedRoutes role="auditor" />
+          {getRoutes("admin")}
+          {getRoutes("cashier")}
+          {getRoutes("auditor")}
 
           {/* Redirect root to confirm-role */}
           <Route path="/" element={<Navigate to="/confirm-role" replace />} />
