@@ -22,7 +22,7 @@ const userStore = create<userStoreInference>((set) => ({
     const { data } = await axiosClient.get("/auth/logged-in");
     // this will get the logged in user and store their info in memory
     set((state) => ({
-      user: data.user,
+      user: data.user ?? {},
     }));
   },
 }));

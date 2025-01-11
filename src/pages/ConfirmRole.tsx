@@ -18,8 +18,12 @@ const ConfirmRole = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        await getUserData();
-        setIsLoading(false);
+       // this is to allow the ui to render for more than 2 sec
+        const timer = setTimeout(async () => {
+          await getUserData();
+           setIsLoading(false);
+        }, 2000);
+        return () => clearTimeout(timer);
       } catch (error) {
         setIsErrorMessage({
           message: "Failed to confirm your role. Please try again later.",

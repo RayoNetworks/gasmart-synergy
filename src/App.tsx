@@ -16,6 +16,7 @@ const queryClient = new QueryClient();
 
 // Define the routes configuration
 const getRoutes = (role: Role) => (
+// NOTE, there is no need for the / in the nested routes, because router-dom, addes it.
   <Route path={`/${role}`} element={<Layout />}>
     <Route index element={<Dashboard />} />
     <Route path="sales" element={<Sales />} />
