@@ -31,7 +31,7 @@ const navigation = [
       { name: "Products List", href: "/products", icon: ClipboardList },
       {
         name: "Product Variation",
-        href: "/products/variation",
+        href: "/admin/products/variation",
         icon: ArrowUpDown,
       },
     ],
@@ -41,13 +41,13 @@ const navigation = [
     name: "Stock",
     icon: Database,
     subroutes: [
-      { name: "Manage Stock", href: "/reports?tab=stock", icon: Database },
+      { name: "Manage Stock", href: "/admin/reports?tab=stock", icon: Database },
       {
         name: "Stock Adjustment",
-        href: "/stock/adjustment",
+        href: "/admin/stock/adjustment",
         icon: RefreshCw,
       },
-      { name: "Stock Transfer", href: "/stock/transfer", icon: Send },
+      { name: "Stock Transfer", href: "/admin/stock/transfer", icon: Send },
     ],
   },
   {
@@ -55,9 +55,9 @@ const navigation = [
     name: "Sales",
     icon: ShoppingCart,
     subroutes: [
-      { name: "Sales", href: "/sales", icon: Heart },
-      { name: "Sale Return", href: "/sales/return", icon: RefreshCw },
-      { name: "Quotation", href: "/sales/quotation", icon: FileText },
+      { name: "Sales", href: "/admin/sales", icon: Heart },
+      { name: "Sale Return", href: "/admin/sales/return", icon: RefreshCw },
+      { name: "Quotation", href: "/admin/sales/quotation", icon: FileText },
     ],
   },
   {
@@ -65,14 +65,14 @@ const navigation = [
     name: "CRM",
     icon: Users,
     subroutes: [
-      { name: "Customers", href: "/reports?tab=crm", icon: Users },
-      { name: "User List", href: "/crm/users", icon: UserPlus },
-      { name: "Staff", href: "/crm/staff", icon: UserPlus },
+      { name: "Customers", href: "/admin/reports?tab=crm", icon: Users },
+      { name: "User List", href: "/admin/crm/users", icon: UserPlus },
+      { name: "Staff", href: "/admin/crm/staff", icon: UserPlus },
     ],
   },
   {
     name: "Reports",
-    href: "/reports",
+    href: "/admin/reports",
     icon: BarChart3,
   },
   {
@@ -80,13 +80,13 @@ const navigation = [
     name: "General",
     icon: Building2,
     subroutes: [
-      { name: "Locations", href: "/locations", icon: MapPin },
-      { name: "Branch", href: "/branch", icon: MapPin },
+      { name: "Locations", href: "/admin/locations", icon: MapPin },
+      { name: "Branch", href: "/admin/branch", icon: MapPin },
     ],
   },
   {
     name: "Settings",
-    href: "/settings",
+    href: "/admin/settings",
     icon: Settings,
   },
 ];
