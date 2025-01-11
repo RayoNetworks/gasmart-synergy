@@ -32,7 +32,7 @@ const Layout = () => {
   if (!user) return <Navigate to={"/confirm-role"} />;
 
   return (
-    <div className="min-h-screen">
+    <div className=" ">
       {/* Sidebar */}
       <div
         className={cn(
@@ -44,7 +44,7 @@ const Layout = () => {
           <div className="flex h-16 items-center justify-between px-4">
             <h1 className="text-xl font-bold text-primary">LPG POS</h1>
           </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
+          <nav className="flex-1 space-y-1 px-2 py-4 h-screen overflow-y-auto">
             {navigation.map((item) => {
               const Icon = item.icon;
 
