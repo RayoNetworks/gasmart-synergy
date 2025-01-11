@@ -69,6 +69,72 @@ const Reports = () => {
     },
   ];
 
+  // Add the missing stock data
+  const stockData = [
+    {
+      id: 1,
+      product: "LPG Cylinder 12.5kg",
+      currentStock: 45,
+      reorderPoint: 20,
+      status: "In Stock"
+    },
+    {
+      id: 2,
+      product: "LPG Cylinder 6kg",
+      currentStock: 15,
+      reorderPoint: 25,
+      status: "Low Stock"
+    },
+    {
+      id: 3,
+      product: "Gas Stove Double Burner",
+      currentStock: 30,
+      reorderPoint: 15,
+      status: "In Stock"
+    },
+    {
+      id: 4,
+      product: "Gas Regulator",
+      currentStock: 50,
+      reorderPoint: 20,
+      status: "In Stock"
+    }
+  ];
+
+  // Add the missing customer data
+  const customerData = [
+    {
+      id: 1,
+      name: "John Doe",
+      totalPurchases: 250000,
+      lastPurchase: "2024-01-10",
+      type: "Business"
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      totalPurchases: 150000,
+      lastPurchase: "2024-01-09",
+      type: "Residential"
+    },
+    {
+      id: 3,
+      name: "Acme Corp",
+      totalPurchases: 500000,
+      lastPurchase: "2024-01-08",
+      type: "Business"
+    },
+    {
+      id: 4,
+      name: "Sarah Johnson",
+      totalPurchases: 75000,
+      lastPurchase: "2024-01-07",
+      type: "Residential"
+    }
+  ];
+
+  // ... keep existing code (return statement and JSX)
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Reports</h1>
