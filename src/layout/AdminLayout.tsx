@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Menu, ChevronDown } from "lucide-react";
-import { Button } from "./ui/button";
+// import { Button } from "./ui/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -11,7 +11,8 @@ import {
 import navigation from "@/common/navigation";
 import userStore from "@/store/user.store";
 import { Navigate } from "react-router-dom";
-const Layout = () => {
+import { Button } from "@/components/ui/button";
+const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { user } = userStore();
   const location = useLocation();
@@ -142,4 +143,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default AdminLayout;

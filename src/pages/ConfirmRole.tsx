@@ -1,37 +1,46 @@
 import { appRouteHelper } from "@/lib/route";
 import userStore from "@/store/user.store";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { token } from "@/common/constants/auth";
 
 const ConfirmRole = () => {
   const { getUserData, user } = userStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
   const [isError, setIsErrorMessage] = useState<{
     message: string;
   }>({
     message: "",
   });
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-       // this is to allow the ui to render for more than 2 sec
-        const timer = setTimeout(async () => {
-          await getUserData();
-           setIsLoading(false);
-        }, 2000);
-        return () => clearTimeout(timer);
-      } catch (error) {
-        setIsErrorMessage({
-          message: "Failed to confirm your role. Please try again later.",
-        });
-        setIsLoading(false);
-      }
-    };
+  const fetchUserData = async () => {
+    try {
+      // this is to allow the ui to render for more than 2 sec
+      const timer = setTimeout(async () => {
+        // add a guard to check if the token exist, if not navigate to the login page
+        if (!localStorage.getItem(token)) {
+          navigate("/login");
+          return;
+        }
 
+        // fetch user data
+        await getUserData();
+        setIsLoading(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } catch (error) {
+      setIsErrorMessage({
+        message: "Failed to confirm your role. Please try again later.",
+      });
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchUserData();
   }, [getUserData]);
 
@@ -57,12 +66,13 @@ const ConfirmRole = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-secondary to-background p-4">
         <div className="w-full max-w-md">
-          <Alert variant="destructive" className="bg-white/80 backdrop-blur-sm border-destructive/50">
+          <Alert
+            variant="destructive"
+            className="bg-white/80 backdrop-blur-sm border-destructive/50"
+          >
             <AlertCircle className="h-5 w-5" />
             <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              {isError.message}
-            </AlertDescription>
+            <AlertDescription>{isError.message}</AlertDescription>
           </Alert>
         </div>
       </div>
