@@ -77,7 +77,7 @@ const Sales = () => {
                 <TableCell>{sale.id}</TableCell>
                 <TableCell>{sale.product}</TableCell>
                 <TableCell>{sale.quantity}</TableCell>
-                <TableCell>${sale.amount.toFixed(2)}</TableCell>
+                <TableCell>₦{sale.amount.toFixed(2)}</TableCell>
                 <TableCell>{sale.date}</TableCell>
                 <TableCell>{sale.status}</TableCell>
               </TableRow>

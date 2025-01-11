@@ -85,7 +85,7 @@ const Products = () => {
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>{product.type}</TableCell>
                 <TableCell>{product.stock}</TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
+                <TableCell>₦{product.price.toFixed(2)}</TableCell>
                 <TableCell>
                   <Badge variant={product.status === "Low Stock" ? "destructive" : "default"}>
                     {product.status}
