@@ -1,4 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { axiosClient } from "@/axios";
 import {
   Table,
   TableBody,
@@ -18,34 +20,21 @@ interface Product {
   purchaseDate: string;
 }
 
-// Mock data
-const mockProducts: Product[] = [
-  {
-    id: "1",
-    name: "LPG Cylinder 13kg",
-    price: 60.00,
-    quantity: 2,
-    purchaseDate: "2024-02-15",
-  },
-  {
-    id: "2",
-    name: "Diesel",
-    price: 550.50,
-    quantity: 100,
-    purchaseDate: "2024-02-10",
-  },
-  {
-    id: "3",
-    name: "Petrol",
-    price: 600.00,
-    quantity: 50,
-    purchaseDate: "2024-02-01",
-  },
-];
-
 const CustomerProducts = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["customer-products", id],
+    queryFn: async () => {
+      const response = await axiosClient.get(`/customer-products/${id}`);
+      return response.data;
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto py-10">
@@ -63,7 +52,7 @@ const CustomerProducts = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockProducts.map((product) => (
+            {products.map((product: Product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>₦{product.price.toFixed(2)}</TableCell>
