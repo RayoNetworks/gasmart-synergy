@@ -7,8 +7,11 @@ import Settings from "@/pages/Settings";
 import { Route } from "react-router-dom";
 import { ForgetPassword, Login, SetPassword } from "./pages/auth";
 import { AdminLayout, AuthLayout } from "./layout";
+import Customers from "./pages/Customers";
+import EditCustomer from "./pages/EditCustomer";
+import CustomerProducts from "./pages/CustomerProducts";
+
 const getAdminRoutes = (role: Role) => (
-  // NOTE, there is no need for the / in the nested routes, because router-dom, addes it.
   <Route path={`/${role}`} element={<AdminLayout />}>
     <Route index element={<Dashboard />} />
     <Route path="sales" element={<Sales />} />
@@ -20,10 +23,14 @@ const getAdminRoutes = (role: Role) => (
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
     <Route path="crm/users" element={<div>User List</div>} />
+    <Route path="crm/customers" element={<Customers />} />
+    <Route path="crm/customers/:id/edit" element={<EditCustomer />} />
+    <Route path="crm/customers/:id/products" element={<CustomerProducts />} />
     <Route path="locations" element={<div>Locations</div>} />
     <Route path="settings" element={<Settings />} />
   </Route>
 );
+
 const getAuthRoutes = () => (
   <Route element={<AuthLayout />}>
     <Route path="/login" element={<Login />} />
@@ -31,4 +38,5 @@ const getAuthRoutes = () => (
     <Route path="/set-password" element={<SetPassword />} />
   </Route>
 );
+
 export { getAdminRoutes, getAuthRoutes };
