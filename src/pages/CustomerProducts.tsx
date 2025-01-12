@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useQuery } from "@tanstack/react-query";
-import { axiosClient } from "@/axios";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
 
 interface Product {
   id: string;
@@ -18,20 +18,34 @@ interface Product {
   purchaseDate: string;
 }
 
+// Mock data
+const mockProducts: Product[] = [
+  {
+    id: "1",
+    name: "LPG Cylinder 13kg",
+    price: 60.00,
+    quantity: 2,
+    purchaseDate: "2024-02-15",
+  },
+  {
+    id: "2",
+    name: "Diesel",
+    price: 550.50,
+    quantity: 100,
+    purchaseDate: "2024-02-10",
+  },
+  {
+    id: "3",
+    name: "Petrol",
+    price: 600.00,
+    quantity: 50,
+    purchaseDate: "2024-02-01",
+  },
+];
+
 const CustomerProducts = () => {
   const { id } = useParams();
-
-  const { data: products, isLoading } = useQuery({
-    queryKey: ["customerProducts", id],
-    queryFn: async () => {
-      const response = await axiosClient.get(`/customers/${id}/products`);
-      return response.data;
-    },
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const navigate = useNavigate();
 
   return (
     <div className="container mx-auto py-10">
@@ -45,15 +59,25 @@ const CustomerProducts = () => {
               <TableHead>Price</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Purchase Date</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products?.map((product: Product) => (
+            {mockProducts.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.name}</TableCell>
-                <TableCell>${product.price}</TableCell>
+                <TableCell>₦{product.price.toFixed(2)}</TableCell>
                 <TableCell>{product.quantity}</TableCell>
                 <TableCell>{new Date(product.purchaseDate).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate('/admin/products')}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
