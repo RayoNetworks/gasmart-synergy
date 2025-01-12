@@ -21,8 +21,12 @@ import cashierNavigation from "@/common/navigation/cashier";
 import auditorNavigation from "@/common/navigation/auditor";
 import { Role } from "@/lib/types";
 
+// NOTE, the role shoul
 type RoutePermission = {
-  route: string;
+  route: {
+    name: string;
+    href: string;
+  };
   permissions: {
     create: boolean;
     read: boolean;
@@ -111,8 +115,18 @@ const EditStaff = () => {
   const handleRoleChange = (role: Role) => {
     setSelectedRole(role);
     setFormData(prev => ({ ...prev, role }));
-    const routes = getNavigationByRole(role).flatMap(item => 
-      item.subroutes ? item.subroutes.map(sub => sub.href) : [item.href]
+    const routes = getNavigationByRole(role).flatMap((item) =>
+      item.subroutes
+        ? item.subroutes.map((sub) => ({
+            name: sub.name,
+            href: sub?.href,
+          }))
+        : [
+            {
+              name: item?.name,
+              href: item?.href,
+            },
+          ]
     );
     setRoutePermissions(routes.map(route => ({
       route,
@@ -127,7 +141,7 @@ const EditStaff = () => {
 
   const handlePermissionToggle = (route: string, permission: keyof RoutePermission["permissions"]) => {
     setRoutePermissions(prev => prev.map(rp => 
-      rp.route === route 
+      rp.route?.name === route 
         ? { ...rp, permissions: { ...rp.permissions, [permission]: !rp.permissions[permission] }}
         : rp
     ));
@@ -258,34 +272,34 @@ const EditStaff = () => {
             <h2 className="text-lg font-semibold">Route Permissions</h2>
             <div className="space-y-4">
               {routePermissions.map((rp) => (
-                <div key={rp.route} className="space-y-2 p-4 border rounded-lg">
-                  <h3 className="font-medium">{rp.route}</h3>
+                <div key={rp.route?.name} className="space-y-2 p-4 border rounded-lg">
+                  <h3 className="font-medium">{rp.route?.name}</h3>
                   <ToggleGroup type="multiple" className="justify-start">
                     <ToggleGroupItem
                       value="create"
                       aria-label="Toggle create"
-                      onClick={() => handlePermissionToggle(rp.route, "create")}
+                      onClick={() => handlePermissionToggle(rp.route?.name, "create")}
                     >
                       Create
                     </ToggleGroupItem>
                     <ToggleGroupItem
                       value="read"
                       aria-label="Toggle read"
-                      onClick={() => handlePermissionToggle(rp.route, "read")}
+                      onClick={() => handlePermissionToggle(rp.route?.name, "read")}
                     >
                       Read
                     </ToggleGroupItem>
                     <ToggleGroupItem
                       value="update"
                       aria-label="Toggle update"
-                      onClick={() => handlePermissionToggle(rp.route, "update")}
+                      onClick={() => handlePermissionToggle(rp.route?.name, "update")}
                     >
                       Update
                     </ToggleGroupItem>
                     <ToggleGroupItem
                       value="delete"
                       aria-label="Toggle delete"
-                      onClick={() => handlePermissionToggle(rp.route, "delete")}
+                      onClick={() => handlePermissionToggle(rp.route?.name, "delete")}
                     >
                       Delete
                     </ToggleGroupItem>

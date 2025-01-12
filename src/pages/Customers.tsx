@@ -88,7 +88,7 @@ const Customers = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {customers.map((customer: Customer) => (
+            {customers.length > 0 && customers.map((customer: Customer) => (
               <TableRow key={customer.id}>
                 <TableCell>{customer.name}</TableCell>
                 <TableCell>
