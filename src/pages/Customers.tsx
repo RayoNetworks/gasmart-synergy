@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Edit, Eye, Package, Trash } from "lucide-react";
+import { Edit, Eye, Package, Building2 } from "lucide-react";
 
 interface Customer {
   id: string;
@@ -37,6 +37,12 @@ interface Customer {
   email: string;
   phone: string;
   address: string;
+  branchId: string;
+  branch: {
+    id: string;
+    name: string;
+    address: string;
+  };
 }
 
 const Customers = () => {
@@ -44,35 +50,23 @@ const Customers = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewSheetOpen, setIsViewSheetOpen] = useState(false);
 
   const { data: customers, isLoading } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
       const response = await axiosClient.get("/customers");
-      return response.data ?? [];
+
+      console.log("Fetched customers:", response.data);
+      return response.data;
+
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (customerId: string) => axiosClient.delete(`/customers/${customerId}`),
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Customer deleted successfully",
-      });
-      queryClient.invalidateQueries({ queryKey: ["customers"] });
-      setIsDeleteDialogOpen(false);
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete customer",
-      });
-    },
-  });
+  const handleViewBranch = (branchId: string) => {
+    console.log("Viewing branch:", branchId);
+    navigate(`/admin/branch?view=${branchId}`);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -87,8 +81,9 @@ const Customers = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
+              <TableHead>Contact</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Branch</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -96,12 +91,23 @@ const Customers = () => {
             {customers.map((customer: Customer) => (
               <TableRow key={customer.id}>
                 <TableCell>{customer.name}</TableCell>
-                <TableCell>{customer.email}</TableCell>
-                <TableCell>{customer.phone}</TableCell>
+                <TableCell>
+                  <div>
+                    <p>{customer.phone}</p>
+                    <p className="text-sm text-gray-500">{customer.email}</p>
+                  </div>
+                </TableCell>
+                <TableCell>{customer.address}</TableCell>
+                <TableCell>
+                  <div>
+                    <p>{customer.branch.name}</p>
+                    <p className="text-sm text-gray-500">{customer.branch.address}</p>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
                       onClick={() => {
                         setSelectedCustomer(customer);
@@ -111,28 +117,25 @@ const Customers = () => {
                       <Eye className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
                       onClick={() => navigate(`/admin/crm/customers/${customer.id}/edit`)}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
                       onClick={() => navigate(`/admin/crm/customers/${customer.id}/products`)}
                     >
                       <Package className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
-                      onClick={() => {
-                        setSelectedCustomer(customer);
-                        setIsDeleteDialogOpen(true);
-                      }}
+                      onClick={() => handleViewBranch(customer.branchId)}
                     >
-                      <Trash className="h-4 w-4" />
+                      <Building2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </TableCell>
@@ -169,31 +172,15 @@ const Customers = () => {
                 <h4 className="font-medium">Address</h4>
                 <p>{selectedCustomer.address}</p>
               </div>
+              <div>
+                <h4 className="font-medium">Branch</h4>
+                <p>{selectedCustomer.branch.name}</p>
+                <p className="text-sm text-gray-500">{selectedCustomer.branch.address}</p>
+              </div>
             </div>
           )}
         </SheetContent>
       </Sheet>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete {selectedCustomer?.name} from the system?
-              This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => selectedCustomer && deleteMutation.mutate(selectedCustomer.id)}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
