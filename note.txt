@@ -1,0 +1,20 @@
+the sales returns are for product that the customer returned to the pos system. like the lubricants or oils products
+
+
+the measurement conversion , set constants by admin
+price filtering by branch, give functionality to edit product that are in a branch.
+branch creation
+staff creation
+customer creation,
+user creation,
+product categories
+product variation, select product and add variation
+creation of product and it must be assigned to a branch, you can make sure they can be assiged to multiple branch, note the product will have different price based on branch, 
+the schema will be like = [{
+ branch: '',
+ price: ''
+}]
+
+location,
+the location is all the point the branch are located.
+branch

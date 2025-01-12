@@ -31,6 +31,11 @@ const navigation = [
     subroutes: [
       { name: "Products List", href: "/admin/products", icon: ClipboardList },
       {
+        name: "Product Categories",
+        href: "/admin/products/categories",
+        icon: ArrowUpDown,
+      },
+      {
         name: "Product Variation",
         href: "/admin/products/variation",
         icon: ArrowUpDown,
@@ -42,7 +47,11 @@ const navigation = [
     name: "Stock",
     icon: Database,
     subroutes: [
-      { name: "Manage Stock", href: "/admin/reports?tab=stock", icon: Database },
+      {
+        name: "Manage Stock",
+        href: "/admin/reports?tab=stock",
+        icon: Database,
+      },
       {
         name: "Stock Adjustment",
         href: "/admin/stock/adjustment",
