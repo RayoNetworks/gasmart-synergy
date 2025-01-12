@@ -104,6 +104,51 @@ const mockBranches = [
   },
 ];
 
+const mockUsers = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john@example.com",
+    phone: "+234 123 4567",
+    userType: "customer",
+    branchId: "1",
+    branch: {
+      id: "1",
+      name: "Main Branch",
+      address: "123 Main Street, Lagos",
+    },
+    createdAt: "2024-01-15",
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "jane@example.com",
+    phone: "+234 987 6543",
+    userType: "working_client",
+    branchId: "2",
+    branch: {
+      id: "2",
+      name: "Port Harcourt Branch",
+      address: "456 Marina Road, Port Harcourt",
+    },
+    createdAt: "2024-02-01",
+  },
+  {
+    id: "3",
+    name: "Mike Johnson",
+    email: "mike@example.com",
+    phone: "+234 555 1234",
+    userType: "staff",
+    branchId: "3",
+    branch: {
+      id: "3",
+      name: "Abuja Branch",
+      address: "789 Capital Way, Abuja",
+    },
+    createdAt: "2024-02-10",
+  },
+];
+
 // Create axios instance
 export const axiosClient = axios.create({
   baseURL: "",
@@ -192,6 +237,34 @@ axiosClient.interceptors.response.use(
         if (customerIndex !== -1) {
           mockCustomers.splice(customerIndex, 1);
           return { data: { message: 'Customer deleted successfully' } };
+        }
+      }
+    }
+
+    // Handle user-related requests
+    if (url?.startsWith('/users')) {
+      if (method === 'get') {
+        const { branch, userType, createdAt } = response.config.params || {};
+        let filteredUsers = [...mockUsers];
+        
+        if (branch) {
+          filteredUsers = filteredUsers.filter(user => user.branchId === branch);
+        }
+        if (userType) {
+          filteredUsers = filteredUsers.filter(user => user.userType === userType);
+        }
+        if (createdAt) {
+          filteredUsers = filteredUsers.filter(user => user.createdAt === createdAt);
+        }
+        
+        return { ...response, data: filteredUsers };
+      }
+      if (method === 'delete') {
+        const userId = url.split('/')[2];
+        const userIndex = mockUsers.findIndex(u => u.id === userId);
+        if (userIndex !== -1) {
+          mockUsers.splice(userIndex, 1);
+          return { ...response, data: { message: 'User deleted successfully' } };
         }
       }
     }

@@ -14,6 +14,7 @@ import Branch from "./pages/Branch";
 import EditBranch from "./pages/EditBranch";
 import CreateBranch from "./pages/CreateBranch";
 import Locations from "./pages/Locations";
+import UserList from "./pages/UserList";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -26,7 +27,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="reports" element={<Reports />} />
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
-    <Route path="crm/users" element={<div>User List</div>} />
+    <Route path="crm/users" element={<UserList />} />
     <Route path="crm/customers" element={<Customers />} />
     <Route path="crm/customers/:id/edit" element={<EditCustomer />} />
     <Route path="crm/customers/:id/products" element={<CustomerProducts />} />
