@@ -173,17 +173,13 @@ axiosClient.interceptors.response.use(
     const url = response.config.url;
     const method = response.config.method;
 
+    let mockResponse = { ...response };
+
     // Handle branch-related requests
     if (url?.startsWith('/branches')) {
       if (method === 'get') {
-        if (url === '/branches') {
-          return { ...response, data: mockBranches };
-        }
-        const branchId = url.split('/')[2];
-        const branch = mockBranches.find(b => b.id === branchId);
-        return { ...response, data: branch };
-      }
-      if (method === 'post') {
+        mockResponse.data = url === '/branches' ? mockBranches : mockBranches.find(b => b.id === url.split('/')[2]);
+      } else if (method === 'post') {
         const newBranch = {
           id: (mockBranches.length + 1).toString(),
           ...JSON.parse(response.config.data),
@@ -191,52 +187,20 @@ axiosClient.interceptors.response.use(
           status: 'active'
         };
         mockBranches.push(newBranch);
-        return { ...response, data: newBranch };
-      }
-      if (method === 'put') {
+        mockResponse.data = newBranch;
+      } else if (method === 'put') {
         const branchId = url.split('/')[2];
-        const updatedBranch = JSON.parse(response.config.data);
         const index = mockBranches.findIndex(b => b.id === branchId);
         if (index !== -1) {
-          mockBranches[index] = { ...mockBranches[index], ...updatedBranch };
-          return { ...response, data: mockBranches[index] };
+          mockBranches[index] = { ...mockBranches[index], ...JSON.parse(response.config.data) };
+          mockResponse.data = mockBranches[index];
         }
-      }
-      if (method === 'delete') {
+      } else if (method === 'delete') {
         const branchId = url.split('/')[2];
         const index = mockBranches.findIndex(b => b.id === branchId);
         if (index !== -1) {
           mockBranches.splice(index, 1);
-          return { ...response, data: { message: 'Branch deleted successfully' } };
-        }
-      }
-    }
-
-    // Handle customer-related requests
-    if (url?.startsWith('/customers')) {
-      if (method === 'get') {
-        if (url === '/customers') {
-          return { ...response, data: mockCustomers };
-        }
-        const customerId = url.split('/')[2];
-        const customer = mockCustomers.find(c => c.id === customerId);
-        return { ...response, data: customer };
-      }
-      if (method === 'put') {
-        const customerId = url.split('/')[2];
-        const updatedCustomer = response.config.data;
-        const customerIndex = mockCustomers.findIndex(c => c.id === customerId);
-        if (customerIndex !== -1) {
-          mockCustomers[customerIndex] = { ...mockCustomers[customerIndex], ...JSON.parse(updatedCustomer) };
-          return { data: mockCustomers[customerIndex] };
-        }
-      }
-      if (method === 'delete') {
-        const customerId = url.split('/')[2];
-        const customerIndex = mockCustomers.findIndex(c => c.id === customerId);
-        if (customerIndex !== -1) {
-          mockCustomers.splice(customerIndex, 1);
-          return { data: { message: 'Customer deleted successfully' } };
+          mockResponse.data = { message: 'Branch deleted successfully' };
         }
       }
     }
@@ -244,32 +208,22 @@ axiosClient.interceptors.response.use(
     // Handle user-related requests
     if (url?.startsWith('/users')) {
       if (method === 'get') {
-        const { userType, name, email, branch, createdAt } = response.config.params || {};
-        let filteredUsers = [...mockUsers];
-        
-        if (userType) {
-          filteredUsers = filteredUsers.filter(user => user.userType === userType);
+        if (url === '/users') {
+          const { userType, name, email, branch, createdAt } = response.config.params || {};
+          let filteredUsers = [...mockUsers];
+          
+          if (userType) filteredUsers = filteredUsers.filter(user => user.userType === userType);
+          if (name) filteredUsers = filteredUsers.filter(user => user.name.toLowerCase().includes(name.toLowerCase()));
+          if (email) filteredUsers = filteredUsers.filter(user => user.email.toLowerCase().includes(email.toLowerCase()));
+          if (branch) filteredUsers = filteredUsers.filter(user => user.branchId === branch);
+          if (createdAt) filteredUsers = filteredUsers.filter(user => user.createdAt === createdAt);
+          
+          mockResponse.data = filteredUsers;
+        } else {
+          const userId = url.split('/')[2];
+          mockResponse.data = mockUsers.find(u => u.id === userId);
         }
-        if (name) {
-          filteredUsers = filteredUsers.filter(user => 
-            user.name.toLowerCase().includes(name.toLowerCase())
-          );
-        }
-        if (email) {
-          filteredUsers = filteredUsers.filter(user => 
-            user.email.toLowerCase().includes(email.toLowerCase())
-          );
-        }
-        if (branch) {
-          filteredUsers = filteredUsers.filter(user => user.branchId === branch);
-        }
-        if (createdAt) {
-          filteredUsers = filteredUsers.filter(user => user.createdAt === createdAt);
-        }
-        
-        return { ...response, data: filteredUsers };
-      }
-      if (method === 'post') {
+      } else if (method === 'post') {
         const newUser = {
           id: (mockUsers.length + 1).toString(),
           ...JSON.parse(response.config.data),
@@ -277,14 +231,25 @@ axiosClient.interceptors.response.use(
           branch: mockBranches.find(b => b.id === JSON.parse(response.config.data).branchId)
         };
         mockUsers.push(newUser);
-        return { ...response, data: newUser };
-      }
-      if (method === 'delete') {
+        mockResponse.data = newUser;
+      } else if (method === 'put') {
+        const userId = url.split('/')[2];
+        const userIndex = mockUsers.findIndex(u => u.id === userId);
+        if (userIndex !== -1) {
+          const updatedUser = {
+            ...mockUsers[userIndex],
+            ...JSON.parse(response.config.data),
+            branch: mockBranches.find(b => b.id === JSON.parse(response.config.data).branchId)
+          };
+          mockUsers[userIndex] = updatedUser;
+          mockResponse.data = updatedUser;
+        }
+      } else if (method === 'delete') {
         const userId = url.split('/')[2];
         const userIndex = mockUsers.findIndex(u => u.id === userId);
         if (userIndex !== -1) {
           mockUsers.splice(userIndex, 1);
-          return { ...response, data: { message: 'User deleted successfully' } };
+          mockResponse.data = { message: 'User deleted successfully' };
         }
       }
     }
@@ -295,7 +260,7 @@ axiosClient.interceptors.response.use(
       return { ...response, data: mockProducts };
     }
 
-    return response;
+    return mockResponse;
   },
   async (error) => {
     if (error.response && error.response.status === 401) {
