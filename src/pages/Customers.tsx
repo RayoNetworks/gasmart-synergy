@@ -27,8 +27,6 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { axiosClient } from "@/axios";
 import { Edit, Eye, Package, Trash } from "lucide-react";
 
 interface Customer {
@@ -39,43 +37,47 @@ interface Customer {
   address: string;
 }
 
+// Mock data
+const mockCustomers: Customer[] = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john@example.com",
+    phone: "+234 123 4567",
+    address: "123 Main St, Lagos",
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "jane@example.com",
+    phone: "+234 987 6543",
+    address: "456 Oak Ave, Abuja",
+  },
+  {
+    id: "3",
+    name: "Timothy Avell",
+    email: "tim@example.com",
+    phone: "+234 555 1234",
+    address: "789 Pine Rd, Port Harcourt",
+  },
+];
+
 const Customers = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewSheetOpen, setIsViewSheetOpen] = useState(false);
 
-  const { data: customers, isLoading } = useQuery({
-    queryKey: ["customers"],
-    queryFn: async () => {
-      const response = await axiosClient.get("/customers");
-      return response.data;
-    },
-  });
-
   const handleDelete = async (customerId: string) => {
-    try {
-      await axiosClient.delete(`/customers/${customerId}`);
-      toast({
-        title: "Success",
-        description: "Customer deleted successfully",
-      });
-      queryClient.invalidateQueries({ queryKey: ["customers"] });
-      setIsDeleteDialogOpen(false);
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete customer",
-      });
-    }
+    // Mock delete functionality
+    console.log("Deleting customer:", customerId);
+    toast({
+      title: "Success",
+      description: "Customer deleted successfully",
+    });
+    setIsDeleteDialogOpen(false);
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="container mx-auto py-10">
@@ -92,7 +94,7 @@ const Customers = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {customers?.map((customer: Customer) => (
+            {mockCustomers.map((customer) => (
               <TableRow key={customer.id}>
                 <TableCell>{customer.name}</TableCell>
                 <TableCell>{customer.email}</TableCell>
