@@ -15,6 +15,8 @@ import EditBranch from "./pages/EditBranch";
 import CreateBranch from "./pages/CreateBranch";
 import Locations from "./pages/Locations";
 import UserList from "./pages/UserList";
+import CreateStaff from "./pages/CreateStaff";
+import Staff from "./pages/Staff";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>

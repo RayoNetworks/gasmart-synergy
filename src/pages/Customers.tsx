@@ -58,7 +58,7 @@ const Customers = () => {
       const response = await axiosClient.get("/customers");
 
       console.log("Fetched customers:", response.data);
-      return response.data;
+      return response.data ?? [];
 
     },
   });
