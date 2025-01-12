@@ -12,6 +12,12 @@ const mockCustomers = [
     email: "john@example.com",
     phone: "+234 123 4567",
     address: "123 Main St, Lagos",
+    branchId: "1",
+    branch: {
+      id: "1",
+      name: "Main Branch",
+      address: "123 Main Street, Lagos",
+    }
   },
   {
     id: "2",
@@ -19,6 +25,12 @@ const mockCustomers = [
     email: "jane@example.com",
     phone: "+234 987 6543",
     address: "456 Oak Ave, Abuja",
+    branchId: "2",
+    branch: {
+      id: "2",
+      name: "Port Harcourt Branch",
+      address: "456 Marina Road, Port Harcourt",
+    }
   },
   {
     id: "3",
@@ -26,6 +38,12 @@ const mockCustomers = [
     email: "tim@example.com",
     phone: "+234 555 1234",
     address: "789 Pine Rd, Port Harcourt",
+    branchId: "3",
+    branch: {
+      id: "3",
+      name: "Abuja Branch",
+      address: "789 Capital Way, Abuja",
+    }
   },
 ];
 
@@ -106,7 +124,7 @@ axiosClient.interceptors.request.use(
 
 // Mock API response interceptor
 axiosClient.interceptors.response.use(
-  (response: AxiosResponse<any, any>) => {
+  async (response: AxiosResponse<any, any>) => {
     const url = response.config.url;
     const method = response.config.method;
 
@@ -153,11 +171,11 @@ axiosClient.interceptors.response.use(
     if (url?.startsWith('/customers')) {
       if (method === 'get') {
         if (url === '/customers') {
-          return { data: mockCustomers };
+          return { ...response, data: mockCustomers };
         }
         const customerId = url.split('/')[2];
         const customer = mockCustomers.find(c => c.id === customerId);
-        return { data: customer };
+        return { ...response, data: customer };
       }
       if (method === 'put') {
         const customerId = url.split('/')[2];
@@ -181,7 +199,7 @@ axiosClient.interceptors.response.use(
     // Handle customer products requests
     if (url?.startsWith('/customer-products')) {
       const customerId = url.split('/')[2];
-      return { data: mockProducts };
+      return { ...response, data: mockProducts };
     }
 
     return response;
