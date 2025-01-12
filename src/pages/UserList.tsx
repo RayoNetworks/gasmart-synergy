@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Eye, Pencil, Trash2, GitBranch } from "lucide-react";
+import { Calendar, Eye, Pencil, Trash2, GitBranch, RotateCcw } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -36,7 +36,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   Sheet,
   SheetContent,
@@ -101,10 +101,25 @@ const UserList = () => {
     navigate(`/admin/branch?id=${branchId}`);
   };
 
+  const handleReset = () => {
+    setSelectedBranch("");
+    setSelectedUserType("");
+    setSelectedDate(undefined);
+    refetch();
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">User List</h1>
+        <Button 
+          variant="outline" 
+          onClick={handleReset}
+          className="flex items-center gap-2"
+        >
+          <RotateCcw className="h-4 w-4" />
+          Reset Filters
+        </Button>
       </div>
 
       {/* Filters */}
