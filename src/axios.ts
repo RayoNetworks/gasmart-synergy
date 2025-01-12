@@ -244,20 +244,40 @@ axiosClient.interceptors.response.use(
     // Handle user-related requests
     if (url?.startsWith('/users')) {
       if (method === 'get') {
-        const { branch, userType, createdAt } = response.config.params || {};
+        const { userType, name, email, branch, createdAt } = response.config.params || {};
         let filteredUsers = [...mockUsers];
         
-        if (branch) {
-          filteredUsers = filteredUsers.filter(user => user.branchId === branch);
-        }
         if (userType) {
           filteredUsers = filteredUsers.filter(user => user.userType === userType);
+        }
+        if (name) {
+          filteredUsers = filteredUsers.filter(user => 
+            user.name.toLowerCase().includes(name.toLowerCase())
+          );
+        }
+        if (email) {
+          filteredUsers = filteredUsers.filter(user => 
+            user.email.toLowerCase().includes(email.toLowerCase())
+          );
+        }
+        if (branch) {
+          filteredUsers = filteredUsers.filter(user => user.branchId === branch);
         }
         if (createdAt) {
           filteredUsers = filteredUsers.filter(user => user.createdAt === createdAt);
         }
         
         return { ...response, data: filteredUsers };
+      }
+      if (method === 'post') {
+        const newUser = {
+          id: (mockUsers.length + 1).toString(),
+          ...JSON.parse(response.config.data),
+          createdAt: new Date().toISOString().split('T')[0],
+          branch: mockBranches.find(b => b.id === JSON.parse(response.config.data).branchId)
+        };
+        mockUsers.push(newUser);
+        return { ...response, data: newUser };
       }
       if (method === 'delete') {
         const userId = url.split('/')[2];
