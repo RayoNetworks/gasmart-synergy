@@ -17,6 +17,7 @@ import Locations from "./pages/Locations";
 import UserList from "./pages/UserList";
 import Staff from "./pages/Staff";
 import CreateStaff from "./pages/CreateStaff";
+import EditStaff from "./pages/EditStaff";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -35,6 +36,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="crm/customers/:id/products" element={<CustomerProducts />} />
     <Route path="crm/staff" element={<Staff />} />
     <Route path="crm/staff/create" element={<CreateStaff />} />
+    <Route path="crm/staff/:id/edit" element={<EditStaff />} />
     <Route path="locations" element={<Locations />} />
     <Route path="branch" element={<Branch />} />
     <Route path="branch/create" element={<CreateBranch />} />
