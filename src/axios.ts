@@ -106,7 +106,7 @@ axiosClient.interceptors.request.use(
 
 // Mock API response interceptor
 axiosClient.interceptors.response.use(
-  async (response: AxiosResponse<any, any>) => {
+  (response: AxiosResponse<any, any>) => {
     const url = response.config.url;
     const method = response.config.method;
 
