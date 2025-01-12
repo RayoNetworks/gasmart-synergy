@@ -75,7 +75,7 @@ const navigation = [
     name: "CRM",
     icon: Users,
     subroutes: [
-      { name: "Customers", href: "/admin/reports?tab=crm", icon: Users },
+      { name: "Customers", href: "/admin/crm/customers", icon: Users },
       { name: "User List", href: "/admin/crm/users", icon: UserPlus },
       { name: "Staff", href: "/admin/crm/staff", icon: UserPlus },
     ],
