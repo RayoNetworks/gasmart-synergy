@@ -31,6 +31,8 @@ const getAdminRoutes = (role: Role) => (
     <Route path="crm/customers" element={<Customers />} />
     <Route path="crm/customers/:id/edit" element={<EditCustomer />} />
     <Route path="crm/customers/:id/products" element={<CustomerProducts />} />
+    <Route path="crm/staff" element={<Staff />} />
+    <Route path="crm/staff/create" element={<CreateStaff />} />
     <Route path="locations" element={<Locations />} />
     <Route path="branch" element={<Branch />} />
     <Route path="branch/create" element={<CreateBranch />} />
@@ -48,3 +50,4 @@ const getAuthRoutes = () => (
 );
 
 export { getAdminRoutes, getAuthRoutes };
+
