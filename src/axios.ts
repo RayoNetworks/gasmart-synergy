@@ -53,6 +53,39 @@ const mockProducts = [
   },
 ];
 
+const mockBranches = [
+  {
+    id: "1",
+    name: "Main Branch",
+    address: "123 Main Street, Lagos",
+    phone: "+234 801 234 5678",
+    email: "main@example.com",
+    manager: "John Doe",
+    status: "active",
+    createdAt: "2024-01-15",
+  },
+  {
+    id: "2",
+    name: "Port Harcourt Branch",
+    address: "456 Marina Road, Port Harcourt",
+    phone: "+234 802 345 6789",
+    email: "ph@example.com",
+    manager: "Jane Smith",
+    status: "active",
+    createdAt: "2024-02-01",
+  },
+  {
+    id: "3",
+    name: "Abuja Branch",
+    address: "789 Capital Way, Abuja",
+    phone: "+234 803 456 7890",
+    email: "abuja@example.com",
+    manager: "Mike Johnson",
+    status: "inactive",
+    createdAt: "2024-02-10",
+  },
+];
+
 // Create axios instance
 export const axiosClient = axios.create({
   baseURL: "",
@@ -74,10 +107,49 @@ axiosClient.interceptors.request.use(
 // Mock API response interceptor
 axiosClient.interceptors.response.use(
   async (response: AxiosResponse<any, any>) => {
-    // Mock API endpoints
     const url = response.config.url;
     const method = response.config.method;
 
+    // Handle branch-related requests
+    if (url?.startsWith('/branches')) {
+      if (method === 'get') {
+        if (url === '/branches') {
+          return { ...response, data: mockBranches };
+        }
+        const branchId = url.split('/')[2];
+        const branch = mockBranches.find(b => b.id === branchId);
+        return { ...response, data: branch };
+      }
+      if (method === 'post') {
+        const newBranch = {
+          id: (mockBranches.length + 1).toString(),
+          ...JSON.parse(response.config.data),
+          createdAt: new Date().toISOString().split('T')[0],
+          status: 'active'
+        };
+        mockBranches.push(newBranch);
+        return { ...response, data: newBranch };
+      }
+      if (method === 'put') {
+        const branchId = url.split('/')[2];
+        const updatedBranch = JSON.parse(response.config.data);
+        const index = mockBranches.findIndex(b => b.id === branchId);
+        if (index !== -1) {
+          mockBranches[index] = { ...mockBranches[index], ...updatedBranch };
+          return { ...response, data: mockBranches[index] };
+        }
+      }
+      if (method === 'delete') {
+        const branchId = url.split('/')[2];
+        const index = mockBranches.findIndex(b => b.id === branchId);
+        if (index !== -1) {
+          mockBranches.splice(index, 1);
+          return { ...response, data: { message: 'Branch deleted successfully' } };
+        }
+      }
+    }
+
+    // Handle customer-related requests
     if (url?.startsWith('/customers')) {
       if (method === 'get') {
         if (url === '/customers') {
@@ -106,6 +178,7 @@ axiosClient.interceptors.response.use(
       }
     }
 
+    // Handle customer products requests
     if (url?.startsWith('/customer-products')) {
       const customerId = url.split('/')[2];
       return { data: mockProducts };

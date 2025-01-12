@@ -10,6 +10,8 @@ import { AdminLayout, AuthLayout } from "./layout";
 import Customers from "./pages/Customers";
 import EditCustomer from "./pages/EditCustomer";
 import CustomerProducts from "./pages/CustomerProducts";
+import Branch from "./pages/Branch";
+import EditBranch from "./pages/EditBranch";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -27,6 +29,8 @@ const getAdminRoutes = (role: Role) => (
     <Route path="crm/customers/:id/edit" element={<EditCustomer />} />
     <Route path="crm/customers/:id/products" element={<CustomerProducts />} />
     <Route path="locations" element={<div>Locations</div>} />
+    <Route path="branch" element={<Branch />} />
+    <Route path="branch/:id/edit" element={<EditBranch />} />
     <Route path="settings" element={<Settings />} />
   </Route>
 );
