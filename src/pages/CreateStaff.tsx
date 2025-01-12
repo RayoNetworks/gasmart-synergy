@@ -14,10 +14,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import navigation from "@/common/navigation";
+import cashierNavigation from "@/common/navigation/cashier";
+import auditorNavigation from "@/common/navigation/auditor";
+import { Role } from "@/lib/types";
+
+type RoutePermission = {
+  route: {
+    name: string;
+    href: string;
+  };
+  permissions: {
+    create: boolean;
+    read: boolean;
+    update: boolean;
+    delete: boolean;
+  };
+};
 
 const CreateStaff = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [selectedRole, setSelectedRole] = useState<Role | "">("");
+  const [routePermissions, setRoutePermissions] = useState<RoutePermission[]>(
+    []
+  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -25,6 +48,8 @@ const CreateStaff = () => {
     phone: "",
     branchId: "",
     userType: "staff",
+    role: "",
+    permissions: [],
   });
 
   const { data: branches } = useQuery({
@@ -35,8 +60,75 @@ const CreateStaff = () => {
     },
   });
 
+  const getNavigationByRole = (role: Role) => {
+    switch (role) {
+      case "admin":
+        return navigation;
+      case "cashier":
+        return cashierNavigation;
+      case "auditor":
+        return auditorNavigation;
+      default:
+        return [];
+    }
+  };
+
+  const handleRoleChange = (role: Role) => {
+    setSelectedRole(role);
+    setFormData((prev) => ({ ...prev, role }));
+    const routes = getNavigationByRole(role).flatMap((item) =>
+      item.subroutes
+        ? item.subroutes.map((sub) => ({
+            name: sub?.name,
+            href: sub?.href,
+          }))
+        : // this is for the routes that do not have a subroutes
+          [
+            {
+              name: item?.name,
+              href: item?.href,
+            },
+          ]
+    );
+    setRoutePermissions(
+      routes.map((route) => ({
+        route,
+        permissions: {
+          create: false,
+          read: false,
+          update: false,
+          delete: false,
+        },
+      }))
+    );
+  };
+
+  const handlePermissionToggle = (
+    routeName: string,
+    permission: keyof RoutePermission["permissions"]
+  ) => {
+    console.log(routeName, permission);
+    setRoutePermissions((prev) =>
+      prev.map((rp) =>
+        rp.route?.name === routeName
+          ? {
+              ...rp,
+              permissions: {
+                ...rp.permissions,
+                [permission]: !rp.permissions[permission],
+              },
+            }
+          : rp
+      )
+    );
+  };
+
   const createMutation = useMutation({
-    mutationFn: (data: typeof formData) => axiosClient.post("/users", data),
+    mutationFn: (data: typeof formData) =>
+      axiosClient.post("/users", {
+        ...data,
+        permissions: routePermissions,
+      }),
     onSuccess: () => {
       toast({
         title: "Success",
@@ -59,7 +151,9 @@ const CreateStaff = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } }
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | { target: { name: string; value: string } }
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -80,7 +174,7 @@ const CreateStaff = () => {
         <h1 className="text-2xl font-bold">Create New Staff</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
@@ -136,7 +230,79 @@ const CreateStaff = () => {
               </SelectContent>
             </Select>
           </div>
+
+          <div className="space-y-2">
+            <Label>Role</Label>
+            <Select value={selectedRole} onValueChange={handleRoleChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="cashier">Cashier</SelectItem>
+                <SelectItem value="auditor">Auditor</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
+        {selectedRole && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold">Route Permissions</h2>
+            <div className="space-y-4">
+              {routePermissions.map((rp) => (
+                <div
+                  key={rp.route?.name}
+                  className="space-y-2 p-4 border rounded-lg"
+                >
+                  <h3 className="font-medium">{rp.route?.name}</h3>
+                  <ToggleGroup type="multiple" className="justify-start">
+                    <ToggleGroupItem
+                      value="create"
+                      aria-label="Toggle create"
+                      pressed={rp.permissions.create}
+                      onClick={() =>
+                        handlePermissionToggle(rp.route?.name, "create")
+                      }
+                    >
+                      Create
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      value="read"
+                      aria-label="Toggle read"
+                      pressed={rp.permissions.read}
+                      onClick={() =>
+                        handlePermissionToggle(rp.route?.name, "read")
+                      }
+                    >
+                      Read
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      value="update"
+                      aria-label="Toggle update"
+                      pressed={rp.permissions.update}
+                      onClick={() =>
+                        handlePermissionToggle(rp.route?.name, "update")
+                      }
+                    >
+                      Update
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      value="delete"
+                      aria-label="Toggle delete"
+                      pressed={rp.permissions.delete}
+                      onClick={() =>
+                        handlePermissionToggle(rp.route?.name, "delete")
+                      }
+                    >
+                      Delete
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-end space-x-4">
           <Button
