@@ -51,7 +51,7 @@ const Customers = () => {
     queryKey: ["customers"],
     queryFn: async () => {
       const response = await axiosClient.get("/customers");
-      return response.data;
+      return response.data ?? [];
     },
   });
 
