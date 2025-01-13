@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 
 const BranchOutlets = () => {
   const { id: branchId } = useParams();
@@ -57,6 +57,7 @@ const BranchOutlets = () => {
             <TableHead>Phone</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -77,6 +78,15 @@ const BranchOutlets = () => {
                 >
                   {outlet.status}
                 </span>
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate(`/admin/outlets/${outlet.id}/edit`)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}
