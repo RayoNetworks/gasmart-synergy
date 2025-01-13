@@ -31,6 +31,8 @@ import Managers from "./pages/Managers";
 import CreateManager from "./pages/CreateManager";
 import PumpManagement from "@/pages/PumpManagement";
 import TankManagement from "./pages/TankManagement";
+import LubricantsManagement from "./pages/LubricantsManagement";
+import FuelProducts from "./pages/FuelProducts";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -42,6 +44,8 @@ const getAdminRoutes = (role: Role) => (
     <Route path="products/create" element={<CreateProduct />} />
     <Route path="products/edit/:id" element={<CreateProduct />} />
     <Route path="products/variation" element={<ProductVariation />} />
+    <Route path="products/lubricants" element={<LubricantsManagement />} />
+    <Route path="products/fuel" element={<FuelProducts />} />
     <Route
       path="products/variation/:id/create"
       element={<CreateProductVariation />}

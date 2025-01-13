@@ -13,6 +13,50 @@ export const axiosClient = axios.create({
   },
 });
 
+// Mock data for lubricants
+const mockLubricants = [
+  {
+    id: "LUB001",
+    name: "Premium Engine Oil",
+    type: "Engine Oil",
+    viscosity: "SAE 40",
+    price: 5000,
+    stock: 150,
+    status: "In Stock",
+  },
+  {
+    id: "LUB002",
+    name: "Brake Fluid",
+    type: "Brake Oil",
+    viscosity: "DOT 4",
+    price: 2500,
+    stock: 50,
+    status: "Low Stock",
+  },
+];
+
+// Mock data for fuel products
+const mockFuelProducts = [
+  {
+    id: "FUEL001",
+    name: "Premium Motor Spirit",
+    type: "PMS",
+    price: 617,
+    stock: 5000,
+    status: "In Stock",
+    tankId: "TNK001",
+  },
+  {
+    id: "FUEL002",
+    name: "Automotive Gas Oil",
+    type: "Diesel",
+    price: 950,
+    stock: 3000,
+    status: "In Stock",
+    tankId: "TNK002",
+  },
+];
+
 // Mock API interceptor
 axiosClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig<any>) => {
@@ -36,6 +80,18 @@ axiosClient.interceptors.response.use(
     if (url === "/tanks") {
       console.log("Mocking tanks response with data:", mockTanks);
       mockResponse.data = mockTanks;
+    }
+
+    // Handle lubricants requests
+    if (url === "/lubricants") {
+      console.log("Mocking lubricants response with data:", mockLubricants);
+      mockResponse.data = mockLubricants;
+    }
+
+    // Handle fuel products requests
+    if (url === "/fuel-products") {
+      console.log("Mocking fuel products response with data:", mockFuelProducts);
+      mockResponse.data = mockFuelProducts;
     }
 
     return mockResponse;
