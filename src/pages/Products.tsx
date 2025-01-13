@@ -52,7 +52,7 @@ const Products = () => {
     }
   });
 
-  const getBranchPrice = (product, branchId) => {
+  const getBranchPrice = (product: any, branchId: string) => {
     if (product.allBranches) {
       return parseFloat(product.basePrice);
     }
