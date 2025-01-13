@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -50,6 +50,16 @@ const Outlets = () => {
   const [outletNameFilter, setOutletNameFilter] = useState(initialOutletName);
   const [branchNameFilter, setBranchNameFilter] = useState("");
   const [managerFilter, setManagerFilter] = useState("");
+  const [highlightedOutletId, setHighlightedOutletId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if there's a stored outlet ID to highlight
+    const viewOutletId = localStorage.getItem('viewOutletId');
+    if (viewOutletId) {
+      setHighlightedOutletId(viewOutletId);
+      localStorage.removeItem('viewOutletId');
+    }
+  }, []);
 
   const { data: branches } = useQuery({
     queryKey: ["branches"],
@@ -150,7 +160,14 @@ const Outlets = () => {
         </TableHeader>
         <TableBody>
           {outlets?.map((outlet: Outlet) => (
-            <TableRow key={outlet.id}>
+            <TableRow 
+              key={outlet.id}
+              className={`${
+                highlightedOutletId === outlet.id 
+                  ? "bg-blue-50 transition-colors duration-500" 
+                  : ""
+              }`}
+            >
               <TableCell>{outlet.branch.name}</TableCell>
               <TableCell>{outlet.name}</TableCell>
               <TableCell>{outlet.location}</TableCell>

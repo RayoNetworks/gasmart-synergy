@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { 
   Table,
   TableBody,
@@ -81,6 +81,7 @@ const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [searchParams] = useSearchParams();
 
   const { data: products, isLoading, refetch } = useQuery({
     queryKey: ["products"],
@@ -108,6 +109,18 @@ const Products = () => {
         description: "Failed to delete product",
       });
     }
+  };
+
+  const handleViewBranch = (branchId: string) => {
+    // Store the branch ID in localStorage to highlight it on the branch page
+    localStorage.setItem('viewBranchId', branchId);
+    navigate(`/admin/branch`);
+  };
+
+  const handleViewOutlet = (outletId: string) => {
+    // Store the outlet ID in localStorage to highlight it on the outlet page
+    localStorage.setItem('viewOutletId', outletId);
+    navigate(`/admin/outlets`);
   };
 
   if (isLoading) {
@@ -170,6 +183,12 @@ const Products = () => {
                         setIsViewModalOpen(true);
                       }}>
                         <Eye className="mr-2 h-4 w-4" /> View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewBranch(product.branch?.id)}>
+                        <Building className="mr-2 h-4 w-4" /> View Branch
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewOutlet(product.outlet?.id)}>
+                        <Store className="mr-2 h-4 w-4" /> View Outlet
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate(`/admin/products/edit/${product.id}`)}>
                         <Edit className="mr-2 h-4 w-4" /> Edit

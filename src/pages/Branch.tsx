@@ -46,21 +46,16 @@ const Branch = () => {
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [highlightedBranchId, setHighlightedBranchId] = useState<string | null>(null);
 
-  // Check if we need to show a specific branch's view modal
   useEffect(() => {
     const viewBranchId = localStorage.getItem('viewBranchId');
     if (viewBranchId) {
-      const branch = branches?.find(b => b.id === viewBranchId);
-      if (branch) {
-        setSelectedBranch(branch);
-        setShowViewModal(true);
-      }
+      setHighlightedBranchId(viewBranchId);
       localStorage.removeItem('viewBranchId');
     }
   }, []);
 
-  // Fetch branches
   const { data: branches, isLoading } = useQuery({
     queryKey: ["branches"],
     queryFn: async () => {
@@ -69,7 +64,6 @@ const Branch = () => {
     },
   });
 
-  // Delete branch mutation
   const deleteMutation = useMutation({
     mutationFn: (id: string) => axiosClient.delete(`/branches/${id}`),
     onSuccess: () => {
@@ -122,7 +116,14 @@ const Branch = () => {
         </TableHeader>
         <TableBody>
           {branches.map((branch: Branch) => (
-            <TableRow key={branch.id}>
+            <TableRow 
+              key={branch.id}
+              className={`${
+                highlightedBranchId === branch.id 
+                  ? "bg-blue-50 transition-colors duration-500" 
+                  : ""
+              }`}
+            >
               <TableCell>{branch.name}</TableCell>
               <TableCell>{branch.manager}</TableCell>
               <TableCell>{branch.phone}</TableCell>
