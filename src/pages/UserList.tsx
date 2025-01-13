@@ -89,6 +89,11 @@ const UserList = () => {
     navigate(`/admin/outlets/${outletId}`);
   };
 
+  const handleViewUserDetails = (user: any) => {
+    setSelectedUser(user);
+    setIsViewSheetOpen(true);
+  };
+
   const handleReset = () => {
     setSelectedBranch("");
     setSelectedOutlet("");
@@ -202,10 +207,7 @@ const UserList = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setIsViewSheetOpen(true);
-                          }}
+                          onClick={() => handleViewUserDetails(user)}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -215,35 +217,39 @@ const UserList = () => {
                       </HoverCardContent>
                     </HoverCard>
 
-                    <HoverCard>
-                      <HoverCardTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleViewBranch(user.branch?.id)}
-                        >
-                          <GitBranch className="h-4 w-4" />
-                        </Button>
-                      </HoverCardTrigger>
-                      <HoverCardContent className="w-fit px-2 py-1">
-                        View Branch
-                      </HoverCardContent>
-                    </HoverCard>
+                    {user.branch && (
+                      <HoverCard>
+                        <HoverCardTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewBranch(user.branch.id)}
+                          >
+                            <GitBranch className="h-4 w-4" />
+                          </Button>
+                        </HoverCardTrigger>
+                        <HoverCardContent className="w-fit px-2 py-1">
+                          View Branch
+                        </HoverCardContent>
+                      </HoverCard>
+                    )}
 
-                    <HoverCard>
-                      <HoverCardTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleViewOutlet(user.outlet?.id)}
-                        >
-                          <Store className="h-4 w-4" />
-                        </Button>
-                      </HoverCardTrigger>
-                      <HoverCardContent className="w-fit px-2 py-1">
-                        View Outlet
-                      </HoverCardContent>
-                    </HoverCard>
+                    {user.outlet && (
+                      <HoverCard>
+                        <HoverCardTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewOutlet(user.outlet.id)}
+                          >
+                            <Store className="h-4 w-4" />
+                          </Button>
+                        </HoverCardTrigger>
+                        <HoverCardContent className="w-fit px-2 py-1">
+                          View Outlet
+                        </HoverCardContent>
+                      </HoverCard>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>
