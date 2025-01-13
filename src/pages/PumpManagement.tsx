@@ -51,6 +51,16 @@ interface Pump {
   issue?: string;
   lastCalibration?: string;
   fuelFlow?: number;
+  transactions: Transaction[];
+}
+
+interface Transaction {
+  id: string;
+  time: string;
+  amount: number;
+  quantity: number;
+  attendant: string;
+  status: "completed" | "pending" | "failed";
 }
 
 const mockPumps: Pump[] = [
@@ -71,7 +81,25 @@ const mockPumps: Pump[] = [
     totalQty: 135,
     lastMaintenance: "13 Dec 06:11 PM",
     nextMaintenance: "30 Mar 12:00 PM",
-    status: "FUNCTIONING"
+    status: "FUNCTIONING",
+    transactions: [
+      {
+        id: "t1",
+        time: "10:30 AM",
+        amount: 5000,
+        quantity: 25,
+        attendant: "John Doe",
+        status: "completed"
+      },
+      {
+        id: "t2",
+        time: "11:15 AM",
+        amount: 3000,
+        quantity: 15,
+        attendant: "John Doe",
+        status: "completed"
+      }
+    ]
   },
   {
     id: "PMP003",
@@ -90,7 +118,8 @@ const mockPumps: Pump[] = [
     totalQty: 180,
     lastMaintenance: "10 Dec 03:45 PM",
     nextMaintenance: "25 Mar 12:00 PM",
-    status: "MAINTENANCE"
+    status: "MAINTENANCE",
+    transactions: []
   },
   {
     id: "PMP004",
@@ -109,7 +138,8 @@ const mockPumps: Pump[] = [
     totalQty: 0,
     lastMaintenance: "15 Dec 09:30 AM",
     nextMaintenance: "28 Mar 12:00 PM",
-    status: "OFFLINE"
+    status: "OFFLINE",
+    transactions: []
   }
 ];
 
@@ -235,7 +265,8 @@ const PumpManagement = () => {
       totalQty: 0,
       lastMaintenance: new Date().toLocaleString(),
       nextMaintenance: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString(),
-      status: "OFFLINE" as const
+      status: "OFFLINE" as const,
+      transactions: []
     };
 
     setPumps([...pumps, pump]);
