@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText, Users, ShoppingCart } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -102,6 +102,42 @@ const Dashboard = () => {
     },
   ];
 
+  // Add new summary metrics
+  const summaryMetrics = [
+    {
+      title: "Total Stock Value",
+      value: "₦15.2M",
+      change: "+12%",
+      trend: "up",
+      icon: Package,
+      description: "Current inventory value"
+    },
+    {
+      title: "Monthly Revenue",
+      value: "₦8.5M",
+      change: "+8%",
+      trend: "up",
+      icon: DollarSign,
+      description: "Revenue this month"
+    },
+    {
+      title: "Active Customers",
+      value: "1,234",
+      change: "+15%",
+      trend: "up",
+      icon: Users,
+      description: "Total active customers"
+    },
+    {
+      title: "Pending Orders",
+      value: "45",
+      change: "-5%",
+      trend: "down",
+      icon: ShoppingCart,
+      description: "Orders awaiting fulfillment"
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -123,6 +159,98 @@ const Dashboard = () => {
         </TabsList>
 
         <TabsContent value="summary" className="space-y-4">
+          {/* Summary Metrics Grid */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {summaryMetrics.map((metric, index) => (
+              <Card key={index}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+                  <metric.icon className={`h-4 w-4 ${
+                    metric.trend === "up" ? "text-green-500" : "text-red-500"
+                  }`} />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{metric.value}</div>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <span className={`${
+                      metric.trend === "up" ? "text-green-500" : "text-red-500"
+                    }`}>
+                      {metric.change}
+                    </span>
+                    {metric.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Stock Summary */}
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Stock Summary</CardTitle>
+                <CardDescription>Current inventory levels by category</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Petroleum Products</span>
+                      <span className="text-sm text-green-500">85%</span>
+                    </div>
+                    <Progress value={85} className="bg-green-100" indicatorClassName="bg-green-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">LPG Products</span>
+                      <span className="text-sm text-yellow-500">65%</span>
+                    </div>
+                    <Progress value={65} className="bg-yellow-100" indicatorClassName="bg-yellow-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Lubricants</span>
+                      <span className="text-sm text-blue-500">45%</span>
+                    </div>
+                    <Progress value={45} className="bg-blue-100" indicatorClassName="bg-blue-500" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Branch Performance</CardTitle>
+                <CardDescription>Revenue by branch this month</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Lagos Branch</p>
+                      <p className="text-sm text-muted-foreground">₦5.2M</p>
+                    </div>
+                    <span className="text-green-500 text-sm">+15%</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Abuja Branch</p>
+                      <p className="text-sm text-muted-foreground">₦3.8M</p>
+                    </div>
+                    <span className="text-green-500 text-sm">+8%</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Port Harcourt Branch</p>
+                      <p className="text-sm text-muted-foreground">₦2.9M</p>
+                    </div>
+                    <span className="text-yellow-500 text-sm">+2%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Product Stock Gauges */}
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
