@@ -409,6 +409,44 @@ axiosClient.interceptors.response.use(
 
     let mockResponse = { ...response };
 
+    // Handle outlets requests
+    if (url?.startsWith('/outlets')) {
+      if (method === 'get') {
+        if (url === '/outlets') {
+          mockResponse.data = mockOutlets;
+        } else {
+          // Get single outlet
+          const outletId = url.split('/')[2];
+          mockResponse.data = mockOutlets.find(outlet => outlet.id === outletId);
+        }
+      } else if (method === 'post') {
+        const newOutlet = {
+          id: (mockOutlets.length + 1).toString(),
+          ...JSON.parse(response.config.data),
+          status: 'active',
+          branch: mockBranches.find(
+            branch => branch.id === JSON.parse(response.config.data).branchId
+          ),
+        };
+        mockOutlets.push(newOutlet);
+        mockResponse.data = newOutlet;
+      } else if (method === 'put') {
+        const outletId = url.split('/')[2];
+        const outletIndex = mockOutlets.findIndex(outlet => outlet.id === outletId);
+        
+        if (outletIndex !== -1) {
+          const updatedData = JSON.parse(response.config.data);
+          mockOutlets[outletIndex] = {
+            ...mockOutlets[outletIndex],
+            ...updatedData,
+            branch: mockBranches.find(branch => branch.id === updatedData.branchId),
+          };
+          mockResponse.data = mockOutlets[outletIndex];
+          console.log('Updated outlet:', mockOutlets[outletIndex]);
+        }
+      }
+    }
+
     // Handle products requests
     if (url?.startsWith('/products')) {
       if (method === 'get') {
