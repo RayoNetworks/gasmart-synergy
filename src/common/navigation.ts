@@ -17,7 +17,6 @@ import {
   Settings,
   GitBranch,
   Boxes,
-  FileBarChart,
   Fuel,
   Gauge,
 } from "lucide-react";
@@ -69,11 +68,6 @@ const navigation = [
     name: "Assets",
     icon: Boxes,
     subroutes: [
-      {
-        name: "Asset Reports",
-        href: "/admin/assets/reports",
-        icon: FileBarChart,
-      },
       {
         name: "Tank Management",
         href: "/admin/assets/tanks",

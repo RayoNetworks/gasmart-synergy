@@ -67,10 +67,9 @@ const Dashboard = () => {
   ];
 
   const assetsData = [
-    { category: "Dispensers", operational: 45, maintenance: 5 },
-    { category: "Storage Tanks", operational: 28, maintenance: 2 },
-    { category: "Delivery Trucks", operational: 15, maintenance: 3 },
-    { category: "LPG Cylinders", operational: 850, maintenance: 50 },
+    { name: "Operational", value: 75 },
+    { name: "Maintenance", value: 15 },
+    { name: "Offline", value: 10 }
   ];
 
   const activityLogs = [
@@ -288,9 +287,9 @@ const Dashboard = () => {
                           <Cell 
                             key={`cell-${index}`} 
                             fill={
-                              index === 0 ? "#3b82f6" : 
-                              index === 1 ? "#f97316" : 
-                              "#6b7280"
+                              index === 0 ? "#22c55e" : 
+                              index === 1 ? "#eab308" : 
+                              "#ef4444"
                             } 
                           />
                         ))}
