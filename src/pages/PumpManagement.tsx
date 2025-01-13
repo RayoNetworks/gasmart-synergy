@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,9 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { 
   Gauge, 
   AlertCircle, 
@@ -109,17 +113,28 @@ const mockPumps: Pump[] = [
   }
 ];
 
+const addPumpSchema = z.object({
+  code: z.string().min(1, "Pump code is required"),
+  product: z.string().min(1, "Product is required"),
+  model: z.string().min(1, "Model is required"),
+  serialNo: z.string().min(1, "Serial number is required"),
+});
+
 const PumpManagement = () => {
   const [pumps, setPumps] = useState<Pump[]>(mockPumps);
   const [selectedPump, setSelectedPump] = useState<Pump | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRepairDialogOpen, setIsRepairDialogOpen] = useState(false);
   const [isAddPumpDialogOpen, setIsAddPumpDialogOpen] = useState(false);
-  const [newPump, setNewPump] = useState({
-    code: "",
-    product: "",
-    model: "",
-    serialNo: "",
+
+  const form = useForm<z.infer<typeof addPumpSchema>>({
+    resolver: zodResolver(addPumpSchema),
+    defaultValues: {
+      code: "",
+      product: "",
+      model: "",
+      serialNo: "",
+    },
   });
 
   const getStatusColor = (status: Pump["status"]) => {
@@ -203,10 +218,12 @@ const PumpManagement = () => {
     }
   };
 
-  const handleAddPump = () => {
+  const handleAddPump = (values: z.infer<typeof addPumpSchema>) => {
+    console.log("Adding new pump:", values);
+    
     const pump: Pump = {
       id: `PMP${Math.floor(Math.random() * 1000)}`,
-      ...newPump,
+      ...values,
       attendant: {
         name: "Unassigned",
         image: "/placeholder.svg"
@@ -220,13 +237,9 @@ const PumpManagement = () => {
       nextMaintenance: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString(),
       status: "OFFLINE" as const
     };
+
     setPumps([...pumps, pump]);
-    setNewPump({
-      code: "",
-      product: "",
-      model: "",
-      serialNo: "",
-    });
+    form.reset();
     setIsAddPumpDialogOpen(false);
     toast.success("New pump added successfully!");
   };
@@ -398,56 +411,82 @@ const PumpManagement = () => {
 
       <Dialog 
         open={isAddPumpDialogOpen} 
-        onOpenChange={setIsAddPumpDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            form.reset();
+          }
+          setIsAddPumpDialogOpen(open);
+        }}
       >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Pump</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="code">Pump Code</Label>
-              <Input
-                id="code"
-                value={newPump.code}
-                onChange={(e) => setNewPump({ ...newPump, code: e.target.value })}
-                placeholder="Enter pump code"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleAddPump)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pump Code</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter pump code" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="product">Product</Label>
-              <Input
-                id="product"
-                value={newPump.product}
-                onChange={(e) => setNewPump({ ...newPump, product: e.target.value })}
-                placeholder="Enter product type"
+              <FormField
+                control={form.control}
+                name="product"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Product</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter product type" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="model">Model</Label>
-              <Input
-                id="model"
-                value={newPump.model}
-                onChange={(e) => setNewPump({ ...newPump, model: e.target.value })}
-                placeholder="Enter pump model"
+              <FormField
+                control={form.control}
+                name="model"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Model</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter pump model" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="serialNo">Serial Number</Label>
-              <Input
-                id="serialNo"
-                value={newPump.serialNo}
-                onChange={(e) => setNewPump({ ...newPump, serialNo: e.target.value })}
-                placeholder="Enter serial number"
+              <FormField
+                control={form.control}
+                name="serialNo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Serial Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter serial number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddPumpDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleAddPump}>Add Pump</Button>
-          </DialogFooter>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => {
+                  form.reset();
+                  setIsAddPumpDialogOpen(false);
+                }}>
+                  Cancel
+                </Button>
+                <Button type="submit">Add Pump</Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 
