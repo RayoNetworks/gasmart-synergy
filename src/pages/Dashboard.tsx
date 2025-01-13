@@ -1,4 +1,3 @@
-<lov-code>
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText, Users, ShoppingCart, Wrench, Boxes as BoxesIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
@@ -464,4 +463,13 @@ const Dashboard = () => {
         </TabsContent>
 
         <TabsContent value="assets" className="space-y-4">
-          <div className
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Additional content for assets can be added here */}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
+
+export default Dashboard;
