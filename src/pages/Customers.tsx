@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import {
   Table,
@@ -11,16 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -28,7 +18,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { Edit, Eye, Package, Building2 } from "lucide-react";
 
 interface Customer {
@@ -47,19 +36,15 @@ interface Customer {
 
 const Customers = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isViewSheetOpen, setIsViewSheetOpen] = useState(false);
 
-  const { data: customers, isLoading } = useQuery({
+  const { data: customers = [], isLoading } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
       const response = await axiosClient.get("/customers");
-
       console.log("Fetched customers:", response.data);
       return response.data ?? [];
-
     },
   });
 
@@ -88,59 +73,67 @@ const Customers = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {customers.length > 0 && customers.map((customer: Customer) => (
-              <TableRow key={customer.id}>
-                <TableCell>{customer.name}</TableCell>
-                <TableCell>
-                  <div>
-                    <p>{customer.phone}</p>
-                    <p className="text-sm text-gray-500">{customer.email}</p>
-                  </div>
-                </TableCell>
-                <TableCell>{customer.address}</TableCell>
-                <TableCell>
-                  <div>
-                    <p>{customer.branch.name}</p>
-                    <p className="text-sm text-gray-500">{customer.branch.address}</p>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setSelectedCustomer(customer);
-                        setIsViewSheetOpen(true);
-                      }}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => navigate(`/admin/crm/customers/${customer.id}/edit`)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => navigate(`/admin/crm/customers/${customer.id}/products`)}
-                    >
-                      <Package className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleViewBranch(customer.branchId)}
-                    >
-                      <Building2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+            {Array.isArray(customers) && customers.length > 0 ? (
+              customers.map((customer: Customer) => (
+                <TableRow key={customer.id}>
+                  <TableCell>{customer.name}</TableCell>
+                  <TableCell>
+                    <div>
+                      <p>{customer.phone}</p>
+                      <p className="text-sm text-gray-500">{customer.email}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell>{customer.address}</TableCell>
+                  <TableCell>
+                    <div>
+                      <p>{customer.branch.name}</p>
+                      <p className="text-sm text-gray-500">{customer.branch.address}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedCustomer(customer);
+                          setIsViewSheetOpen(true);
+                        }}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => navigate(`/admin/crm/customers/${customer.id}/edit`)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => navigate(`/admin/crm/customers/${customer.id}/products`)}
+                      >
+                        <Package className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleViewBranch(customer.branchId)}
+                      >
+                        <Building2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No customers found
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
