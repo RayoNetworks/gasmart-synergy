@@ -112,13 +112,11 @@ const Products = () => {
   };
 
   const handleViewBranch = (branchId: string) => {
-    // Store the branch ID in localStorage to highlight it on the branch page
     localStorage.setItem('viewBranchId', branchId);
     navigate(`/admin/branch`);
   };
 
   const handleViewOutlet = (outletId: string) => {
-    // Store the outlet ID in localStorage to highlight it on the outlet page
     localStorage.setItem('viewOutletId', outletId);
     navigate(`/admin/outlets`);
   };
@@ -184,12 +182,6 @@ const Products = () => {
                       }}>
                         <Eye className="mr-2 h-4 w-4" /> View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleViewBranch(product.branch?.id)}>
-                        <Building className="mr-2 h-4 w-4" /> View Branch
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleViewOutlet(product.outlet?.id)}>
-                        <Store className="mr-2 h-4 w-4" /> View Outlet
-                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate(`/admin/products/edit/${product.id}`)}>
                         <Edit className="mr-2 h-4 w-4" /> Edit
                       </DropdownMenuItem>
@@ -199,16 +191,6 @@ const Products = () => {
                       }} className="text-red-600">
                         <Trash className="mr-2 h-4 w-4" /> Delete
                       </DropdownMenuItem>
-                      {product.branch && (
-                        <DropdownMenuItem onClick={() => navigate(`/admin/branch/${product.branch?.id}`)}>
-                          <Building className="mr-2 h-4 w-4" /> View Branch
-                        </DropdownMenuItem>
-                      )}
-                      {product.outlet && (
-                        <DropdownMenuItem onClick={() => navigate(`/admin/outlets/${product.outlet?.id}`)}>
-                          <Store className="mr-2 h-4 w-4" /> View Outlet
-                        </DropdownMenuItem>
-                      )}
                       <DropdownMenuItem onClick={() => navigate(`/admin/products/variation/${product.id}/create`)}>
                         <Layers className="mr-2 h-4 w-4" /> Create Variation
                       </DropdownMenuItem>
