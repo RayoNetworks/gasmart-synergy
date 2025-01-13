@@ -78,13 +78,16 @@ const EditStaff = () => {
     },
   });
 
+  // Modified to filter outlets by branch
   const { data: outlets } = useQuery({
     queryKey: ["outlets", formData.branchId],
     queryFn: async () => {
       if (!formData.branchId) return [];
+      console.log("Fetching outlets for branch:", formData.branchId);
       const response = await axiosClient.get("/outlets", {
         params: { branchId: formData.branchId }
       });
+      console.log("Filtered outlets:", response.data);
       return response.data;
     },
     enabled: !!formData.branchId,
@@ -159,6 +162,7 @@ const EditStaff = () => {
   };
 
   const handleBranchChange = (branchId: string) => {
+    console.log("Branch changed to:", branchId);
     setSelectedBranchId(branchId);
     setFormData(prev => ({
       ...prev,
@@ -245,7 +249,7 @@ const EditStaff = () => {
               <Separator />
               <div>
                 <Label>Status</Label>
-                <Badge variant={staff?.status === "active" ? "success" : "destructive"}>
+                <Badge variant={staff?.status === "active" ? "default" : "destructive"}>
                   {staff?.status}
                 </Badge>
               </div>
