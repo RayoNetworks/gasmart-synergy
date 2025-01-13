@@ -1,7 +1,7 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -16,6 +16,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Plus, MoreHorizontal, Eye, Edit, Trash } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -23,85 +26,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, MoreHorizontal, Eye, Edit, Trash } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 const Managers = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [managerType, setManagerType] = useState<string>("");
 
-  const { data: managers, refetch } = useQuery({
+  const handleView = (manager: any) => {
+    if (manager.managerType === "branch_manager") {
+      // Store the branch ID to trigger view modal
+      localStorage.setItem("viewBranchId", manager.branchId);
+      navigate("/admin/branch");
+    } else {
+      // Store the outlet ID to trigger view modal
+      localStorage.setItem("viewOutletId", manager.outletId);
+      navigate("/admin/outlets");
+    }
+  };
+
+  const { data: managers } = useQuery({
     queryKey: ["managers", managerType],
     queryFn: async () => {
       const response = await axiosClient.get("/managers", {
-        params: { managerType: managerType || undefined },
+        params: { type: managerType || undefined },
       });
       return response.data;
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (managerId: string) =>
-      axiosClient.delete(`/managers/${managerId}`),
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Manager deleted successfully",
-      });
-      refetch();
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to delete manager",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleView = (manager: any) => {
-    if (manager.managerType === "branch_manager") {
-      navigate(`/admin/branches/${manager.branchId}`);
-    } else {
-      navigate(`/admin/outlets/${manager.outletId}`);
-    }
-  };
-
-  const handleEdit = (manager: any) => {
-    navigate(`/admin/crm/managers/create`, { state: { manager } });
-  };
-
-  const handleDelete = (managerId: string) => {
-    deleteMutation.mutate(managerId);
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Managers</h1>
         <Button onClick={() => navigate("/admin/crm/managers/create")}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Manager
+          <Plus className="mr-2 h-4 w-4" /> Add Manager
         </Button>
       </div>
 
       <div className="flex items-center space-x-4">
-        <div className="w-[200px]">
-          <Select
-            value={managerType}
-            onValueChange={(value) => setManagerType(value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Managers</SelectItem>
-              <SelectItem value="branch_manager">Branch Managers</SelectItem>
-              <SelectItem value="outlet_manager">Outlet Managers</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Select value={managerType} onValueChange={setManagerType}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Managers</SelectItem>
+            <SelectItem value="branch_manager">Branch Managers</SelectItem>
+            <SelectItem value="outlet_manager">Outlet Managers</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <Table>
@@ -134,7 +106,7 @@ const Managers = () => {
               <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" className="h-8 w-8 p-0">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -143,14 +115,15 @@ const Managers = () => {
                       <Eye className="mr-2 h-4 w-4" />
                       View {manager.managerType === "branch_manager" ? "Branch" : "Outlet"}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleEdit(manager)}>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        navigate(`/admin/crm/managers/create?id=${manager.id}`)
+                      }
+                    >
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-red-600"
-                      onClick={() => handleDelete(manager.id)}
-                    >
+                    <DropdownMenuItem className="text-red-600">
                       <Trash className="mr-2 h-4 w-4" />
                       Delete
                     </DropdownMenuItem>

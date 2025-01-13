@@ -260,40 +260,28 @@ const CreateStaff = () => {
                     <ToggleGroupItem
                       value="create"
                       aria-label="Toggle create"
-                      pressed={rp.permissions.create}
-                      onClick={() =>
-                        handlePermissionToggle(rp.route?.name, "create")
-                      }
+                      onClick={() => handlePermissionToggle(rp.route?.name, "create")}
                     >
                       Create
                     </ToggleGroupItem>
                     <ToggleGroupItem
                       value="read"
                       aria-label="Toggle read"
-                      pressed={rp.permissions.read}
-                      onClick={() =>
-                        handlePermissionToggle(rp.route?.name, "read")
-                      }
+                      onClick={() => handlePermissionToggle(rp.route?.name, "read")}
                     >
                       Read
                     </ToggleGroupItem>
                     <ToggleGroupItem
                       value="update"
                       aria-label="Toggle update"
-                      pressed={rp.permissions.update}
-                      onClick={() =>
-                        handlePermissionToggle(rp.route?.name, "update")
-                      }
+                      onClick={() => handlePermissionToggle(rp.route?.name, "update")}
                     >
                       Update
                     </ToggleGroupItem>
                     <ToggleGroupItem
                       value="delete"
                       aria-label="Toggle delete"
-                      pressed={rp.permissions.delete}
-                      onClick={() =>
-                        handlePermissionToggle(rp.route?.name, "delete")
-                      }
+                      onClick={() => handlePermissionToggle(rp.route?.name, "delete")}
                     >
                       Delete
                     </ToggleGroupItem>
