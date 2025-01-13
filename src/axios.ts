@@ -3,7 +3,6 @@ import {
   refresh_token as refreshToken,
   token as Token,
 } from "./common/constants/auth";
-import { mockTanks } from "./mocks/tankData";
 
 // Create axios instance
 export const axiosClient = axios.create({
@@ -12,6 +11,56 @@ export const axiosClient = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Mock data for tanks
+const mockTanks = [
+  {
+    id: "TNK001",
+    name: "Tank 01",
+    product: "Premium Motor Spirit",
+    capacity: 50000,
+    currentLevel: 75,
+    lastDelivery: "2024-03-15",
+    status: "ACTIVE",
+    deliveryLogs: [
+      {
+        id: "DL001",
+        date: "2024-03-15",
+        quantity: 25000,
+        supplier: "PetroSupply Ltd",
+        productType: "Premium Motor Spirit",
+        status: "COMPLETED"
+      },
+      {
+        id: "DL002",
+        date: "2024-03-10",
+        quantity: 30000,
+        supplier: "PetroSupply Ltd",
+        productType: "Premium Motor Spirit",
+        status: "COMPLETED"
+      }
+    ]
+  },
+  {
+    id: "TNK002",
+    name: "Tank 02",
+    product: "Automotive Gas Oil",
+    capacity: 40000,
+    currentLevel: 45,
+    lastDelivery: "2024-03-12",
+    status: "ACTIVE",
+    deliveryLogs: [
+      {
+        id: "DL003",
+        date: "2024-03-12",
+        quantity: 20000,
+        supplier: "FuelMasters Co",
+        productType: "Automotive Gas Oil",
+        status: "COMPLETED"
+      }
+    ]
+  }
+];
 
 // Mock data for lubricants
 const mockLubricants = [
@@ -33,6 +82,15 @@ const mockLubricants = [
     stock: 50,
     status: "Low Stock",
   },
+  {
+    id: "LUB003",
+    name: "Transmission Fluid",
+    type: "Transmission Oil",
+    viscosity: "ATF",
+    price: 3500,
+    stock: 0,
+    status: "Out of Stock",
+  }
 ];
 
 // Mock data for fuel products
@@ -55,6 +113,33 @@ const mockFuelProducts = [
     status: "In Stock",
     tankId: "TNK002",
   },
+  {
+    id: "FUEL003",
+    name: "Dual Purpose Kerosene",
+    type: "DPK",
+    price: 800,
+    stock: 100,
+    status: "Low Stock",
+    tankId: "TNK003",
+  }
+];
+
+// Mock data for auth
+const mockUsers = [
+  {
+    id: "USR001",
+    name: "John Doe",
+    email: "admin@example.com",
+    role: "ADMIN",
+    priviledges: "*"
+  },
+  {
+    id: "USR002",
+    name: "Jane Smith",
+    email: "manager@example.com",
+    role: "MANAGER",
+    priviledges: ["VIEW_REPORTS", "MANAGE_INVENTORY"]
+  }
 ];
 
 // Mock API interceptor
@@ -75,6 +160,7 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
+    console.log("Mocking response for URL:", url);
 
     // Handle tanks requests
     if (url === "/tanks") {
@@ -92,6 +178,27 @@ axiosClient.interceptors.response.use(
     if (url === "/fuel-products") {
       console.log("Mocking fuel products response with data:", mockFuelProducts);
       mockResponse.data = mockFuelProducts;
+    }
+
+    // Handle auth requests
+    if (url === "/auth/logged-in") {
+      const token = localStorage.getItem(Token);
+      if (token) {
+        mockResponse.data = {
+          user: mockUsers[0] // Default to admin user for testing
+        };
+      } else {
+        mockResponse.status = 401;
+        throw new Error("Unauthorized");
+      }
+    }
+
+    if (url === "/auth/login") {
+      mockResponse.data = {
+        token: "mock-token-12345",
+        refresh_token: "mock-refresh-token-12345",
+        user: mockUsers[0]
+      };
     }
 
     return mockResponse;
