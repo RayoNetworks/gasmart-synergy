@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, Eye, User } from "lucide-react";
+import { MoreHorizontal, Eye, User, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Sales = () => {
@@ -28,6 +28,7 @@ const Sales = () => {
     queryKey: ["sales"],
     queryFn: async () => {
       const response = await axiosClient.get("/sales");
+      console.log("Fetched sales data:", response.data);
       return response.data;
     },
   });
@@ -40,6 +41,12 @@ const Sales = () => {
   const handleViewUser = (userId: string) => {
     navigate(`/admin/crm/users`);
     localStorage.setItem('viewUserId', userId);
+  };
+
+  const handleViewOutlet = (outletId: string) => {
+    navigate(`/admin/outlets`);
+    localStorage.setItem('viewOutletId', outletId);
+    console.log("Navigating to outlet:", outletId);
   };
 
   return (
@@ -63,7 +70,8 @@ const Sales = () => {
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>Branch</TableHead>
-              <TableHead>Customer</TableHead>
+              <TableHead>Outlet</TableHead>
+              <TableHead>Cashier</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Date</TableHead>
@@ -76,7 +84,13 @@ const Sales = () => {
               <TableRow key={sale.id}>
                 <TableCell>{sale.product}</TableCell>
                 <TableCell>{sale.branch.name}</TableCell>
-                <TableCell>{sale.user.name}</TableCell>
+                <TableCell>{sale.outlet?.name || "N/A"}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span>{sale.user.name}</span>
+                    <span className="text-sm text-gray-500">{sale.user.email}</span>
+                  </div>
+                </TableCell>
                 <TableCell>{sale.quantity}</TableCell>
                 <TableCell>₦{sale.amount.toFixed(2)}</TableCell>
                 <TableCell>{sale.date}</TableCell>
@@ -99,8 +113,14 @@ const Sales = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleViewUser(sale.user.id)}>
                         <User className="mr-2 h-4 w-4" />
-                        View User
+                        View Cashier
                       </DropdownMenuItem>
+                      {sale.outlet && (
+                        <DropdownMenuItem onClick={() => handleViewOutlet(sale.outlet.id)}>
+                          <Store className="mr-2 h-4 w-4" />
+                          View Outlet
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

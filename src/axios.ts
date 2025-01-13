@@ -345,11 +345,17 @@ const mockSales = [
       id: "1",
       name: "Main Branch",
     },
+    outlet: {
+      id: "1",
+      name: "Lagos Central Outlet",
+      location: "Victoria Island, Lagos",
+    },
     user: {
       id: "1",
       name: "John Doe",
       email: "john@example.com",
       phone: "+234 123 4567",
+      role: "cashier"
     }
   },
   {
@@ -363,11 +369,17 @@ const mockSales = [
       id: "2",
       name: "Port Harcourt Branch",
     },
+    outlet: {
+      id: "2",
+      name: "PH Waterfront Outlet",
+      location: "Waterfront, Port Harcourt",
+    },
     user: {
       id: "2",
       name: "Jane Smith",
       email: "jane@example.com",
       phone: "+234 987 6543",
+      role: "cashier"
     }
   },
   {
@@ -381,11 +393,17 @@ const mockSales = [
       id: "3",
       name: "Abuja Branch",
     },
+    outlet: {
+      id: "3",
+      name: "Abuja Central Outlet",
+      location: "Central Business District, Abuja",
+    },
     user: {
       id: "3",
       name: "Mike Johnson",
       email: "mike@example.com",
       phone: "+234 555 1234",
+      role: "cashier"
     }
   }
 ];
