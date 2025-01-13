@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Eye, Pencil, Trash2, GitBranch, RotateCcw } from "lucide-react";
+import { Calendar, Eye, Pencil, Trash2, GitBranch, RotateCcw, Store } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -48,6 +48,7 @@ const UserList = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedBranch, setSelectedBranch] = useState<string>("");
+  const [selectedOutlet, setSelectedOutlet] = useState<string>("");
   const [selectedUserType, setSelectedUserType] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
@@ -63,13 +64,23 @@ const UserList = () => {
     },
   });
 
+  // Fetch outlets for filter
+  const { data: outlets } = useQuery({
+    queryKey: ["outlets"],
+    queryFn: async () => {
+      const response = await axiosClient.get("/outlets");
+      return response.data;
+    },
+  });
+
   // Fetch users with filters
   const { data: users, refetch } = useQuery({
-    queryKey: ["users", selectedBranch, selectedUserType, selectedDate],
+    queryKey: ["users", selectedBranch, selectedOutlet, selectedUserType, selectedDate],
     queryFn: async () => {
       const response = await axiosClient.get("/users", {
         params: {
           branch: selectedBranch,
+          outlet: selectedOutlet,
           userType: selectedUserType,
           createdAt: selectedDate ? format(selectedDate, "yyyy-MM-dd") : undefined,
         },
@@ -98,11 +109,16 @@ const UserList = () => {
   };
 
   const handleViewBranch = (branchId: string) => {
-    navigate(`/admin/branch?id=${branchId}`);
+    navigate(`/admin/branch/${branchId}`);
+  };
+
+  const handleViewOutlet = (outletId: string) => {
+    navigate(`/admin/outlets/${outletId}`);
   };
 
   const handleReset = () => {
     setSelectedBranch("");
+    setSelectedOutlet("");
     setSelectedUserType("");
     setSelectedDate(undefined);
     refetch();
@@ -123,7 +139,7 @@ const UserList = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4 mb-4">
+      <div className="flex flex-wrap gap-4 mb-4">
         <Select value={selectedUserType} onValueChange={setSelectedUserType}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Select user type" />
@@ -143,6 +159,19 @@ const UserList = () => {
             {branches?.map((branch: any) => (
               <SelectItem key={branch.id} value={branch.id}>
                 {branch.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Select outlet" />
+          </SelectTrigger>
+          <SelectContent>
+            {outlets?.map((outlet: any) => (
+              <SelectItem key={outlet.id} value={outlet.id}>
+                {outlet.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -176,6 +205,7 @@ const UserList = () => {
               <TableHead>Phone</TableHead>
               <TableHead>User Type</TableHead>
               <TableHead>Branch</TableHead>
+              <TableHead>Outlet</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -188,6 +218,7 @@ const UserList = () => {
                 <TableCell>{user.phone}</TableCell>
                 <TableCell className="capitalize">{user.userType}</TableCell>
                 <TableCell>{user.branch?.name}</TableCell>
+                <TableCell>{user.outlet?.name}</TableCell>
                 <TableCell>
                   {format(new Date(user.createdAt), "PPP")}
                 </TableCell>
@@ -223,6 +254,13 @@ const UserList = () => {
                       onClick={() => handleViewBranch(user.branch?.id)}
                     >
                       <GitBranch className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleViewOutlet(user.outlet?.id)}
+                    >
+                      <Store className="h-4 w-4" />
                     </Button>
                   </div>
                 </TableCell>
@@ -274,6 +312,10 @@ const UserList = () => {
             <div>
               <h4 className="text-sm font-medium">Branch</h4>
               <p>{selectedUser?.branch?.name}</p>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium">Outlet</h4>
+              <p>{selectedUser?.outlet?.name}</p>
             </div>
             <div>
               <h4 className="text-sm font-medium">Created At</h4>
