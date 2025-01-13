@@ -22,6 +22,7 @@ import CreateStaff from "./pages/CreateStaff";
 import EditStaff from "./pages/EditStaff";
 import ProductCategories from "./pages/ProductCategories";
 import ProductVariation from "./pages/ProductVariation";
+import CreateProductVariation from "./pages/CreateProductVariation";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -33,6 +34,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="products/create" element={<CreateProduct />} />
     <Route path="products/edit/:id" element={<CreateProduct />} />
     <Route path="products/variation/:id" element={<ProductVariation />} />
+    <Route path="products/variation/:id/create" element={<CreateProductVariation />} />
     <Route path="products/categories" element={<ProductCategories />} />
     <Route path="products/variation" element={<ProductVariation/>} />
     <Route path="reports" element={<Reports />} />
