@@ -44,7 +44,6 @@ const LubricantsManagement = () => {
   });
 
   const handleAddLubricant = () => {
-    // Navigate to add lubricant form
     toast.info("Add lubricant functionality coming soon");
   };
 
@@ -105,7 +104,7 @@ const LubricantsManagement = () => {
                       lubricant.status === "Out of Stock"
                         ? "destructive"
                         : lubricant.status === "Low Stock"
-                        ? "warning"
+                        ? "secondary"
                         : "default"
                     }
                   >

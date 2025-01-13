@@ -44,7 +44,6 @@ const FuelProducts = () => {
   });
 
   const handleAddFuelProduct = () => {
-    // Navigate to add fuel product form
     toast.info("Add fuel product functionality coming soon");
   };
 
@@ -105,7 +104,7 @@ const FuelProducts = () => {
                       product.status === "Out of Stock"
                         ? "destructive"
                         : product.status === "Low Stock"
-                        ? "warning"
+                        ? "secondary"
                         : "default"
                     }
                   >

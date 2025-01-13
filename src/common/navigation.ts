@@ -19,7 +19,7 @@ import {
   Boxes,
   Fuel,
   Gauge,
-  Oil,
+  Flask,
   Droplet,
 } from "lucide-react";
 
@@ -43,7 +43,7 @@ const navigation = [
       {
         name: "Lubricants & Oils",
         href: "/admin/products/lubricants",
-        icon: Oil,
+        icon: Flask,
       },
       {
         name: "Fuel Products",
