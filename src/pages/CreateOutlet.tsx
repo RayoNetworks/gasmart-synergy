@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { useForm } from "react-hook-form";
@@ -33,15 +33,17 @@ interface OutletFormData {
 
 const CreateOutlet = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const isEditing = !!id;
+  const preSelectedBranchId = searchParams.get('branchId');
 
   const form = useForm<OutletFormData>({
     defaultValues: {
       name: "",
       location: "",
-      branchId: "",
+      branchId: preSelectedBranchId || "",
       manager: "",
       phone: "",
       email: "",
@@ -86,7 +88,11 @@ const CreateOutlet = () => {
       toast({
         title: `Outlet ${isEditing ? "updated" : "created"} successfully`,
       });
-      navigate("/admin/outlets");
+      if (preSelectedBranchId) {
+        navigate(`/admin/branch/${preSelectedBranchId}/outlets`);
+      } else {
+        navigate("/admin/outlets");
+      }
     },
     onError: () => {
       toast({
@@ -149,6 +155,7 @@ const CreateOutlet = () => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={!!preSelectedBranchId}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -215,7 +222,11 @@ const CreateOutlet = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/admin/outlets")}
+              onClick={() => 
+                preSelectedBranchId 
+                  ? navigate(`/admin/branch/${preSelectedBranchId}/outlets`)
+                  : navigate("/admin/outlets")
+              }
             >
               Cancel
             </Button>

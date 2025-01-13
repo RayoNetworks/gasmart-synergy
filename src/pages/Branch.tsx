@@ -25,7 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus, MoreHorizontal, Eye, Edit, Trash } from "lucide-react";
+import { Plus, MoreHorizontal, Eye, Edit, Trash, Store } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Branch {
@@ -155,6 +155,12 @@ const Branch = () => {
                     >
                       <Eye className="mr-2 h-4 w-4" />
                       View
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => navigate(`/admin/branch/${branch.id}/outlets`)}
+                    >
+                      <Store className="mr-2 h-4 w-4" />
+                      View Outlets
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() =>
