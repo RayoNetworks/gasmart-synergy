@@ -1,5 +1,6 @@
+<lov-code>
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText, Users, ShoppingCart, Tool, Boxes as BoxesIcon } from "lucide-react";
+import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText, Users, ShoppingCart, Wrench, Boxes as BoxesIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -160,7 +161,7 @@ const Dashboard = () => {
       value: "8",
       change: "-2",
       trend: "down",
-      icon: Tool,
+      icon: Wrench,
       description: "Assets requiring maintenance",
       onClick: () => navigate("/admin/assets/pumps"),
     },
@@ -276,7 +277,7 @@ const Dashboard = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={assetStatusData}
+                        data={assetsData}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
@@ -284,7 +285,7 @@ const Dashboard = () => {
                         paddingAngle={5}
                         dataKey="value"
                       >
-                        {assetStatusData.map((entry, index) => (
+                        {assetsData.map((entry, index) => (
                           <Cell 
                             key={`cell-${index}`} 
                             fill={
@@ -463,98 +464,4 @@ const Dashboard = () => {
         </TabsContent>
 
         <TabsContent value="assets" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Asset Status Overview</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {assetsData.map((asset, index) => (
-                    <div key={index}>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">{asset.category}</span>
-                        <span className="text-sm text-muted-foreground">
-                          {asset.operational} operational, {asset.maintenance} in maintenance
-                        </span>
-                      </div>
-                      <Progress 
-                        value={(asset.operational / (asset.operational + asset.maintenance)) * 100} 
-                        className="bg-blue-100" 
-                        indicatorClassName="bg-blue-500" 
-                      />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Maintenance Schedule</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center p-2 bg-yellow-50 rounded-lg">
-                    <AlertTriangle className="h-4 w-4 text-yellow-500 mr-2" />
-                    <div>
-                      <p className="text-sm font-medium">Dispenser #4 Maintenance</p>
-                      <p className="text-xs text-muted-foreground">Scheduled for tomorrow</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center p-2 bg-green-50 rounded-lg">
-                    <Box className="h-4 w-4 text-green-500 mr-2" />
-                    <div>
-                      <p className="text-sm font-medium">Storage Tank Inspection</p>
-                      <p className="text-xs text-muted-foreground">Completed today</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="logs" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activities</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activityLogs.map((log, index) => (
-                  <div key={index} className="flex items-start space-x-4 p-2 rounded-lg hover:bg-accent">
-                    <div className={`mt-0.5 p-1.5 rounded-full ${
-                      log.type === "update" ? "bg-blue-100" :
-                      log.type === "sale" ? "bg-green-100" :
-                      "bg-yellow-100"
-                    }`}>
-                      {log.type === "update" ? (
-                        <FileText className={`h-4 w-4 ${
-                          log.type === "update" ? "text-blue-500" :
-                          log.type === "sale" ? "text-green-500" :
-                          "text-yellow-500"
-                        }`} />
-                      ) : log.type === "sale" ? (
-                        <DollarSign className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                      )}
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">{log.action}</p>
-                      <p className="text-sm text-muted-foreground">{log.description}</p>
-                      <p className="text-xs text-muted-foreground">{log.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-};
-
-export default Dashboard;
+          <div className
