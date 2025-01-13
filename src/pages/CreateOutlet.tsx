@@ -26,7 +26,7 @@ interface OutletFormData {
   name: string;
   location: string;
   branchId: string;
-  manager: string;
+  managerId: string;
   phone: string;
   email: string;
 }
@@ -44,7 +44,7 @@ const CreateOutlet = () => {
       name: "",
       location: "",
       branchId: preSelectedBranchId || "",
-      manager: "",
+      managerId: "",
       phone: "",
       email: "",
     },
@@ -55,6 +55,18 @@ const CreateOutlet = () => {
     queryKey: ["branches"],
     queryFn: async () => {
       const response = await axiosClient.get("/branches");
+      return response.data;
+    },
+  });
+
+  // Fetch available managers (those who don't have an assigned outlet)
+  const { data: availableManagers } = useQuery({
+    queryKey: ["managers"],
+    queryFn: async () => {
+      const response = await axiosClient.get("/managers", {
+        params: { managerType: "outlet_manager", hasManager: false }
+      });
+      console.log("Available managers:", response.data);
       return response.data;
     },
   });
@@ -177,13 +189,24 @@ const CreateOutlet = () => {
 
             <FormField
               control={form.control}
-              name="manager"
+              name="managerId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Manager</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a manager" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableManagers?.map((manager: any) => (
+                        <SelectItem key={manager.id} value={manager.id}>
+                          {manager.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
