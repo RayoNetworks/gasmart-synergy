@@ -17,7 +17,9 @@ const mockCustomers = [
       id: "1",
       name: "Main Branch",
       address: "123 Main Street, Lagos",
-    }
+    },
+    createdAt: "2024-03-15",
+    status: "active"
   },
   {
     id: "2",
@@ -30,7 +32,9 @@ const mockCustomers = [
       id: "2",
       name: "Port Harcourt Branch",
       address: "456 Marina Road, Port Harcourt",
-    }
+    },
+    createdAt: "2024-03-16",
+    status: "active"
   },
   {
     id: "3",
@@ -43,7 +47,9 @@ const mockCustomers = [
       id: "3",
       name: "Abuja Branch",
       address: "789 Capital Way, Abuja",
-    }
+    },
+    createdAt: "2024-03-17",
+    status: "inactive"
   },
 ];
 
@@ -442,39 +448,50 @@ axiosClient.interceptors.response.use(
 
     let mockResponse = { ...response };
 
-    // Handle manager-related requests
-    if (url?.startsWith("/managers")) {
-      if (method === "get") {
-        const { managerType } = response.config.params || {};
-        let filteredManagers = [...mockManagers];
-        console.log(managerType);
-        if (managerType) {
-          filteredManagers = filteredManagers.filter((manager) =>
-          // this is to filter the manager based on the manager type and add a fall back, if the admin selects all.
-            managerType == "all" ? manager : manager.managerType === managerType
-          );
+    // Handle customers-related requests
+    if (url?.startsWith('/customers')) {
+      if (method === 'get') {
+        if (url === '/customers') {
+          console.log('Fetching all customers');
+          mockResponse.data = mockCustomers;
+        } else {
+          const customerId = url.split('/')[2];
+          console.log('Fetching customer with ID:', customerId);
+          mockResponse.data = mockCustomers.find(customer => customer.id === customerId);
         }
-        
-        mockResponse.data = filteredManagers;
-      } else if (method === "put") {
-        const managerId = url.split("/")[2];
-        const managerIndex = mockManagers.findIndex(m => m.id === managerId);
-        if (managerIndex !== -1) {
+      } else if (method === 'post') {
+        console.log('Creating new customer:', response.config.data);
+        const newCustomer = {
+          id: (mockCustomers.length + 1).toString(),
+          ...JSON.parse(response.config.data),
+          createdAt: new Date().toISOString().split('T')[0],
+          status: 'active',
+          branch: mockBranches.find(
+            branch => branch.id === JSON.parse(response.config.data).branchId
+          ),
+        };
+        mockCustomers.push(newCustomer);
+        mockResponse.data = newCustomer;
+      } else if (method === 'put') {
+        const customerId = url.split('/')[2];
+        console.log('Updating customer with ID:', customerId);
+        const customerIndex = mockCustomers.findIndex(c => c.id === customerId);
+        if (customerIndex !== -1) {
           const updatedData = JSON.parse(response.config.data);
-          mockManagers[managerIndex] = {
-            ...mockManagers[managerIndex],
+          mockCustomers[customerIndex] = {
+            ...mockCustomers[customerIndex],
             ...updatedData,
-            branch: updatedData.branchId ? mockBranches.find(b => b.id === updatedData.branchId) : null,
-            outlet: updatedData.outletId ? mockOutlets.find(o => o.id === updatedData.outletId) : null,
+            branch: mockBranches.find(b => b.id === updatedData.branchId),
           };
-          mockResponse.data = mockManagers[managerIndex];
+          mockResponse.data = mockCustomers[customerIndex];
         }
-      } else if (method === "delete") {
-        const managerId = url.split("/")[2];
-        const managerIndex = mockManagers.findIndex(m => m.id === managerId);
-        if (managerIndex !== -1) {
-          mockManagers.splice(managerIndex, 1);
-          mockResponse.data = { message: "Manager deleted successfully" };
+      } else if (method === 'delete') {
+        const customerId = url.split('/')[2];
+        console.log('Deleting customer with ID:', customerId);
+        const customerIndex = mockCustomers.findIndex(c => c.id === customerId);
+        if (customerIndex !== -1) {
+          mockCustomers.splice(customerIndex, 1);
+          mockResponse.data = { message: "Customer deleted successfully" };
         }
       }
     }
