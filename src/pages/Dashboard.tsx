@@ -102,7 +102,7 @@ const Dashboard = () => {
     },
   ];
 
-  // Add new summary metrics
+  // Add new summary metrics for stock and assets
   const summaryMetrics = [
     {
       title: "Total Stock Value",
@@ -135,7 +135,53 @@ const Dashboard = () => {
       trend: "down",
       icon: ShoppingCart,
       description: "Orders awaiting fulfillment"
+    },
+    {
+      title: "Low Stock Items",
+      value: "12",
+      change: "+3",
+      trend: "up",
+      icon: AlertTriangle,
+      description: "Products below reorder point"
+    },
+    {
+      title: "Active Assets",
+      value: "89%",
+      change: "+2%",
+      trend: "up",
+      icon: Box,
+      description: "Operational equipment status"
+    },
+    {
+      title: "Maintenance Due",
+      value: "8",
+      change: "-2",
+      trend: "down",
+      icon: Tool,
+      description: "Assets requiring maintenance"
+    },
+    {
+      title: "Stock Categories",
+      value: "15",
+      change: "0",
+      trend: "neutral",
+      icon: Boxes,
+      description: "Active product categories"
     }
+  ];
+
+  // Add asset status data
+  const assetStatusData = [
+    { name: "Operational", value: 85 },
+    { name: "Maintenance", value: 10 },
+    { name: "Inactive", value: 5 }
+  ];
+
+  // Add stock distribution data
+  const stockDistributionData = [
+    { name: "Optimal", value: 65 },
+    { name: "Warning", value: 25 },
+    { name: "Critical", value: 10 }
   ];
 
   return (
@@ -144,7 +190,7 @@ const Dashboard = () => {
         <div>
           <h1 className="text-3xl font-bold">Hello, Admin 👋</h1>
           <p className="text-muted-foreground">
-            Please take a quick look at the summary of your stations.
+            Here's a comprehensive overview of your business operations.
           </p>
         </div>
       </div>
@@ -166,14 +212,18 @@ const Dashboard = () => {
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
                   <metric.icon className={`h-4 w-4 ${
-                    metric.trend === "up" ? "text-green-500" : "text-red-500"
+                    metric.trend === "up" ? "text-green-500" : 
+                    metric.trend === "down" ? "text-red-500" : 
+                    "text-gray-500"
                   }`} />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{metric.value}</div>
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
                     <span className={`${
-                      metric.trend === "up" ? "text-green-500" : "text-red-500"
+                      metric.trend === "up" ? "text-green-500" : 
+                      metric.trend === "down" ? "text-red-500" : 
+                      "text-gray-500"
                     }`}>
                       {metric.change}
                     </span>
@@ -184,112 +234,84 @@ const Dashboard = () => {
             ))}
           </div>
 
-          {/* Stock Summary */}
+          {/* Stock and Asset Overview */}
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Stock Summary</CardTitle>
-                <CardDescription>Current inventory levels by category</CardDescription>
+                <CardTitle>Stock Status Overview</CardTitle>
+                <CardDescription>Current stock levels and distribution</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Petroleum Products</span>
-                      <span className="text-sm text-green-500">85%</span>
-                    </div>
-                    <Progress value={85} className="bg-green-100" indicatorClassName="bg-green-500" />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">LPG Products</span>
-                      <span className="text-sm text-yellow-500">65%</span>
-                    </div>
-                    <Progress value={65} className="bg-yellow-100" indicatorClassName="bg-yellow-500" />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Lubricants</span>
-                      <span className="text-sm text-blue-500">45%</span>
-                    </div>
-                    <Progress value={45} className="bg-blue-100" indicatorClassName="bg-blue-500" />
-                  </div>
+                <div className="h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={stockDistributionData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {stockDistributionData.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={
+                              index === 0 ? "#22c55e" : 
+                              index === 1 ? "#eab308" : 
+                              "#ef4444"
+                            } 
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Branch Performance</CardTitle>
-                <CardDescription>Revenue by branch this month</CardDescription>
+                <CardTitle>Asset Status Overview</CardTitle>
+                <CardDescription>Equipment and facility status</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">Lagos Branch</p>
-                      <p className="text-sm text-muted-foreground">₦5.2M</p>
-                    </div>
-                    <span className="text-green-500 text-sm">+15%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">Abuja Branch</p>
-                      <p className="text-sm text-muted-foreground">₦3.8M</p>
-                    </div>
-                    <span className="text-green-500 text-sm">+8%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">Port Harcourt Branch</p>
-                      <p className="text-sm text-muted-foreground">₦2.9M</p>
-                    </div>
-                    <span className="text-yellow-500 text-sm">+2%</span>
-                  </div>
+                <div className="h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={assetStatusData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {assetStatusData.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={
+                              index === 0 ? "#3b82f6" : 
+                              index === 1 ? "#f97316" : 
+                              "#6b7280"
+                            } 
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Product Stock Gauges */}
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Premium Motor Spirit</CardTitle>
-                <Fuel className="h-4 w-4 text-yellow-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">3,556.00 Ltr</div>
-                <p className="text-xs text-muted-foreground">₦15,200.00</p>
-                <Progress value={35} className="mt-2" indicatorClassName="bg-yellow-500" />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Automotive Gas Oil</CardTitle>
-                <Fuel className="h-4 w-4 text-green-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">5,076.00 Ltr</div>
-                <p className="text-xs text-muted-foreground">₦30,125.00</p>
-                <Progress value={65} className="mt-2" indicatorClassName="bg-green-500" />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Dual Purpose Kerosene</CardTitle>
-                <Fuel className="h-4 w-4 text-blue-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">75,322.00 Ltr</div>
-                <p className="text-xs text-muted-foreground">₦65,120.00</p>
-                <Progress value={85} className="mt-2" indicatorClassName="bg-blue-500" />
-              </CardContent>
-            </Card>
-          </div>
-
+          {/* Keep existing tank capacity and day closure sections */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {/* Tank Capacity Chart */}
             <Card className="col-span-2">
@@ -333,6 +355,7 @@ const Dashboard = () => {
           </div>
         </TabsContent>
 
+        {/* Keep existing tabs content */}
         <TabsContent value="sales" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
