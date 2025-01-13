@@ -76,21 +76,32 @@ const CreateOutlet = () => {
     queryKey: ["outlet", id],
     queryFn: async () => {
       if (!id) return null;
+      console.log("Fetching outlet data for ID:", id);
       const response = await axiosClient.get(`/outlets/${id}`);
+      console.log("Fetched outlet data:", response.data);
       return response.data;
     },
     enabled: isEditing,
   });
 
-  // Set form values when editing
+  // Set form values when editing and data is available
   useEffect(() => {
     if (outletData) {
-      form.reset(outletData);
+      console.log("Setting form values with outlet data:", outletData);
+      form.reset({
+        name: outletData.name,
+        location: outletData.location,
+        branchId: outletData.branchId,
+        managerId: outletData.managerId,
+        phone: outletData.phone || "",
+        email: outletData.email || "",
+      });
     }
   }, [outletData, form]);
 
   const mutation = useMutation({
     mutationFn: async (data: OutletFormData) => {
+      console.log("Submitting outlet data:", data);
       if (isEditing) {
         return axiosClient.put(`/outlets/${id}`, data);
       }
