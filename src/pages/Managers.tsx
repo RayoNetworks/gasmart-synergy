@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Plus, MoreHorizontal, Eye, Edit, Trash } from "lucide-react";
+import { Plus, MoreHorizontal, Eye, Edit, Trash, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -34,14 +34,16 @@ const Managers = () => {
 
   const handleView = (manager: any) => {
     if (manager.managerType === "branch_manager") {
-      // Store the branch ID to trigger view modal
       localStorage.setItem("viewBranchId", manager.branchId);
       navigate("/admin/branch");
     } else {
-      // Store the outlet ID to trigger view modal
       localStorage.setItem("viewOutletId", manager.outletId);
       navigate("/admin/outlets");
     }
+  };
+
+  const handleReset = () => {
+    setManagerType("");
   };
 
   const { data: managers } = useQuery({
@@ -74,6 +76,15 @@ const Managers = () => {
             <SelectItem value="outlet_manager">Outlet Managers</SelectItem>
           </SelectContent>
         </Select>
+
+        <Button 
+          variant="outline" 
+          onClick={handleReset}
+          className="flex items-center gap-2"
+        >
+          <RotateCcw className="h-4 w-4" />
+          Reset Filters
+        </Button>
       </div>
 
       <Table>
