@@ -12,6 +12,168 @@ export const axiosClient = axios.create({
   },
 });
 
+// Mock data for branches
+const mockBranches = [
+  {
+    id: "BR001",
+    name: "Main Branch",
+    address: "123 Main Street",
+    city: "Lagos",
+    state: "Lagos State",
+    status: "active",
+    createdAt: "2024-03-01"
+  },
+  {
+    id: "BR002",
+    name: "East Branch",
+    address: "45 East Road",
+    city: "Port Harcourt",
+    state: "Rivers State",
+    status: "active",
+    createdAt: "2024-03-05"
+  }
+];
+
+// Mock data for outlets
+const mockOutlets = [
+  {
+    id: "OUT001",
+    name: "Main Street Outlet",
+    location: "124 Main Street",
+    branchId: "BR001",
+    status: "active",
+    branch: mockBranches[0]
+  },
+  {
+    id: "OUT002",
+    name: "East Road Outlet",
+    location: "46 East Road",
+    branchId: "BR002",
+    status: "active",
+    branch: mockBranches[1]
+  }
+];
+
+// Mock data for managers
+const mockManagers = [
+  {
+    id: "MGR001",
+    name: "James Wilson",
+    email: "james@example.com",
+    phone: "08012345678",
+    managerType: "branch_manager",
+    branchId: "BR001",
+    status: "active"
+  },
+  {
+    id: "MGR002",
+    name: "Sarah Johnson",
+    email: "sarah@example.com",
+    phone: "08087654321",
+    managerType: "outlet_manager",
+    outletId: "OUT001",
+    status: "active"
+  }
+];
+
+// Mock data for product categories
+const mockProductCategories = [
+  {
+    id: "CAT001",
+    name: "Fuels",
+    description: "Various types of fuel products",
+    status: "active"
+  },
+  {
+    id: "CAT002",
+    name: "Lubricants",
+    description: "Engine oils and other lubricants",
+    status: "active"
+  }
+];
+
+// Mock data for products
+const mockProducts = [
+  {
+    id: "PRD001",
+    name: "Premium Motor Spirit",
+    categoryId: "CAT001",
+    description: "High-quality fuel for vehicles",
+    basePrice: 617,
+    allBranches: true,
+    status: "In Stock",
+    category: mockProductCategories[0]
+  },
+  {
+    id: "PRD002",
+    name: "Engine Oil",
+    categoryId: "CAT002",
+    description: "Premium engine lubricant",
+    basePrice: 5000,
+    allBranches: false,
+    branchPrices: [
+      { branchId: "BR001", price: 5000 },
+      { branchId: "BR002", price: 5200 }
+    ],
+    status: "In Stock",
+    category: mockProductCategories[1]
+  }
+];
+
+// Mock data for customers
+const mockCustomers = [
+  {
+    id: "CUS001",
+    name: "John Smith",
+    email: "john@example.com",
+    phone: "08011223344",
+    address: "123 Customer Street",
+    branchId: "BR001",
+    outletId: "OUT001",
+    status: "active",
+    createdAt: "2024-03-01",
+    branch: mockBranches[0],
+    outlet: mockOutlets[0]
+  }
+];
+
+// Mock data for sales
+const mockSales = [
+  {
+    id: "SL001",
+    product: "Premium Motor Spirit",
+    quantity: 50,
+    amount: 30850,
+    date: "2024-03-15",
+    status: "completed",
+    branch: mockBranches[0],
+    outlet: mockOutlets[0],
+    user: {
+      id: "USR001",
+      name: "John Doe",
+      email: "john@example.com"
+    }
+  }
+];
+
+// Mock data for sales returns
+const mockSalesReturns = [
+  {
+    id: "SR001",
+    productName: "Premium Motor Spirit",
+    quantity: 10,
+    returnDate: "2024-03-16",
+    reason: "Quality issues",
+    branch: mockBranches[0],
+    outlet: mockOutlets[0],
+    user: {
+      id: "USR001",
+      name: "John Doe",
+      email: "john@example.com"
+    }
+  }
+];
+
 // Mock data for tanks
 const mockTanks = [
   {
@@ -333,13 +495,6 @@ axiosClient.interceptors.response.use(
     if (url?.startsWith("/products")) {
       if (method === "get") {
         const {branch, } = response.config.params
-
-        // if(branch){
-        //   // then filter the products based on the selected branch.
-        //   const mockProductArr = [...mockProducts]
-        //   mockResponse.data = mockProductArr.filter((product) => branch == 'all'? product: product.allBranches.includes(branch)? product:  )
-
-        // }
         mockResponse.data = mockProducts;
 
       } else if (method === "post") {
@@ -536,8 +691,6 @@ axiosClient.interceptors.response.use(
     if (url === "/outlets") {
       mockResponse.data = mockOutlets;
     }
-
-
 
     // Handle tanks requests
     if (url === "/tanks") {
