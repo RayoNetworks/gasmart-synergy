@@ -422,6 +422,7 @@ const mockManagers = [
       address: "123 Main Street, Lagos",
     },
     createdAt: "2024-03-15",
+    status: "active"
   },
   {
     id: "2",
@@ -437,7 +438,24 @@ const mockManagers = [
       location: "Victoria Island, Lagos",
     },
     createdAt: "2024-03-16",
+    status: "active"
   },
+  {
+    id: "3",
+    name: "Michael Brown",
+    email: "michael.brown@example.com",
+    phone: "+234 803 456 7890",
+    userType: "manager",
+    managerType: "branch_manager",
+    branchId: "2",
+    branch: {
+      id: "2",
+      name: "Port Harcourt Branch",
+      address: "456 Marina Road, Port Harcourt",
+    },
+    createdAt: "2024-03-17",
+    status: "active"
+  }
 ];
 
 // Create axios instance
