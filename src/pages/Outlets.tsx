@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -10,13 +11,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Plus, Eye, Edit, Trash } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Plus, Eye, Edit, Trash, RotateCcw } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Outlet {
   id: string;
@@ -35,19 +44,57 @@ interface Outlet {
 
 const Outlets = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialOutletName = searchParams.get('outletName') || '';
 
-  const { data: outlets, isLoading } = useQuery({
-    queryKey: ["outlets"],
+  const [outletNameFilter, setOutletNameFilter] = useState(initialOutletName);
+  const [branchNameFilter, setBranchNameFilter] = useState("");
+  const [managerFilter, setManagerFilter] = useState("");
+
+  const { data: branches } = useQuery({
+    queryKey: ["branches"],
     queryFn: async () => {
-      const response = await axiosClient.get("/outlets");
-      console.log("Fetched outlets:", response.data);
+      const response = await axiosClient.get("/branches");
       return response.data;
     },
   });
 
+  const { data: outlets, isLoading } = useQuery({
+    queryKey: ["outlets", outletNameFilter, branchNameFilter, managerFilter],
+    queryFn: async () => {
+      const response = await axiosClient.get("/outlets");
+      let filteredOutlets = response.data;
+
+      if (outletNameFilter) {
+        filteredOutlets = filteredOutlets.filter((outlet: Outlet) =>
+          outlet.name.toLowerCase().includes(outletNameFilter.toLowerCase())
+        );
+      }
+
+      if (branchNameFilter) {
+        filteredOutlets = filteredOutlets.filter((outlet: Outlet) =>
+          outlet.branch.name.toLowerCase().includes(branchNameFilter.toLowerCase())
+        );
+      }
+
+      if (managerFilter) {
+        filteredOutlets = filteredOutlets.filter((outlet: Outlet) =>
+          outlet.manager.toLowerCase().includes(managerFilter.toLowerCase())
+        );
+      }
+
+      return filteredOutlets;
+    },
+  });
+
   const handleViewBranch = (branchId: string) => {
-    localStorage.setItem('viewBranchId', branchId);
-    navigate('/admin/branch');
+    navigate(`/admin/branch/${branchId}`);
+  };
+
+  const handleReset = () => {
+    setOutletNameFilter("");
+    setBranchNameFilter("");
+    setManagerFilter("");
   };
 
   if (isLoading) {
@@ -58,9 +105,35 @@ const Outlets = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Outlets</h1>
-        <Button onClick={() => navigate("/admin/outlets/create")}>
-          <Plus className="mr-2 h-4 w-4" /> Add Outlet
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleReset}>
+            <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
+          </Button>
+          <Button onClick={() => navigate("/admin/outlets/create")}>
+            <Plus className="mr-2 h-4 w-4" /> Add Outlet
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-4 mb-4">
+        <Input
+          placeholder="Filter by outlet name"
+          value={outletNameFilter}
+          onChange={(e) => setOutletNameFilter(e.target.value)}
+          className="w-[250px]"
+        />
+        <Input
+          placeholder="Filter by branch name"
+          value={branchNameFilter}
+          onChange={(e) => setBranchNameFilter(e.target.value)}
+          className="w-[250px]"
+        />
+        <Input
+          placeholder="Filter by manager name"
+          value={managerFilter}
+          onChange={(e) => setManagerFilter(e.target.value)}
+          className="w-[250px]"
+        />
       </div>
 
       <Table>
