@@ -313,120 +313,153 @@ axiosClient.interceptors.response.use(
     let mockResponse = { ...response };
 
     // Handle sales requests
-    if (url === '/sales') {
+    if (url === "/sales") {
       mockResponse.data = mockSales;
     }
 
     // Handle sales returns requests
-    if (url === '/sales-returns') {
+    if (url === "/sales-returns") {
       mockResponse.data = mockSalesReturns;
     }
 
     // Handle branch-related requests
-    if (url?.startsWith('/branches')) {
-      if (method === 'get') {
-        mockResponse.data = url === '/branches' ? mockBranches : mockBranches.find(b => b.id === url.split('/')[2]);
-      } else if (method === 'post') {
+    if (url?.startsWith("/branches")) {
+      if (method === "get") {
+        mockResponse.data =
+          url === "/branches"
+            ? mockBranches
+            : mockBranches.find((b) => b.id === url.split("/")[2]);
+      } else if (method === "post") {
         const newBranch = {
           id: (mockBranches.length + 1).toString(),
           ...JSON.parse(response.config.data),
-          createdAt: new Date().toISOString().split('T')[0],
-          status: 'active'
+          createdAt: new Date().toISOString().split("T")[0],
+          status: "active",
         };
         mockBranches.push(newBranch);
         mockResponse.data = newBranch;
-      } else if (method === 'put') {
-        const branchId = url.split('/')[2];
-        const index = mockBranches.findIndex(b => b.id === branchId);
+      } else if (method === "put") {
+        const branchId = url.split("/")[2];
+        const index = mockBranches.findIndex((b) => b.id === branchId);
         if (index !== -1) {
-          mockBranches[index] = { ...mockBranches[index], ...JSON.parse(response.config.data) };
+          mockBranches[index] = {
+            ...mockBranches[index],
+            ...JSON.parse(response.config.data),
+          };
           mockResponse.data = mockBranches[index];
         }
-      } else if (method === 'delete') {
-        const branchId = url.split('/')[2];
-        const index = mockBranches.findIndex(b => b.id === branchId);
+      } else if (method === "delete") {
+        const branchId = url.split("/")[2];
+        const index = mockBranches.findIndex((b) => b.id === branchId);
         if (index !== -1) {
           mockBranches.splice(index, 1);
-          mockResponse.data = { message: 'Branch deleted successfully' };
+          mockResponse.data = { message: "Branch deleted successfully" };
         }
       }
     }
 
     // Handle user-related requests
-    if (url?.startsWith('/users')) {
-      if (method === 'get') {
-        if (url === '/users') {
-          const { userType, name, email, branch, createdAt } = response.config.params || {};
+    if (url?.startsWith("/users")) {
+      if (method === "get") {
+        if (url === "/users") {
+          const { userType, name, email, branch, createdAt } =
+            response.config.params || {};
           let filteredUsers = [...mockUsers];
-          
-          if (userType) filteredUsers = filteredUsers.filter(user => user.userType === userType);
-          if (name) filteredUsers = filteredUsers.filter(user => user.name.toLowerCase().includes(name.toLowerCase()));
-          if (email) filteredUsers = filteredUsers.filter(user => user.email.toLowerCase().includes(email.toLowerCase()));
-          if (branch) filteredUsers = filteredUsers.filter(user => user.branchId === branch);
-          if (createdAt) filteredUsers = filteredUsers.filter(user => user.createdAt === createdAt);
-          
+
+          if (userType)
+            filteredUsers = filteredUsers.filter(
+              (user) => user.userType === userType
+            );
+          if (name)
+            filteredUsers = filteredUsers.filter((user) =>
+              user.name.toLowerCase().includes(name.toLowerCase())
+            );
+          if (email)
+            filteredUsers = filteredUsers.filter((user) =>
+              user.email.toLowerCase().includes(email.toLowerCase())
+            );
+          if (branch)
+            filteredUsers = filteredUsers.filter(
+              (user) => user.branchId === branch
+            );
+          if (createdAt)
+            filteredUsers = filteredUsers.filter(
+              (user) => user.createdAt === createdAt
+            );
+
           mockResponse.data = filteredUsers;
         } else {
-          const userId = url.split('/')[2];
-          mockResponse.data = mockUsers.find(u => u.id === userId);
+          const userId = url.split("/")[2];
+          mockResponse.data = mockUsers.find((u) => u.id === userId);
         }
-      } else if (method === 'post') {
+      } else if (method === "post") {
         const newUser = {
           id: (mockUsers.length + 1).toString(),
           ...JSON.parse(response.config.data),
-          createdAt: new Date().toISOString().split('T')[0],
-          branch: mockBranches.find(b => b.id === JSON.parse(response.config.data).branchId)
+          createdAt: new Date().toISOString().split("T")[0],
+          branch: mockBranches.find(
+            (b) => b.id === JSON.parse(response.config.data).branchId
+          ),
         };
         mockUsers.push(newUser);
         mockResponse.data = newUser;
-      } else if (method === 'put') {
-        const userId = url.split('/')[2];
-        const userIndex = mockUsers.findIndex(u => u.id === userId);
+      } else if (method === "put") {
+        const userId = url.split("/")[2];
+        const userIndex = mockUsers.findIndex((u) => u.id === userId);
         if (userIndex !== -1) {
           const updatedUser = {
             ...mockUsers[userIndex],
             ...JSON.parse(response.config.data),
-            branch: mockBranches.find(b => b.id === JSON.parse(response.config.data).branchId)
+            branch: mockBranches.find(
+              (b) => b.id === JSON.parse(response.config.data).branchId
+            ),
           };
           mockUsers[userIndex] = updatedUser;
           mockResponse.data = updatedUser;
         }
-      } else if (method === 'delete') {
-        const userId = url.split('/')[2];
-        const userIndex = mockUsers.findIndex(u => u.id === userId);
+      } else if (method === "delete") {
+        const userId = url.split("/")[2];
+        const userIndex = mockUsers.findIndex((u) => u.id === userId);
         if (userIndex !== -1) {
           mockUsers.splice(userIndex, 1);
-          mockResponse.data = { message: 'User deleted successfully' };
+          mockResponse.data = { message: "User deleted successfully" };
         }
       }
     }
 
     // Handle customer products requests
-    if (url?.startsWith('/customer-products')) {
-      const customerId = url.split('/')[2];
+    if (url?.startsWith("/customer-products")) {
+      const customerId = url.split("/")[2];
       return { ...response, data: mockProducts };
     }
 
     // Handle product creation requests
-    if (url === '/products' && method === 'post') {
-      const newProduct = {
-        id: (mockProducts.length + 1).toString(),
-        ...JSON.parse(response.config.data),
-        createdAt: new Date().toISOString().split('T')[0],
-      };
-      mockProducts.push(newProduct);
-      mockResponse.data = newProduct;
+    // mockProducts
+    if (url === "/products") {
+      if(method == 'get'){
+        console.log('products')
+       mockResponse.data = [];
+      }
+      if(method =='post'){
+        const newProduct = {
+          id: (mockProducts.length + 1).toString(),
+          ...JSON.parse(response.config.data),
+          createdAt: new Date().toISOString().split("T")[0],
+        };
+        mockProducts.push(newProduct);
+        mockResponse.data = newProduct;
+      }
     }
 
     // Handle product categories requests
-    if (url?.startsWith('/product-categories')) {
-      if (method === 'get') {
+    if (url?.startsWith("/product-categories")) {
+      if (method === "get") {
         mockResponse.data = mockProductCategories;
-      } else if (method === 'post') {
+      } else if (method === "post") {
         const newCategory = {
           id: (mockProductCategories.length + 1).toString(),
           ...JSON.parse(response.config.data),
-          createdAt: new Date().toISOString().split('T')[0],
+          createdAt: new Date().toISOString().split("T")[0],
         };
         mockProductCategories.push(newCategory);
         mockResponse.data = newCategory;

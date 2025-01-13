@@ -25,41 +25,45 @@ import { useQuery } from "@tanstack/react-query";
 const Products = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState("main");
+  const [selectedCategory, setSelectedCategory] = useState("main");
 
   // Fetch branches
-  const { data: branches } = useQuery({
-    queryKey: ['branches'],
+  const { data: branches, isLoading: isLoadingBranches } = useQuery({
+    queryKey: ["branches"],
     queryFn: async () => {
-      const response = await axiosClient.get('/branches');
+      const response = await axiosClient.get("/branches");
       return response.data;
-    }
+    },
   });
 
   // Fetch categories
-  const { data: categories } = useQuery({
-    queryKey: ['product-categories'],
+  const { data: categories, isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["product-categories"],
     queryFn: async () => {
-      const response = await axiosClient.get('/product-categories');
+      const response = await axiosClient.get("/product-categories");
       return response.data;
-    }
+    },
   });
 
   // Fetch products
-  const { data: products } = useQuery({
-    queryKey: ['products'],
+  const { data: products, isLoading: isLoadingProducts } = useQuery({
+    queryKey: ["products"],
     queryFn: async () => {
-      const response = await axiosClient.get('/products');
+      const response = await axiosClient.get("/products");
       return response.data;
-    }
+    },
   });
 
   // Filter products based on search term, branch, and category
-  const filteredProducts = products?.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesBranch = !selectedBranch || product.branchId === selectedBranch;
-    const matchesCategory = !selectedCategory || product.categoryId === selectedCategory;
+  const filteredProducts = products?.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesBranch =
+      !selectedBranch || product.branchId === selectedBranch;
+    const matchesCategory =
+      !selectedCategory || product.categoryId === selectedCategory;
     return matchesSearch && matchesBranch && matchesCategory;
   });
 
@@ -70,6 +74,8 @@ const Products = () => {
     return product.price;
   };
 
+  if (isLoadingBranches || isLoadingCategories || isLoadingProducts)
+    return <>Loading</>;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -86,7 +92,7 @@ const Products = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="md:w-1/3"
         />
-        
+
         <Select value={selectedBranch} onValueChange={setSelectedBranch}>
           <SelectTrigger className="md:w-1/3">
             <SelectValue placeholder="Filter by branch" />
@@ -131,15 +137,22 @@ const Products = () => {
             {filteredProducts?.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>{product.category?.name || 'Uncategorized'}</TableCell>
                 <TableCell>
-                  ₦{selectedBranch 
+                  {product.category?.name || "Uncategorized"}
+                </TableCell>
+                <TableCell>
+                  ₦
+                  {selectedBranch
                     ? getBranchPrice(product, selectedBranch).toFixed(2)
                     : product.price.toFixed(2)}
                 </TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>
-                  <Badge variant={product.status === "Low Stock" ? "destructive" : "default"}>
+                  <Badge
+                    variant={
+                      product.status === "Low Stock" ? "destructive" : "default"
+                    }
+                  >
                     {product.status}
                   </Badge>
                 </TableCell>

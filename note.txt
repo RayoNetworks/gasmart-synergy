@@ -1,7 +1,8 @@
 the sales returns are for product that the customer returned to the pos system. like the lubricants or oils products
 
 
-the measurement conversion , set constants by admin
+the measurement conversion , set constants by admin, this is for the stock.
+when creating a product, give the option to apply price, variate to all branch or selected branch.
 price filtering by branch, give functionality to edit product that are in a branch.
 branch creation
 staff creation
