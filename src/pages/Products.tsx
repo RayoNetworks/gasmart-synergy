@@ -95,23 +95,28 @@ const Products = () => {
     queryFn: async () => {
       const response = await axiosClient.get("/products", {
         params: {
-          // this w
           branch: selectedBranch,
-          // outlet: selectedOutlet,
         },
       });
       return response.data;
     },
   });
 
-  const getBranchPrice = (product: any, branchId: string) => {
+  const getBranchPrice = (product: any) => {
+    if (!product) return 0;
+    
     if (product.allBranches) {
-      return parseFloat(product.basePrice);
+      return parseFloat(product.basePrice || 0);
     }
-    const branchPrice = product.branchPrices.find(
-      (bp: any) => bp.branchId === branchId
-    );
-    return branchPrice ? parseFloat(branchPrice.price) : product.price;
+    
+    if (selectedBranch && selectedBranch !== "all") {
+      const branchPrice = product.branchPrices?.find(
+        (bp: any) => bp.branchId === selectedBranch
+      );
+      return branchPrice ? parseFloat(branchPrice.price) : parseFloat(product.basePrice || 0);
+    }
+    
+    return parseFloat(product.basePrice || 0);
   };
 
   const handleDelete = async () => {
@@ -137,9 +142,7 @@ const Products = () => {
 
   const handleBranchChange = (value: string) => {
     setSelectedBranch(value);
-    // this reset to all
     setSelectedOutlet("all"); // Reset outlet when branch changes
-    // this is to call the fetching of products but this time, we are passing in the selected branch.
     refetch();
   };
 
@@ -257,7 +260,7 @@ const Products = () => {
                 <TableCell>
                   ₦
                   {selectedBranch && selectedBranch !== "all"
-                    ? getBranchPrice(product, selectedBranch).toFixed(2)
+                    ? getBranchPrice(product).toFixed(2)
                     : product.price.toFixed(2)}
                 </TableCell>
                 <TableCell>{getBranchAvailability(product)}</TableCell>

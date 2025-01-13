@@ -578,10 +578,6 @@ axiosClient.interceptors.response.use(
             response.config.params || {};
           let filteredUsers = [...mockUsers];
 
-          if (userType)
-            filteredUsers = filteredUsers.filter(
-              (user) => user.userType === userType
-            );
           if (name)
             filteredUsers = filteredUsers.filter((user) =>
               user.name.toLowerCase().includes(name.toLowerCase())
@@ -590,18 +586,13 @@ axiosClient.interceptors.response.use(
             filteredUsers = filteredUsers.filter((user) =>
               user.email.toLowerCase().includes(email.toLowerCase())
             );
-          if (branch)
+          
+          // Filter by role instead of userType since that's what we have in our mock data
+          if (userType) {
             filteredUsers = filteredUsers.filter(
-              (user) => user.branchId === branch
+              (user) => user.role === userType
             );
-          if (outlet)
-            filteredUsers = filteredUsers.filter(
-              (user) => user.outletId === outlet
-            );
-          if (createdAt)
-            filteredUsers = filteredUsers.filter(
-              (user) => user.createdAt === createdAt
-            );
+          }
 
           mockResponse.data = filteredUsers;
         } else {
