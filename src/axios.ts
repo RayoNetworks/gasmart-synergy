@@ -51,53 +51,51 @@ const mockProducts = [
   {
     id: "1",
     name: "LPG Cylinder 13kg",
-    price: 60.00,
     categoryId: "3",
     category: {
       id: "3",
       name: "LPG Products"
     },
+    allBranches: false,
+    basePrice: null,
+    branchPrices: [
+      { branchId: "1", price: "60.00", categoryId: "3" },
+      { branchId: "2", price: "62.00", categoryId: "3" },
+      { branchId: "3", price: "61.50", categoryId: "3" }
+    ],
     stock: 48,
     status: "In Stock",
-    branchPrices: {
-      "1": 60.00,
-      "2": 62.00,
-      "3": 61.50
-    }
+    price: 60.00
   },
   {
     id: "2",
     name: "Diesel",
-    price: 550.50,
     categoryId: "1",
     category: {
       id: "1",
       name: "Petroleum Products"
     },
+    allBranches: true,
+    basePrice: "550.50",
+    branchPrices: [],
     stock: 2500,
     status: "In Stock",
-    branchPrices: {
-      "1": 550.50,
-      "2": 552.00,
-      "3": 551.00
-    }
+    price: 550.50
   },
   {
     id: "3",
     name: "Petrol",
-    price: 600.00,
     categoryId: "1",
     category: {
       id: "1",
       name: "Petroleum Products"
     },
+    allBranches: true,
+    basePrice: "600.00",
+    branchPrices: [],
     stock: 1800,
     status: "In Stock",
-    branchPrices: {
-      "1": 600.00,
-      "2": 602.00,
-      "3": 601.00
-    }
+    price: 600.00
   }
 ];
 
@@ -311,6 +309,28 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
+
+    // Handle products requests
+    if (url?.startsWith('/products')) {
+      if (method === 'get') {
+        mockResponse.data = mockProducts;
+      } else if (method === 'post') {
+        const newProduct = {
+          id: (mockProducts.length + 1).toString(),
+          ...JSON.parse(response.config.data),
+          status: "In Stock",
+          stock: 0,
+          price: parseFloat(JSON.parse(response.config.data).allBranches 
+            ? JSON.parse(response.config.data).basePrice 
+            : JSON.parse(response.config.data).branchPrices[0]?.price || "0"),
+          category: mockProductCategories.find(
+            cat => cat.id === JSON.parse(response.config.data).categoryId
+          )
+        };
+        mockProducts.push(newProduct);
+        mockResponse.data = newProduct;
+      }
+    }
 
     // Handle sales requests
     if (url === "/sales") {

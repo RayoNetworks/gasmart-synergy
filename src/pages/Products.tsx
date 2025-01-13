@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { axiosClient } from "@/axios";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -9,7 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
 import {
@@ -19,34 +21,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { axiosClient } from "@/axios";
-import { useQuery } from "@tanstack/react-query";
 
 const Products = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState("main");
-  const [selectedCategory, setSelectedCategory] = useState("main");
 
-  // Fetch branches
+  const [selectedBranch, setSelectedBranch] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
   const { data: branches, isLoading: isLoadingBranches } = useQuery({
     queryKey: ["branches"],
+
     queryFn: async () => {
       const response = await axiosClient.get("/branches");
       return response.data;
     },
   });
 
-  // Fetch categories
   const { data: categories, isLoading: isLoadingCategories } = useQuery({
     queryKey: ["product-categories"],
+
     queryFn: async () => {
       const response = await axiosClient.get("/product-categories");
       return response.data;
     },
   });
 
-  // Fetch products
+
   const { data: products, isLoading: isLoadingProducts } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
@@ -54,28 +55,26 @@ const Products = () => {
       return response.data;
     },
   });
+  const getBranchPrice = (product, branchId) => {
+    if (product.allBranches) {
+      return parseFloat(product.basePrice);
+    }
+    const branchPrice = product.branchPrices.find(bp => bp.branchId === branchId);
+    return branchPrice ? parseFloat(branchPrice.price) : product.price;
+  };
 
-  // Filter products based on search term, branch, and category
-  const filteredProducts = products?.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesBranch =
-      !selectedBranch || product.branchId === selectedBranch;
-    const matchesCategory =
-      !selectedCategory || product.categoryId === selectedCategory;
+  const filteredProducts = products?.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesBranch = selectedBranch === "all" || 
+      (product.allBranches || product.branchPrices.some(bp => bp.branchId === selectedBranch));
+    const matchesCategory = selectedCategory === "all" || product.categoryId === selectedCategory;
     return matchesSearch && matchesBranch && matchesCategory;
   });
 
-  const getBranchPrice = (product, branchId) => {
-    if (product.branchPrices && product.branchPrices[branchId]) {
-      return product.branchPrices[branchId];
-    }
-    return product.price;
-  };
 
   if (isLoadingBranches || isLoadingCategories || isLoadingProducts)
     return <>Loading</>;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
