@@ -21,6 +21,10 @@ import {
   Gauge,
   Beaker,
   Droplet,
+  Truck,
+  Map,
+  Bell,
+  Route,
 } from "lucide-react";
 
 const navigation = [
@@ -125,6 +129,33 @@ const navigation = [
     subroutes: [
       { name: "Outlets", href: "/admin/outlets", icon: MapPin },
       { name: "Branch", href: "/admin/branch", icon: GitBranch },
+    ],
+  },
+  {
+    header: "Fleet Management",
+    name: "Fleet",
+    icon: Truck,
+    subroutes: [
+      {
+        name: "Vehicle Tracking",
+        href: "/admin/fleet/tracking",
+        icon: Map,
+      },
+      {
+        name: "Geo-Fencing",
+        href: "/admin/fleet/geofencing",
+        icon: MapPin,
+      },
+      {
+        name: "Notifications",
+        href: "/admin/fleet/notifications",
+        icon: Bell,
+      },
+      {
+        name: "Route Planning",
+        href: "/admin/fleet/routes",
+        icon: Route,
+      },
     ],
   },
   {

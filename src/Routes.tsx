@@ -33,6 +33,10 @@ import PumpManagement from "@/pages/PumpManagement";
 import TankManagement from "./pages/TankManagement";
 import LubricantsManagement from "./pages/LubricantsManagement";
 import FuelProducts from "./pages/FuelProducts";
+import FleetTracking from "./pages/FleetTracking";
+import GeoFencing from "./pages/GeoFencing";
+import FleetNotifications from "./pages/FleetNotifications";
+import RoutePlanning from "./pages/RoutePlanning";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -77,6 +81,10 @@ const getAdminRoutes = (role: Role) => (
     <Route path="branch/:id/edit" element={<EditBranch />} />
     <Route path="branch/:id/outlets" element={<BranchOutlets />} />
     <Route path="settings" element={<Settings />} />
+    <Route path="fleet/tracking" element={<FleetTracking />} />
+    <Route path="fleet/geofencing" element={<GeoFencing />} />
+    <Route path="fleet/notifications" element={<FleetNotifications />} />
+    <Route path="fleet/routes" element={<RoutePlanning />} />
   </Route>
 );
 
