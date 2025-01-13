@@ -10,7 +10,7 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import ConfirmRole from "./pages/ConfirmRole";
 import { Role } from "./lib/types";
-import { getAdminRoutes, getAuthRoutes } from "./Routes";
+import { getAdminRoutes, getAuthRoutes, getCashierRoutes } from "./Routes";
 
 const queryClient = new QueryClient();
 
@@ -29,8 +29,9 @@ const App = () => (
           <Route path="/confirm-role" element={<ConfirmRole />} />
           {/* Role-based routes */}
           {getAdminRoutes("admin")}
-          {/* {getRoutes("cashier")}
-          {getRoutes("auditor")} */}
+          {getCashierRoutes()}
+
+          {/*{getRoutes("auditor")} */}
 
           {/* Redirect root to confirm-role */}
           <Route path="/" element={<Navigate to="/confirm-role" replace />} />

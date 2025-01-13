@@ -5,7 +5,7 @@ import CreateProduct from "@/pages/CreateProduct";
 import Reports from "@/pages/Reports";
 import Sales from "@/pages/Sales";
 import Settings from "@/pages/Settings";
-import { Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 import { ForgetPassword, Login, SetPassword } from "./pages/auth";
 import { AdminLayout, AuthLayout } from "./layout";
 import Customers from "./pages/Customers";
@@ -88,6 +88,11 @@ const getAdminRoutes = (role: Role) => (
   </Route>
 );
 
+const getCashierRoutes = () => (
+  <Route path="/cashier" element={<Navigate to={"/"} />}>
+    {/* // generate all cashier routes and pages but ask me for ui pictures inspiration first so I can clearify it for you */}
+  </Route>
+);
 const getAuthRoutes = () => (
   <Route element={<AuthLayout />}>
     <Route path="/login" element={<Login />} />
@@ -96,4 +101,4 @@ const getAuthRoutes = () => (
   </Route>
 );
 
-export { getAdminRoutes, getAuthRoutes };
+export { getAdminRoutes, getCashierRoutes, getAuthRoutes };
