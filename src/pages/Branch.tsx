@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +46,19 @@ const Branch = () => {
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // Check if we need to show a specific branch's view modal
+  useEffect(() => {
+    const viewBranchId = localStorage.getItem('viewBranchId');
+    if (viewBranchId) {
+      const branch = branches?.find(b => b.id === viewBranchId);
+      if (branch) {
+        setSelectedBranch(branch);
+        setShowViewModal(true);
+      }
+      localStorage.removeItem('viewBranchId');
+    }
+  }, []);
 
   // Fetch branches
   const { data: branches, isLoading } = useQuery({
