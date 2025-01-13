@@ -216,7 +216,8 @@ const mockUsers = [
     name: "John Doe",
     email: "john@example.com",
     phone: "+234 123 4567",
-    userType: "customer",
+    userType: "staff",
+    role: "admin",
     branchId: "1",
     outletId: "1",
     branch: {
@@ -229,14 +230,42 @@ const mockUsers = [
       name: "Lagos Central Outlet",
       location: "Victoria Island, Lagos",
     },
+    permissions: [
+      {
+        route: {
+          name: "Dashboard",
+          href: "/admin/dashboard"
+        },
+        permissions: {
+          create: true,
+          read: true,
+          update: true,
+          delete: true
+        }
+      },
+      {
+        route: {
+          name: "Products",
+          href: "/admin/products"
+        },
+        permissions: {
+          create: true,
+          read: true,
+          update: true,
+          delete: false
+        }
+      }
+    ],
     createdAt: "2024-01-15",
+    status: "active"
   },
   {
     id: "2",
     name: "Jane Smith",
     email: "jane@example.com",
     phone: "+234 987 6543",
-    userType: "working_client",
+    userType: "staff",
+    role: "cashier",
     branchId: "2",
     outletId: "2",
     branch: {
@@ -249,7 +278,22 @@ const mockUsers = [
       name: "PH Waterfront Outlet",
       location: "Waterfront, Port Harcourt",
     },
+    permissions: [
+      {
+        route: {
+          name: "Sales",
+          href: "/cashier/sales"
+        },
+        permissions: {
+          create: true,
+          read: true,
+          update: false,
+          delete: false
+        }
+      }
+    ],
     createdAt: "2024-02-01",
+    status: "active"
   },
   {
     id: "3",
@@ -257,6 +301,7 @@ const mockUsers = [
     email: "mike@example.com",
     phone: "+234 555 1234",
     userType: "staff",
+    role: "auditor",
     branchId: "3",
     outletId: "3",
     branch: {
@@ -269,8 +314,23 @@ const mockUsers = [
       name: "Abuja Central Outlet",
       location: "Central Business District, Abuja",
     },
+    permissions: [
+      {
+        route: {
+          name: "Reports",
+          href: "/auditor/reports"
+        },
+        permissions: {
+          create: false,
+          read: true,
+          update: false,
+          delete: false
+        }
+      }
+    ],
     createdAt: "2024-02-10",
-  },
+    status: "active"
+  }
 ];
 
 const mockSales = [
