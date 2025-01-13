@@ -46,10 +46,12 @@ interface DeliveryLog {
 const TankManagement = () => {
   const [selectedTab, setSelectedTab] = useState("overview");
 
-  const { data: tanks, isLoading } = useQuery({
+  const { data: tanks, isLoading, refetch } = useQuery({
     queryKey: ["tanks"],
     queryFn: async () => {
+      console.log("Fetching tanks data");
       const response = await axiosClient.get("/tanks");
+      console.log("Tanks data received:", response.data);
       return response.data;
     },
   });
@@ -61,18 +63,30 @@ const TankManagement = () => {
   };
 
   const handleDelivery = (tankId: string) => {
+    console.log("Scheduling delivery for tank:", tankId);
     toast.success("Delivery scheduled successfully");
   };
 
   const handleCalibrate = (tankId: string) => {
+    console.log("Calibrating tank:", tankId);
     toast.success("Tank calibration initiated");
   };
+
+  if (isLoading) {
+    return <div>Loading tanks data...</div>;
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Tank Management</h1>
-        <Button className="flex items-center gap-2">
+        <Button 
+          className="flex items-center gap-2"
+          onClick={() => {
+            console.log("Refreshing tanks data");
+            refetch();
+          }}
+        >
           <RefreshCw className="h-4 w-4" />
           Refresh Data
         </Button>
@@ -136,7 +150,7 @@ const TankManagement = () => {
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground">Capacity</p>
-                        <p className="font-medium">{tank.capacity} L</p>
+                        <p className="font-medium">{tank.capacity.toLocaleString()} L</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Last Delivery</p>
@@ -179,7 +193,7 @@ const TankManagement = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">{log.quantity} L</p>
+                        <p className="font-medium">{log.quantity.toLocaleString()} L</p>
                         <p className="text-sm text-muted-foreground">{log.date}</p>
                       </div>
                       <Badge
@@ -207,7 +221,9 @@ const TankManagement = () => {
               <CardTitle>Tank Analytics</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Add tank analytics content here */}
+              <div className="text-center text-muted-foreground">
+                Analytics features coming soon...
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
