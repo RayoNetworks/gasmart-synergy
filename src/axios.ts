@@ -397,6 +397,7 @@ const mockManagers = [
       name: "Main Branch",
       address: "123 Main Street, Lagos",
     },
+    createdAt: "2024-03-15",
   },
   {
     id: "2",
@@ -409,7 +410,9 @@ const mockManagers = [
     outlet: {
       id: "1",
       name: "Lagos Central Outlet",
+      location: "Victoria Island, Lagos",
     },
+    createdAt: "2024-03-16",
   },
 ];
 
@@ -440,22 +443,37 @@ axiosClient.interceptors.response.use(
     let mockResponse = { ...response };
 
     // Handle manager-related requests
-    if (url?.startsWith("/users")) {
+    if (url?.startsWith("/managers")) {
       if (method === "get") {
-        const { userType } = response.config.params || {};
-        if (userType === "manager") {
-          mockResponse.data = mockManagers;
+        const { managerType } = response.config.params || {};
+        let filteredManagers = [...mockManagers];
+        
+        if (managerType) {
+          filteredManagers = filteredManagers.filter(
+            manager => manager.managerType === managerType
+          );
         }
-      } else if (method === "post") {
-        const userData = JSON.parse(response.config.data);
-        if (userData.userType === "manager") {
-          const newManager = {
-            id: (mockManagers.length + 1).toString(),
-            ...userData,
-            createdAt: new Date().toISOString().split("T")[0],
+        
+        mockResponse.data = filteredManagers;
+      } else if (method === "put") {
+        const managerId = url.split("/")[2];
+        const managerIndex = mockManagers.findIndex(m => m.id === managerId);
+        if (managerIndex !== -1) {
+          const updatedData = JSON.parse(response.config.data);
+          mockManagers[managerIndex] = {
+            ...mockManagers[managerIndex],
+            ...updatedData,
+            branch: updatedData.branchId ? mockBranches.find(b => b.id === updatedData.branchId) : null,
+            outlet: updatedData.outletId ? mockOutlets.find(o => o.id === updatedData.outletId) : null,
           };
-          mockManagers.push(newManager);
-          mockResponse.data = newManager;
+          mockResponse.data = mockManagers[managerIndex];
+        }
+      } else if (method === "delete") {
+        const managerId = url.split("/")[2];
+        const managerIndex = mockManagers.findIndex(m => m.id === managerId);
+        if (managerIndex !== -1) {
+          mockManagers.splice(managerIndex, 1);
+          mockResponse.data = { message: "Manager deleted successfully" };
         }
       }
     }
