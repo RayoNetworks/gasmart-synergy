@@ -16,12 +16,13 @@ import {
   AlertCircle, 
   Plus, 
   MoreVertical, 
-  Tool, 
+  tool, 
   Power, 
   History,
   Droplets,
   Ban,
-  CheckCircle2
+  CheckCircle2,
+  Eye
 } from "lucide-react";
 
 interface Pump {
