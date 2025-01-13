@@ -25,10 +25,14 @@ const Login = () => {
     validationSchema: loginSchema,
     onSubmit: async (values) => {
       try {
+        console.log("Login - Submitting form with values:", values);
+        
         const response = await axiosClient.post("/auth/login", values);
+        console.log("Login - Server response:", response.data);
+        
         const { token, refresh_token } = response.data;
         
-        // Store tokens
+        // Store tokens in localStorage
         localStorage.setItem(Token, token);
         localStorage.setItem(RefreshToken, refresh_token);
         
@@ -37,8 +41,11 @@ const Login = () => {
           description: "Login successful!",
         });
         
-        navigate("/confirm-role");
+        // Navigate to confirm-role page
+        navigate("/confirm-role", { replace: true });
       } catch (error: any) {
+        console.error("Login - Error during login:", error);
+        
         toast({
           variant: "destructive",
           title: "Error",
