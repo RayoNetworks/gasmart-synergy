@@ -4,7 +4,6 @@ import {
   token as Token,
 } from "./common/constants/auth";
 
-// Create axios instance
 export const axiosClient = axios.create({
   baseURL: "",
   headers: {
@@ -100,9 +99,12 @@ const mockProducts = [
     categoryId: "CAT001",
     description: "High-quality fuel for vehicles",
     basePrice: 617,
+    price: 617,
     allBranches: true,
     status: "In Stock",
-    category: mockProductCategories[0]
+    stock: 1000,
+    category: mockProductCategories[0],
+    branchPrices: []
   },
   {
     id: "PRD002",
@@ -110,12 +112,14 @@ const mockProducts = [
     categoryId: "CAT002",
     description: "Premium engine lubricant",
     basePrice: 5000,
+    price: 5000,
     allBranches: false,
     branchPrices: [
       { branchId: "BR001", price: 5000 },
       { branchId: "BR002", price: 5200 }
     ],
     status: "In Stock",
+    stock: 500,
     category: mockProductCategories[1]
   }
 ];
@@ -174,7 +178,6 @@ const mockSalesReturns = [
   }
 ];
 
-// Mock data for tanks
 const mockTanks = [
   {
     id: "TNK001",
@@ -304,7 +307,6 @@ const mockUsers = [
   }
 ];
 
-// Mock API interceptor
 axiosClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig<any>) => {
     const token = localStorage.getItem(Token) ?? "";
