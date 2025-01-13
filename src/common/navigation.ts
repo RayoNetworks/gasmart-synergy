@@ -90,7 +90,7 @@ const navigation = [
     name: "General",
     icon: Building2,
     subroutes: [
-      { name: "Locations", href: "/admin/locations", icon: MapPin },
+      { name: "Outlets", href: "/admin/outlets", icon: MapPin },
       { name: "Branch", href: "/admin/branch", icon: GitBranch },
     ],
   },

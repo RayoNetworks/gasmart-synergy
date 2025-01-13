@@ -338,6 +338,51 @@ const mockProductCategories = [
   },
 ];
 
+const mockOutlets = [
+  {
+    id: "1",
+    name: "Lagos Central Outlet",
+    location: "Victoria Island, Lagos",
+    branchId: "1",
+    branch: {
+      id: "1",
+      name: "Main Branch",
+    },
+    manager: "John Smith",
+    phone: "+234 801 234 5678",
+    email: "lagos.central@example.com",
+    status: "active",
+  },
+  {
+    id: "2",
+    name: "PH Waterfront Outlet",
+    location: "Waterfront, Port Harcourt",
+    branchId: "2",
+    branch: {
+      id: "2",
+      name: "Port Harcourt Branch",
+    },
+    manager: "Sarah Johnson",
+    phone: "+234 802 345 6789",
+    email: "ph.waterfront@example.com",
+    status: "active",
+  },
+  {
+    id: "3",
+    name: "Abuja Central Outlet",
+    location: "Central Business District, Abuja",
+    branchId: "3",
+    branch: {
+      id: "3",
+      name: "Abuja Branch",
+    },
+    manager: "Michael Brown",
+    phone: "+234 803 456 7890",
+    email: "abuja.central@example.com",
+    status: "inactive",
+  },
+];
+
 // Create axios instance
 export const axiosClient = axios.create({
   baseURL: "",
@@ -508,12 +553,10 @@ axiosClient.interceptors.response.use(
     }
 
     // Handle product creation requests
-    // mockProducts
     if (url === "/products") {
       if(method == 'get'){
         console.log('products')
        mockResponse.data = mockProducts;
-       console.log()
       }
       if(method =='post'){
         const newProduct = {
@@ -540,6 +583,11 @@ axiosClient.interceptors.response.use(
         mockProductCategories.push(newCategory);
         mockResponse.data = newCategory;
       }
+    }
+
+    // Handle outlets requests
+    if (url === "/outlets") {
+      mockResponse.data = mockOutlets;
     }
 
     return mockResponse;
