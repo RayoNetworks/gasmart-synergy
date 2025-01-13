@@ -67,14 +67,16 @@ const Staff = () => {
     },
   });
 
-  // Fetch outlets based on selected branch
+  // Modified to filter outlets based on selected branch
   const { data: outlets } = useQuery({
     queryKey: ["outlets", selectedBranch],
     queryFn: async () => {
       if (!selectedBranch) return [];
+      console.log("Fetching outlets for branch:", selectedBranch);
       const response = await axiosClient.get("/outlets", {
         params: { branchId: selectedBranch }
       });
+      console.log("Available outlets:", response.data);
       return response.data;
     },
     enabled: !!selectedBranch,
@@ -132,8 +134,9 @@ const Staff = () => {
     refetch();
   };
 
-  const handleBranchChange = (value: string) => {
-    setSelectedBranch(value);
+  const handleBranchChange = (branchId: string) => {
+    console.log("Branch changed to:", branchId);
+    setSelectedBranch(branchId);
     setSelectedOutlet(""); // Reset outlet when branch changes
   };
 
