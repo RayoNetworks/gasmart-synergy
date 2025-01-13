@@ -253,7 +253,10 @@ const PumpManagement = () => {
     
     const pump: Pump = {
       id: `PMP${Math.floor(Math.random() * 1000)}`,
-      ...values,
+      code: values.code,  // Now including the code from form values
+      product: values.product,
+      model: values.model,
+      serialNo: values.serialNo,
       attendant: {
         name: "Unassigned",
         image: "/placeholder.svg"
