@@ -16,7 +16,7 @@ import {
   AlertCircle, 
   Plus, 
   MoreVertical, 
-  tool, 
+  Wrench, 
   Power, 
   History,
   Droplets,
@@ -244,7 +244,7 @@ const PumpManagement = () => {
                         setSelectedPump(pump);
                         setIsRepairDialogOpen(true);
                       }}>
-                        <Tool className="mr-2 h-4 w-4" />
+                        <Wrench className="mr-2 h-4 w-4" />
                         Repair Pump
                       </DropdownMenuItem>
                     )}
