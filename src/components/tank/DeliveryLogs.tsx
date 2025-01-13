@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Truck } from "lucide-react";
+import { Truck, Loader2 } from "lucide-react";
 
 interface DeliveryLog {
   id: string;
@@ -14,9 +14,18 @@ interface DeliveryLog {
 
 interface DeliveryLogsProps {
   logs: DeliveryLog[];
+  isLoading?: boolean;
 }
 
-const DeliveryLogs: React.FC<DeliveryLogsProps> = ({ logs }) => {
+const DeliveryLogs: React.FC<DeliveryLogsProps> = ({ logs, isLoading = false }) => {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>

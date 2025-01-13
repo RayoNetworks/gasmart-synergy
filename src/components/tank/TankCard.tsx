@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { AlertTriangle, MoreVertical, Truck, BarChart3 } from "lucide-react";
+import { AlertTriangle, MoreVertical, Truck, BarChart2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface TankCardProps {
@@ -54,7 +54,7 @@ const TankCard: React.FC<TankCardProps> = ({ tank }) => {
               Schedule Delivery
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleCalibrate(tank.id)}>
-              <BarChart3 className="mr-2 h-4 w-4" />
+              <BarChart2 className="mr-2 h-4 w-4" />
               Calibrate Tank
             </DropdownMenuItem>
           </DropdownMenuContent>

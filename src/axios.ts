@@ -19,6 +19,7 @@ axiosClient.interceptors.request.use(
     const token = localStorage.getItem(Token) ?? "";
     const refresh_token = localStorage.getItem(refreshToken) ?? "";
     config.headers.Authorization = `Bearer ${token} ${refresh_token}`;
+    console.log("Making request to:", config.url);
     return config;
   }
 );
@@ -33,7 +34,7 @@ axiosClient.interceptors.response.use(
 
     // Handle tanks requests
     if (url === "/tanks") {
-      console.log("Mocking tanks response");
+      console.log("Mocking tanks response with data:", mockTanks);
       mockResponse.data = mockTanks;
     }
 
