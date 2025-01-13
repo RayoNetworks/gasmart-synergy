@@ -1,12 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "@/components/ui/table";
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
 import { axiosClient } from "@/axios";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  basePrice: number;
+  price: number;
+  status: string;
+  allBranches: boolean;
+  branchPrices: Array<{
+    branchId: string;
+    price: number;
+  }>;
+  categoryId: string;
+  category: {
+    id: string;
+    name: string;
+  };
+}
+
 const Products = () => {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
   const { toast } = useToast();
@@ -14,6 +40,7 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       const response = await axiosClient.get("/products");
+      console.log("Fetched products:", response.data);
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -31,21 +58,21 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  const getBranchPrice = (product: any) => {
+  const getBranchPrice = (product: Product) => {
     if (!product) return 0;
     
     if (product.allBranches) {
-      return parseFloat(product.basePrice || 0);
+      return product.basePrice || 0;
     }
     
     if (selectedBranch && selectedBranch !== "all") {
       const branchPrice = product.branchPrices?.find(
-        (bp: any) => bp.branchId === selectedBranch
+        (bp) => bp.branchId === selectedBranch
       );
-      return branchPrice ? parseFloat(branchPrice.price) : parseFloat(product.basePrice || 0);
+      return branchPrice ? branchPrice.price : (product.basePrice || 0);
     }
     
-    return parseFloat(product.basePrice || 0);
+    return product.basePrice || 0;
   };
 
   if (loading) {
@@ -58,30 +85,35 @@ const Products = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold">Products</h1>
-      <Button onClick={() => setSelectedBranch(null)}>All Branches</Button>
-      <Table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td>{product.name}</td>
-              <td>{product.description}</td>
-              <TableCell>
-                ₦{getBranchPrice(product).toFixed(2)}
-              </TableCell>
-              <td>{product.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Products</h1>
+        <Button onClick={() => setSelectedBranch(null)}>All Branches</Button>
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.category?.name}</TableCell>
+                <TableCell>{product.description}</TableCell>
+                <TableCell>₦{getBranchPrice(product).toFixed(2)}</TableCell>
+                <TableCell>{product.status}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
