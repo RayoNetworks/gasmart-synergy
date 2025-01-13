@@ -1,28 +1,30 @@
-import { ShoppingCart, Package, Database, FileText } from "lucide-react";
+import { ShoppingCart, Package, Database, FileText, Fuel } from "lucide-react";
 
 const cashierNavigation = [
   {
-    name: "Sales",
+    name: "Point of Sale",
     icon: ShoppingCart,
-    subroutes: [
-      { name: "Sales", href: "/cashier/sales", icon: ShoppingCart },
-      { name: "Sale Return", href: "/cashier/sales/return", icon: FileText },
-      { name: "Quotation", href: "/cashier/sales/quotation", icon: FileText },
-    ],
+    href: "/cashier",
   },
   {
-    name: "Products",
-    icon: Package,
-    subroutes: [
-      { name: "Products List", href: "/cashier/products", icon: Package },
-    ],
+    name: "Sales History",
+    icon: FileText,
+    href: "/cashier/sales",
+  },
+  {
+    name: "Sales Return",
+    icon: FileText,
+    href: "/cashier/sales/return",
+  },
+  {
+    name: "Fuel Products",
+    icon: Fuel,
+    href: "/cashier/products",
   },
   {
     name: "Stock",
     icon: Database,
-    subroutes: [
-      { name: "Stock Transfer", href: "/cashier/stock/transfer", icon: Database },
-    ],
+    href: "/cashier/stock/transfer",
   },
 ];
 
