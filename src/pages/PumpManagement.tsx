@@ -1,11 +1,28 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Gauge, AlertCircle, Plus } from "lucide-react";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
+import { 
+  Gauge, 
+  AlertCircle, 
+  Plus, 
+  MoreVertical, 
+  Tool, 
+  Power, 
+  History,
+  Droplets,
+  Ban,
+  CheckCircle2
+} from "lucide-react";
 
 interface Pump {
   id: string;
@@ -25,6 +42,9 @@ interface Pump {
   lastMaintenance: string;
   nextMaintenance: string;
   status: "FUNCTIONING" | "MAINTENANCE" | "OFFLINE";
+  issue?: string;
+  lastCalibration?: string;
+  fuelFlow?: number;
 }
 
 const mockPumps: Pump[] = [
@@ -91,6 +111,7 @@ const PumpManagement = () => {
   const [pumps, setPumps] = useState<Pump[]>(mockPumps);
   const [selectedPump, setSelectedPump] = useState<Pump | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isRepairDialogOpen, setIsRepairDialogOpen] = useState(false);
 
   const getStatusColor = (status: Pump["status"]) => {
     switch (status) {
@@ -106,22 +127,78 @@ const PumpManagement = () => {
   };
 
   const getPumpIcon = (status: Pump["status"]) => {
-    return status === "FUNCTIONING" ? (
-      <div className="relative w-24 h-32">
-        <div className="absolute bottom-0 w-full h-20 bg-gray-200 rounded-t-lg">
-          <div className="absolute top-0 right-4 w-4 h-16 bg-green-500 rounded-full" />
+    if (status === "FUNCTIONING") {
+      return (
+        <div className="relative w-32 h-40">
+          <div className="absolute bottom-0 w-full h-28 bg-gradient-to-b from-blue-400 to-blue-600 rounded-t-lg shadow-lg">
+            <div className="absolute top-0 right-6 w-6 h-20 bg-green-500 rounded-full shadow-inner animate-pulse">
+              <div className="absolute top-0 w-full h-full bg-gradient-to-b from-green-400 to-green-600 rounded-full" />
+            </div>
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-20 h-3 bg-gray-800 rounded-full" />
+          </div>
+          <div className="absolute bottom-0 w-full h-6 bg-gray-800 rounded-b-lg shadow-lg" />
+          <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-green-500 rounded-full animate-ping" />
         </div>
-        <div className="absolute bottom-0 w-full h-4 bg-gray-300" />
-      </div>
-    ) : (
-      <div className="relative w-24 h-32">
-        <div className="absolute bottom-0 w-full h-20 bg-gray-200 rounded-t-lg opacity-50">
-          <div className="absolute top-0 right-4 w-4 h-16 bg-red-500 rounded-full" />
+      );
+    } else {
+      return (
+        <div className="relative w-32 h-40">
+          <div className="absolute bottom-0 w-full h-28 bg-gradient-to-b from-gray-400 to-gray-600 rounded-t-lg shadow-lg opacity-50">
+            <div className="absolute top-0 right-6 w-6 h-20 bg-red-500 rounded-full shadow-inner">
+              <div className="absolute top-0 w-full h-full bg-gradient-to-b from-red-400 to-red-600 rounded-full" />
+            </div>
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-20 h-3 bg-gray-800 rounded-full" />
+          </div>
+          <div className="absolute bottom-0 w-full h-6 bg-gray-800 rounded-b-lg shadow-lg opacity-50" />
+          <AlertCircle className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500 h-12 w-12" />
         </div>
-        <div className="absolute bottom-0 w-full h-4 bg-gray-300 opacity-50" />
-        <AlertCircle className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500 h-12 w-12" />
-      </div>
-    );
+      );
+    }
+  };
+
+  const handleRepair = (pump: Pump) => {
+    const updatedPumps = pumps.map((p) => {
+      if (p.id === pump.id) {
+        return {
+          ...p,
+          status: "FUNCTIONING" as const,
+          lastMaintenance: new Date().toLocaleString(),
+          issue: undefined,
+        };
+      }
+      return p;
+    });
+    setPumps(updatedPumps);
+    setIsRepairDialogOpen(false);
+    toast.success("Pump repaired successfully!");
+  };
+
+  const handleCalibrate = (pump: Pump) => {
+    const updatedPumps = pumps.map((p) => {
+      if (p.id === pump.id) {
+        return {
+          ...p,
+          lastCalibration: new Date().toLocaleString(),
+        };
+      }
+      return p;
+    });
+    setPumps(updatedPumps);
+    toast.success("Pump calibrated successfully!");
+  };
+
+  const handleShutdown = (pump: Pump) => {
+    const updatedPumps = pumps.map((p) => {
+      if (p.id === pump.id) {
+        return {
+          ...p,
+          status: "OFFLINE" as const,
+        };
+      }
+      return p;
+    });
+    setPumps(updatedPumps);
+    toast.info("Pump shut down");
   };
 
   return (
@@ -139,17 +216,50 @@ const PumpManagement = () => {
           <Card 
             key={pump.id} 
             className="cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => {
-              setSelectedPump(pump);
-              setIsDialogOpen(true);
-            }}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="flex items-center space-x-2">
                 <Gauge className="h-4 w-4 text-muted-foreground" />
                 <CardTitle className="text-sm font-medium">Pump {pump.code}</CardTitle>
               </div>
-              <Badge className={getStatusColor(pump.status)}>{pump.status}</Badge>
+              <div className="flex items-center gap-2">
+                <Badge className={getStatusColor(pump.status)}>{pump.status}</Badge>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => {
+                      setSelectedPump(pump);
+                      setIsDialogOpen(true);
+                    }}>
+                      <Eye className="mr-2 h-4 w-4" />
+                      View Details
+                    </DropdownMenuItem>
+                    {pump.status !== "FUNCTIONING" && (
+                      <DropdownMenuItem onClick={() => {
+                        setSelectedPump(pump);
+                        setIsRepairDialogOpen(true);
+                      }}>
+                        <Tool className="mr-2 h-4 w-4" />
+                        Repair Pump
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem onClick={() => handleCalibrate(pump)}>
+                      <Droplets className="mr-2 h-4 w-4" />
+                      Calibrate
+                    </DropdownMenuItem>
+                    {pump.status === "FUNCTIONING" && (
+                      <DropdownMenuItem onClick={() => handleShutdown(pump)}>
+                        <Power className="mr-2 h-4 w-4" />
+                        Shutdown
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="flex justify-between items-center">
@@ -191,6 +301,12 @@ const PumpManagement = () => {
                   <Label>Price</Label>
                   <div className="font-medium">₦{selectedPump.price.toFixed(2)}/Ltr</div>
                 </div>
+                {selectedPump.lastCalibration && (
+                  <div className="space-y-2">
+                    <Label>Last Calibration</Label>
+                    <div className="font-medium">{selectedPump.lastCalibration}</div>
+                  </div>
+                )}
               </div>
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
@@ -236,6 +352,37 @@ const PumpManagement = () => {
                 </div>
               </div>
             </div>
+          </DialogContent>
+        )}
+      </Dialog>
+
+      <Dialog open={isRepairDialogOpen} onOpenChange={setIsRepairDialogOpen}>
+        {selectedPump && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Repair Pump - {selectedPump.code}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="flex items-center space-x-2">
+                <AlertCircle className="h-6 w-6 text-yellow-500" />
+                <p>Are you sure you want to mark this pump as repaired?</p>
+              </div>
+              {selectedPump.issue && (
+                <div className="rounded-lg bg-muted p-4">
+                  <p className="text-sm font-medium">Current Issue:</p>
+                  <p className="text-sm text-muted-foreground">{selectedPump.issue}</p>
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsRepairDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => handleRepair(selectedPump)}>
+                <CheckCircle2 className="mr-2 h-4 w-4" />
+                Confirm Repair
+              </Button>
+            </DialogFooter>
           </DialogContent>
         )}
       </Dialog>
