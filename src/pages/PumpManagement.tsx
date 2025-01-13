@@ -240,6 +240,20 @@ const PumpManagement = () => {
     toast.info("Pump shut down");
   };
 
+  const handleBringOnline = (pump: Pump) => {
+    const updatedPumps = pumps.map((p) => {
+      if (p.id === pump.id) {
+        return {
+          ...p,
+          status: "FUNCTIONING" as const,
+        };
+      }
+      return p;
+    });
+    setPumps(updatedPumps);
+    toast.success("Pump brought online successfully!");
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -266,12 +280,14 @@ const PumpManagement = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent align="end" className="w-[200px] bg-white">
                     <DropdownMenuItem 
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setSelectedPump(pump);
                         setIsDialogOpen(true);
                       }}
@@ -279,9 +295,10 @@ const PumpManagement = () => {
                       <Eye className="mr-2 h-4 w-4" />
                       View Details
                     </DropdownMenuItem>
-                    {pump.status !== "FUNCTIONING" && (
+                    {pump.status === "MAINTENANCE" && (
                       <DropdownMenuItem 
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setSelectedPump(pump);
                           setIsRepairDialogOpen(true);
                         }}
@@ -290,12 +307,33 @@ const PumpManagement = () => {
                         Repair Pump
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem onClick={() => handleCalibrate(pump)}>
+                    {pump.status === "OFFLINE" && (
+                      <DropdownMenuItem 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBringOnline(pump);
+                        }}
+                      >
+                        <Power className="mr-2 h-4 w-4" />
+                        Bring Online
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCalibrate(pump);
+                      }}
+                    >
                       <Droplets className="mr-2 h-4 w-4" />
                       Calibrate
                     </DropdownMenuItem>
                     {pump.status === "FUNCTIONING" && (
-                      <DropdownMenuItem onClick={() => handleShutdown(pump)}>
+                      <DropdownMenuItem 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleShutdown(pump);
+                        }}
+                      >
                         <Power className="mr-2 h-4 w-4" />
                         Shutdown
                       </DropdownMenuItem>
