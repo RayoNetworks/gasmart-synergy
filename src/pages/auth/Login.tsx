@@ -6,7 +6,10 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { loginSchema } from "@/validation/auth.validation";
 import { axiosClient } from "@/axios";
-import { token as Token, refresh_token as RefreshToken } from "@/common/constants/auth";
+import {
+  token as Token,
+  refresh_token as RefreshToken,
+} from "@/common/constants/auth";
 
 interface LoginFormValues {
   email: string;
@@ -26,30 +29,32 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         console.log("Login - Submitting form with values:", values);
-        
-        const response = await axiosClient.post("/auth/login", values);
-        console.log("Login - Server response:", response.data);
-        
-        const { token, refresh_token } = response.data;
-        
+
+        // const response = await axiosClient.post("/auth/login", values);
+        // console.log("Login - Server response:", response.data);
+
+        // const { token, refresh_token } = response.data;
+        const { token, refresh_token } = { token: null, refresh_token: null };
+
         // Store tokens in localStorage
         localStorage.setItem(Token, token);
         localStorage.setItem(RefreshToken, refresh_token);
-        
+
         toast({
           title: "Success",
           description: "Login successful!",
         });
-        
+
         // Navigate to confirm-role page
         navigate("/confirm-role", { replace: true });
       } catch (error: any) {
         console.error("Login - Error during login:", error);
-        
+
         toast({
           variant: "destructive",
           title: "Error",
-          description: error.response?.data?.message || "Login failed. Please try again.",
+          description:
+            error.response?.data?.message || "Login failed. Please try again.",
         });
       }
     },
@@ -60,7 +65,9 @@ const Login = () => {
       <div className="w-full max-w-md space-y-8 p-8 bg-card rounded-lg shadow-lg">
         <div className="text-center">
           <h2 className="text-2xl font-bold">Welcome Back</h2>
-          <p className="text-muted-foreground mt-2">Please sign in to continue</p>
+          <p className="text-muted-foreground mt-2">
+            Please sign in to continue
+          </p>
         </div>
 
         <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -88,7 +95,9 @@ const Login = () => {
               {...formik.getFieldProps("password")}
             />
             {formik.touched.password && formik.errors.password && (
-              <p className="text-sm text-destructive">{formik.errors.password}</p>
+              <p className="text-sm text-destructive">
+                {formik.errors.password}
+              </p>
             )}
           </div>
 
