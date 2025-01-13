@@ -776,7 +776,16 @@ axiosClient.interceptors.response.use(
     // Handle products requests
     if (url?.startsWith("/products")) {
       if (method === "get") {
+        const {branch, } = response.config.params
+
+        // if(branch){
+        //   // then filter the products based on the selected branch.
+        //   const mockProductArr = [...mockProducts]
+        //   mockResponse.data = mockProductArr.filter((product) => branch == 'all'? product: product.allBranches.includes(branch)? product:  )
+
+        // }
         mockResponse.data = mockProducts;
+
       } else if (method === "post") {
         const newProduct = {
           id: (mockProducts.length + 1).toString(),

@@ -41,3 +41,8 @@ pms,
 
 
 product management, 
+
+
+so the stock has two option's inflow, outflow. 
+ inflow that is stock coming in, out flow is stock been transfered to a different outlet.
+ sell is part of out flow.

@@ -86,10 +86,20 @@ const Products = () => {
     },
   });
 
-  const { data: products, refetch, isLoading: isLoadingProducts } = useQuery({
+  const {
+    data: products,
+    refetch,
+    isLoading: isLoadingProducts,
+  } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const response = await axiosClient.get("/products");
+      const response = await axiosClient.get("/products", {
+        params: {
+          // this w
+          branch: selectedBranch,
+          // outlet: selectedOutlet,
+        },
+      });
       return response.data;
     },
   });
@@ -120,23 +130,32 @@ const Products = () => {
 
   const resetFilters = () => {
     setSearchTerm("");
-    setSelectedBranch("");
-    setSelectedOutlet("");
+    setSelectedBranch("all");
+    setSelectedOutlet("all");
     setSelectedCategory("all");
   };
 
   const handleBranchChange = (value: string) => {
     setSelectedBranch(value);
-    setSelectedOutlet(""); // Reset outlet when branch changes
+    // this reset to all
+    setSelectedOutlet("all"); // Reset outlet when branch changes
+    // this is to call the fetching of products but this time, we are passing in the selected branch.
+    refetch();
   };
 
   const filteredProducts = products?.filter((product: any) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesBranch = !selectedBranch || 
-      (product.allBranches || product.branchPrices.some((bp: any) => bp.branchId === selectedBranch));
-    const matchesOutlet = !selectedOutlet || product.outletId === selectedOutlet;
-    const matchesCategory = selectedCategory === "all" || product.categoryId === selectedCategory;
-    
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesBranch =
+      !selectedBranch ||
+      product.allBranches ||
+      product.branchPrices.some((bp: any) => bp.branchId === selectedBranch);
+    const matchesOutlet =
+      !selectedOutlet || product.outletId === selectedOutlet;
+    const matchesCategory =
+      selectedCategory === "all" || product.categoryId === selectedCategory;
+
     return matchesSearch && matchesBranch && matchesOutlet && matchesCategory;
   });
 
@@ -166,7 +185,7 @@ const Products = () => {
             <SelectValue placeholder="Select branch" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Branches</SelectItem>
+            <SelectItem value="all">All Branches</SelectItem>
             {branches?.map((branch: any) => (
               <SelectItem key={branch.id} value={branch.id}>
                 {branch.name}
@@ -181,7 +200,7 @@ const Products = () => {
               <SelectValue placeholder="Select outlet" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Outlets</SelectItem>
+              <SelectItem value="all">All Outlets</SelectItem>
               {outlets?.map((outlet: any) => (
                 <SelectItem key={outlet.id} value={outlet.id}>
                   {outlet.name}
@@ -269,7 +288,9 @@ const Products = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
-                          navigate(`/admin/products/variation/${product.id}/create`)
+                          navigate(
+                            `/admin/products/variation/${product.id}/create`
+                          )
                         }
                       >
                         Create Variation
