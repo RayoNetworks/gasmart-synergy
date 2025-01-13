@@ -52,6 +52,7 @@ const Staff = () => {
   const [nameFilter, setNameFilter] = useState("");
   const [emailFilter, setEmailFilter] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedOutlet, setSelectedOutlet] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [staffToDelete, setStaffToDelete] = useState<string | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<any>(null);
@@ -66,9 +67,22 @@ const Staff = () => {
     },
   });
 
+  // Fetch outlets based on selected branch
+  const { data: outlets } = useQuery({
+    queryKey: ["outlets", selectedBranch],
+    queryFn: async () => {
+      if (!selectedBranch) return [];
+      const response = await axiosClient.get("/outlets", {
+        params: { branchId: selectedBranch }
+      });
+      return response.data;
+    },
+    enabled: !!selectedBranch,
+  });
+
   // Fetch staff with filters
   const { data: staffList, refetch } = useQuery({
-    queryKey: ["staff", nameFilter, emailFilter, selectedBranch, selectedDate],
+    queryKey: ["staff", nameFilter, emailFilter, selectedBranch, selectedOutlet, selectedDate],
     queryFn: async () => {
       const response = await axiosClient.get("/users", {
         params: {
@@ -76,6 +90,7 @@ const Staff = () => {
           name: nameFilter || undefined,
           email: emailFilter || undefined,
           branch: selectedBranch || undefined,
+          outlet: selectedOutlet || undefined,
           createdAt: selectedDate ? format(selectedDate, "yyyy-MM-dd") : undefined,
         },
       });
@@ -112,8 +127,14 @@ const Staff = () => {
     setNameFilter("");
     setEmailFilter("");
     setSelectedBranch("");
+    setSelectedOutlet("");
     setSelectedDate(undefined);
     refetch();
+  };
+
+  const handleBranchChange = (value: string) => {
+    setSelectedBranch(value);
+    setSelectedOutlet(""); // Reset outlet when branch changes
   };
 
   return (
@@ -153,7 +174,7 @@ const Staff = () => {
           onChange={(e) => setEmailFilter(e.target.value)}
           className="w-[200px]"
         />
-        <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+        <Select value={selectedBranch} onValueChange={handleBranchChange}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Select branch" />
           </SelectTrigger>
@@ -165,6 +186,24 @@ const Staff = () => {
             ))}
           </SelectContent>
         </Select>
+
+        <Select 
+          value={selectedOutlet} 
+          onValueChange={setSelectedOutlet}
+          disabled={!selectedBranch}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Select outlet" />
+          </SelectTrigger>
+          <SelectContent>
+            {outlets?.map((outlet: any) => (
+              <SelectItem key={outlet.id} value={outlet.id}>
+                {outlet.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className="w-[200px] flex justify-between">
@@ -192,6 +231,7 @@ const Staff = () => {
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Branch</TableHead>
+              <TableHead>Outlet</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -203,6 +243,7 @@ const Staff = () => {
                 <TableCell>{staff.email}</TableCell>
                 <TableCell>{staff.phone}</TableCell>
                 <TableCell>{staff.branch?.name}</TableCell>
+                <TableCell>{staff.outlet?.name}</TableCell>
                 <TableCell>{format(new Date(staff.createdAt), "PPP")}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
@@ -280,6 +321,10 @@ const Staff = () => {
             <div>
               <h4 className="text-sm font-medium">Branch</h4>
               <p>{selectedStaff?.branch?.name}</p>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium">Outlet</h4>
+              <p>{selectedStaff?.outlet?.name}</p>
             </div>
             <div>
               <h4 className="text-sm font-medium">Created At</h4>

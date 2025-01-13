@@ -21,7 +21,6 @@ import cashierNavigation from "@/common/navigation/cashier";
 import auditorNavigation from "@/common/navigation/auditor";
 import { Role } from "@/lib/types";
 
-// NOTE, the role shoul
 type RoutePermission = {
   route: {
     name: string;
@@ -41,12 +40,14 @@ const EditStaff = () => {
   const { toast } = useToast();
   const [selectedRole, setSelectedRole] = useState<Role | "">("");
   const [routePermissions, setRoutePermissions] = useState<RoutePermission[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     branchId: "",
+    outletId: "",
     userType: "staff",
     role: "",
     permissions: [],
@@ -68,6 +69,18 @@ const EditStaff = () => {
     },
   });
 
+  const { data: outlets } = useQuery({
+    queryKey: ["outlets", formData.branchId],
+    queryFn: async () => {
+      if (!formData.branchId) return [];
+      const response = await axiosClient.get("/outlets", {
+        params: { branchId: formData.branchId }
+      });
+      return response.data;
+    },
+    enabled: !!formData.branchId,
+  });
+
   useEffect(() => {
     if (staff) {
       setFormData({
@@ -75,11 +88,13 @@ const EditStaff = () => {
         email: staff.email,
         phone: staff.phone,
         branchId: staff.branchId,
+        outletId: staff.outletId,
         userType: "staff",
         role: staff.role,
         permissions: staff.permissions || [],
       });
       setSelectedRole(staff.role as Role);
+      setSelectedBranchId(staff.branchId);
       if (staff.permissions) {
         setRoutePermissions(staff.permissions);
       } else {
@@ -145,6 +160,15 @@ const EditStaff = () => {
         ? { ...rp, permissions: { ...rp.permissions, [permission]: !rp.permissions[permission] }}
         : rp
     ));
+  };
+
+  const handleBranchChange = (branchId: string) => {
+    setSelectedBranchId(branchId);
+    setFormData(prev => ({
+      ...prev,
+      branchId,
+      outletId: "", // Reset outlet when branch changes
+    }));
   };
 
   const updateMutation = useMutation({
@@ -235,9 +259,7 @@ const EditStaff = () => {
             <Label htmlFor="branchId">Branch</Label>
             <Select
               value={formData.branchId}
-              onValueChange={(value) =>
-                handleChange({ target: { name: "branchId", value } })
-              }
+              onValueChange={handleBranchChange}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select branch" />
@@ -246,6 +268,28 @@ const EditStaff = () => {
                 {branches?.map((branch: any) => (
                   <SelectItem key={branch.id} value={branch.id}>
                     {branch.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="outletId">Outlet</Label>
+            <Select
+              value={formData.outletId}
+              onValueChange={(value) =>
+                handleChange({ target: { name: "outletId", value } })
+              }
+              disabled={!formData.branchId}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select outlet" />
+              </SelectTrigger>
+              <SelectContent>
+                {outlets?.map((outlet: any) => (
+                  <SelectItem key={outlet.id} value={outlet.id}>
+                    {outlet.name}
                   </SelectItem>
                 ))}
               </SelectContent>
