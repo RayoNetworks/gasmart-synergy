@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Eye, Pencil, Trash2, GitBranch, RotateCcw, Store } from "lucide-react";
+import { Calendar, Eye, GitBranch, RotateCcw, Store } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -27,17 +27,6 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -46,12 +35,10 @@ import {
 
 const UserList = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [selectedOutlet, setSelectedOutlet] = useState<string>("");
   const [selectedUserType, setSelectedUserType] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isViewSheetOpen, setIsViewSheetOpen] = useState(false);
 
@@ -88,25 +75,6 @@ const UserList = () => {
       return response.data;
     },
   });
-
-  const handleDelete = async () => {
-    if (!userToDelete) return;
-    try {
-      await axiosClient.delete(`/users/${userToDelete}`);
-      toast({
-        title: "Success",
-        description: "User deleted successfully",
-      });
-      refetch();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete user",
-        variant: "destructive",
-      });
-    }
-    setUserToDelete(null);
-  };
 
   const handleViewBranch = (branchId: string) => {
     navigate(`/admin/branch/${branchId}`);
@@ -237,20 +205,6 @@ const UserList = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => navigate(`/admin/crm/users/${user.id}/edit`)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setUserToDelete(user.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
                       onClick={() => handleViewBranch(user.branch?.id)}
                     >
                       <GitBranch className="h-4 w-4" />
@@ -269,22 +223,6 @@ const UserList = () => {
           </TableBody>
         </Table>
       </div>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the user.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* View User Details Sheet */}
       <Sheet open={isViewSheetOpen} onOpenChange={setIsViewSheetOpen}>
