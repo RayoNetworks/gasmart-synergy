@@ -78,6 +78,7 @@ const navigation = [
       { name: "Customers", href: "/admin/crm/customers", icon: Users },
       { name: "User List", href: "/admin/crm/users", icon: UserPlus },
       { name: "Staff", href: "/admin/crm/staff", icon: UserPlus },
+      { name: "Managers", href: "/admin/crm/managers", icon: UserPlus },
     ],
   },
   {
