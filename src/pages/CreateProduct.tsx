@@ -14,11 +14,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface BranchPrice {
   branchId: string;
   price: string;
-  categoryId?: string;
+}
+
+interface OutletPrice {
+  outletId: string;
+  price: string;
 }
 
 const CreateProduct = () => {
@@ -26,10 +31,11 @@ const CreateProduct = () => {
   const [productName, setProductName] = useState("");
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [branchPrices, setBranchPrices] = useState<BranchPrice[]>([]);
+  const [outletPrices, setOutletPrices] = useState<OutletPrice[]>([]);
   const [allBranches, setAllBranches] = useState(false);
   const [basePrice, setBasePrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [applyCategoriesToAll, setApplyCategoriesToAll] = useState(true);
+  const [priceType, setPriceType] = useState<"branch" | "outlet">("branch");
 
   const { data: branches } = useQuery({
     queryKey: ["branches"],
@@ -47,16 +53,28 @@ const CreateProduct = () => {
     },
   });
 
+  const { data: outlets, refetch: refetchOutlets } = useQuery({
+    queryKey: ["outlets", selectedBranches],
+    queryFn: async () => {
+      if (selectedBranches.length === 0) return [];
+      const response = await axiosClient.get("/outlets", {
+        params: { branchId: selectedBranches[0] }
+      });
+      return response.data;
+    },
+    enabled: selectedBranches.length > 0 && priceType === "outlet",
+  });
+
   const handleBranchSelection = (branchId: string) => {
     if (selectedBranches.includes(branchId)) {
       setSelectedBranches(selectedBranches.filter((id) => id !== branchId));
       setBranchPrices(branchPrices.filter((bp) => bp.branchId !== branchId));
+      setOutletPrices(outletPrices.filter((op) => 
+        !outlets?.find((o: any) => o.branchId === branchId && o.id === op.outletId)
+      ));
     } else {
       setSelectedBranches([...selectedBranches, branchId]);
-      setBranchPrices([
-        ...branchPrices,
-        { branchId, price: basePrice, categoryId: applyCategoriesToAll ? selectedCategory : undefined },
-      ]);
+      setBranchPrices([...branchPrices, { branchId, price: basePrice }]);
     }
   };
 
@@ -68,12 +86,15 @@ const CreateProduct = () => {
     );
   };
 
-  const handleBranchCategoryChange = (branchId: string, categoryId: string) => {
-    setBranchPrices(
-      branchPrices.map((bp) =>
-        bp.branchId === branchId ? { ...bp, categoryId } : bp
-      )
-    );
+  const handleOutletPriceChange = (outletId: string, price: string) => {
+    const existingPrice = outletPrices.find(op => op.outletId === outletId);
+    if (existingPrice) {
+      setOutletPrices(outletPrices.map(op => 
+        op.outletId === outletId ? { ...op, price } : op
+      ));
+    } else {
+      setOutletPrices([...outletPrices, { outletId, price }]);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -104,8 +125,8 @@ const CreateProduct = () => {
       categoryId: selectedCategory,
       allBranches,
       basePrice: allBranches ? basePrice : null,
-      branchPrices: allBranches ? [] : branchPrices,
-      applyCategoriesToAll,
+      branchPrices: priceType === "branch" ? branchPrices : [],
+      outletPrices: priceType === "outlet" ? outletPrices : [],
     };
 
     try {
@@ -168,6 +189,7 @@ const CreateProduct = () => {
                   if (checked) {
                     setSelectedBranches([]);
                     setBranchPrices([]);
+                    setOutletPrices([]);
                   }
                 }}
               />
@@ -192,73 +214,76 @@ const CreateProduct = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex items-center space-x-2 mb-4">
-                  <Checkbox
-                    id="applyCategoriesToAll"
-                    checked={applyCategoriesToAll}
-                    onCheckedChange={(checked) => setApplyCategoriesToAll(checked as boolean)}
-                  />
-                  <label
-                    htmlFor="applyCategoriesToAll"
-                    className="text-sm font-medium leading-none"
-                  >
-                    Apply selected category to all branches
-                  </label>
-                </div>
-
                 <Label>Select Branches and Set Prices</Label>
                 <div className="space-y-4">
                   {branches?.map((branch: any) => (
-                    <div key={branch.id} className="flex items-center space-x-4">
-                      <Checkbox
-                        id={`branch-${branch.id}`}
-                        checked={selectedBranches.includes(branch.id)}
-                        onCheckedChange={() => handleBranchSelection(branch.id)}
-                      />
-                      <label
-                        htmlFor={`branch-${branch.id}`}
-                        className="flex-1 text-sm font-medium"
-                      >
-                        {branch.name}
-                      </label>
+                    <div key={branch.id} className="space-y-4">
+                      <div className="flex items-center space-x-4">
+                        <Checkbox
+                          id={`branch-${branch.id}`}
+                          checked={selectedBranches.includes(branch.id)}
+                          onCheckedChange={() => handleBranchSelection(branch.id)}
+                        />
+                        <label
+                          htmlFor={`branch-${branch.id}`}
+                          className="flex-1 text-sm font-medium"
+                        >
+                          {branch.name}
+                        </label>
+                      </div>
+
                       {selectedBranches.includes(branch.id) && (
-                        <>
-                          <Input
-                            type="number"
-                            placeholder="Price (₦)"
-                            className="w-32"
-                            value={
-                              branchPrices.find((bp) => bp.branchId === branch.id)
-                                ?.price || ""
-                            }
-                            onChange={(e) =>
-                              handlePriceChange(branch.id, e.target.value)
-                            }
-                          />
-                          {!applyCategoriesToAll && (
-                            <Select
+                        <div className="ml-6 space-y-4">
+                          <RadioGroup 
+                            value={priceType} 
+                            onValueChange={(value: "branch" | "outlet") => setPriceType(value)}
+                            className="flex space-x-4"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="branch" id="branch" />
+                              <Label htmlFor="branch">Set price for entire branch</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="outlet" id="outlet" />
+                              <Label htmlFor="outlet">Set price per outlet</Label>
+                            </div>
+                          </RadioGroup>
+
+                          {priceType === "branch" ? (
+                            <Input
+                              type="number"
+                              placeholder="Price (₦)"
+                              className="w-32"
                               value={
                                 branchPrices.find((bp) => bp.branchId === branch.id)
-                                  ?.categoryId || "select-category"
+                                  ?.price || ""
                               }
-                              onValueChange={(value) =>
-                                handleBranchCategoryChange(branch.id, value)
+                              onChange={(e) =>
+                                handlePriceChange(branch.id, e.target.value)
                               }
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="select-category" disabled>Select category</SelectItem>
-                                {categories?.map((category: any) => (
-                                  <SelectItem key={category.id} value={category.id}>
-                                    {category.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            />
+                          ) : (
+                            <div className="space-y-2">
+                              {outlets?.map((outlet: any) => (
+                                <div key={outlet.id} className="flex items-center space-x-4">
+                                  <span className="text-sm">{outlet.name}</span>
+                                  <Input
+                                    type="number"
+                                    placeholder="Price (₦)"
+                                    className="w-32"
+                                    value={
+                                      outletPrices.find((op) => op.outletId === outlet.id)
+                                        ?.price || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleOutletPriceChange(outlet.id, e.target.value)
+                                    }
+                                  />
+                                </div>
+                              ))}
+                            </div>
                           )}
-                        </>
+                        </div>
                       )}
                     </div>
                   ))}

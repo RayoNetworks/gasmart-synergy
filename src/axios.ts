@@ -33,7 +33,7 @@ const mockBranches = [
   }
 ];
 
-// Mock data for outlets
+// Updated mock outlets with more detailed information
 const mockOutlets = [
   {
     id: "OUT001",
@@ -45,8 +45,24 @@ const mockOutlets = [
   },
   {
     id: "OUT002",
+    name: "Downtown Outlet",
+    location: "45 Downtown Road",
+    branchId: "BR001",
+    status: "active",
+    branch: mockBranches[0]
+  },
+  {
+    id: "OUT003",
     name: "East Road Outlet",
     location: "46 East Road",
+    branchId: "BR002",
+    status: "active",
+    branch: mockBranches[1]
+  },
+  {
+    id: "OUT004",
+    name: "Harbor Outlet",
+    location: "12 Harbor View",
     branchId: "BR002",
     status: "active",
     branch: mockBranches[1]
@@ -517,34 +533,42 @@ axiosClient.interceptors.response.use(
     // Handle products requests
     if (url?.startsWith("/products")) {
       if (method === "get") {
-        const {branch, } = response.config.params
-        mockResponse.data = mockProducts;
-
+        const { branch } = response.config.params || {};
+        let filteredProducts = [...mockProducts];
+        
+        if (branch) {
+          filteredProducts = filteredProducts.filter(product => 
+            product.allBranches || product.branchPrices.some(bp => bp.branchId === branch)
+          );
+        }
+        
+        mockResponse.data = filteredProducts;
       } else if (method === "post") {
         const productData = JSON.parse(response.config.data);
         const newProduct = {
-          id: (mockProducts.length + 1).toString(),
+          id: `PRD${(mockProducts.length + 1).toString().padStart(3, '0')}`,
           ...productData,
-          availableBranches: productData.allBranches 
-            ? ["*"] 
-            : productData.branchPrices.map((bp: any) => ({
-                id: bp.branchId,
-                name: mockBranches.find((b: any) => b.id === bp.branchId)?.name || ''
-              })),
           status: "In Stock",
           stock: 0,
-          price: parseFloat(
-            productData.allBranches
-              ? productData.basePrice
-              : productData.branchPrices[0]?.price || "0"
-          ),
-          category: mockProductCategories.find(
-            (cat) => cat.id === productData.categoryId
-          ),
+          category: mockProductCategories.find(cat => cat.id === productData.categoryId),
+          branch: productData.branchId ? mockBranches.find(b => b.id === productData.branchId) : null,
+          outletPrices: productData.outletPrices || []
         };
         mockProducts.push(newProduct);
         mockResponse.data = newProduct;
       }
+    }
+
+    // Add an endpoint to fetch outlets by branch
+    if (url?.startsWith("/outlets") && method === "get") {
+      const { branchId } = response.config.params || {};
+      let filteredOutlets = [...mockOutlets];
+      
+      if (branchId) {
+        filteredOutlets = filteredOutlets.filter(outlet => outlet.branchId === branchId);
+      }
+      
+      mockResponse.data = filteredOutlets;
     }
 
     // Handle sales requests
