@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Gauge, AlertCircle } from "lucide-react";
+import { Gauge, AlertCircle, Plus } from "lucide-react";
 
 interface Pump {
   id: string;
@@ -128,6 +128,10 @@ const PumpManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Pump Management</h1>
+        <Button className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Add Pump
+        </Button>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
