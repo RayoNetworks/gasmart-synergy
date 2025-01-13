@@ -75,7 +75,6 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
-<<<<<<< HEAD
     // this is for the manager related route request
     if (url?.startsWith("/managers")) {
       if (method == "get") {
@@ -451,8 +450,7 @@ axiosClient.interceptors.response.use(
     if (url === "/outlets") {
       mockResponse.data = mockOutlets;
     }
-=======
->>>>>>> ca22cea9a0613abec7337fba97e2c6b52fd8f5fd
+
 
     // Handle tanks requests
     if (url === "/tanks") {
