@@ -98,7 +98,7 @@ const Products = () => {
             <SelectValue placeholder="Filter by branch" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Branches</SelectItem>
+            <SelectItem value="all">All Branches</SelectItem>
             {branches?.map((branch) => (
               <SelectItem key={branch.id} value={branch.id}>
                 {branch.name}
@@ -112,7 +112,7 @@ const Products = () => {
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Categories</SelectItem>
+            <SelectItem value="all">All Categories</SelectItem>
             {categories?.map((category) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.name}
@@ -138,11 +138,7 @@ const Products = () => {
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>
-                  {product.category?.name || "Uncategorized"}
-                </TableCell>
-                <TableCell>
-                  ₦
-                  {selectedBranch
+                  ₦{selectedBranch && selectedBranch !== 'all'
                     ? getBranchPrice(product, selectedBranch).toFixed(2)
                     : product.price.toFixed(2)}
                 </TableCell>
