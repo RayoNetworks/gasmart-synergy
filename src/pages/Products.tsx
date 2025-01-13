@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus } from "lucide-react";
+import { Plus, MoreHorizontal, RefreshCcw } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,6 +21,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -28,6 +51,10 @@ const Products = () => {
 
   const [selectedBranch, setSelectedBranch] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const { data: branches, isLoading: isLoadingBranches } = useQuery({
     queryKey: ["branches"],
@@ -48,6 +75,15 @@ const Products = () => {
   });
 
 
+// this is to allow triggerring to fetch the data
+  const { data, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const response = await axiosClient.get('/products');
+      return response.data;
+    }
+  });
+
   const { data: products, isLoading: isLoadingProducts } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
@@ -64,6 +100,26 @@ const Products = () => {
     }
     const branchPrice = product.branchPrices.find(bp => bp.branchId === branchId);
     return branchPrice ? parseFloat(branchPrice.price) : product.price;
+  };
+
+  const handleDelete = async () => {
+    if (selectedProductId) {
+      try {
+        await axiosClient.delete(`/products/${selectedProductId}`);
+        toast.success("Product deleted successfully");
+        refetch();
+      } catch (error) {
+        toast.error("Failed to delete product");
+      }
+      setDeleteDialogOpen(false);
+      setSelectedProductId(null);
+    }
+  };
+
+  const resetFilters = () => {
+    setSearchTerm("");
+    setSelectedBranch("all");
+    setSelectedCategory("all");
   };
 
   const filteredProducts = products?.filter(product => {
@@ -123,6 +179,10 @@ const Products = () => {
             ))}
           </SelectContent>
         </Select>
+
+        <Button variant="outline" onClick={resetFilters}>
+          <RefreshCcw className="mr-2 h-4 w-4" /> Reset
+        </Button>
       </div>
 
       <div className="rounded-md border">
@@ -134,17 +194,21 @@ const Products = () => {
               <TableHead>Price</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredProducts?.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
+                <TableCell>{product?.category?.name}</TableCell>
                 <TableCell>
-                  ₦{selectedBranch && selectedBranch !== 'all'
+                  ₦
+                  {selectedBranch && selectedBranch !== "all"
                     ? getBranchPrice(product, selectedBranch).toFixed(2)
                     : product.price.toFixed(2)}
                 </TableCell>
+
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>
                   <Badge
@@ -155,11 +219,127 @@ const Products = () => {
                     {product.status}
                   </Badge>
                 </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedProduct(product);
+                          setViewDialogOpen(true);
+                        }}
+                      >
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          navigate(`/admin/products/edit/${product.id}`)
+                        }
+                      >
+                        Update
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          navigate(`/admin/products/variation/${product.id}`)
+                        }
+                      >
+                        Create Variation
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          navigate(`/admin/products/stock/${product.id}`)
+                        }
+                      >
+                        Check Stock
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        onClick={() => {
+                          setSelectedProductId(product.id);
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              product.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Product Details</DialogTitle>
+          </DialogHeader>
+          {selectedProduct && (
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold">Name</h4>
+                <p>{selectedProduct.name}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Category</h4>
+                <p>{selectedProduct.category?.name}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Pricing</h4>
+                {selectedProduct.allBranches ? (
+                  <p>Base Price: ₦{selectedProduct.basePrice}</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedProduct.branchPrices.map((bp: any) => (
+                      <p key={bp.branchId}>
+                        {branches?.find((b) => b.id === bp.branchId)?.name}: ₦
+                        {bp.price}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div>
+                <h4 className="font-semibold">Stock</h4>
+                <p>{selectedProduct.stock}</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Status</h4>
+                <Badge
+                  variant={
+                    selectedProduct.status === "Low Stock"
+                      ? "destructive"
+                      : "default"
+                  }
+                >
+                  {selectedProduct.status}
+                </Badge>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
