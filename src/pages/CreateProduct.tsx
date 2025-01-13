@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -11,13 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 
 interface BranchPrice {
   branchId: string;
   price: string;
+  categoryId?: string;
 }
 
 const CreateProduct = () => {
@@ -27,11 +28,21 @@ const CreateProduct = () => {
   const [branchPrices, setBranchPrices] = useState<BranchPrice[]>([]);
   const [allBranches, setAllBranches] = useState(false);
   const [basePrice, setBasePrice] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [applyCategoriesToAll, setApplyCategoriesToAll] = useState(true);
 
   const { data: branches } = useQuery({
     queryKey: ["branches"],
     queryFn: async () => {
       const response = await axiosClient.get("/branches");
+      return response.data;
+    },
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["product-categories"],
+    queryFn: async () => {
+      const response = await axiosClient.get("/product-categories");
       return response.data;
     },
   });
@@ -42,7 +53,10 @@ const CreateProduct = () => {
       setBranchPrices(branchPrices.filter((bp) => bp.branchId !== branchId));
     } else {
       setSelectedBranches([...selectedBranches, branchId]);
-      setBranchPrices([...branchPrices, { branchId, price: basePrice }]);
+      setBranchPrices([
+        ...branchPrices,
+        { branchId, price: basePrice, categoryId: applyCategoriesToAll ? selectedCategory : undefined },
+      ]);
     }
   };
 
@@ -54,11 +68,24 @@ const CreateProduct = () => {
     );
   };
 
+  const handleBranchCategoryChange = (branchId: string, categoryId: string) => {
+    setBranchPrices(
+      branchPrices.map((bp) =>
+        bp.branchId === branchId ? { ...bp, categoryId } : bp
+      )
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!productName) {
       toast.error("Please enter a product name");
+      return;
+    }
+
+    if (!selectedCategory) {
+      toast.error("Please select a category");
       return;
     }
 
@@ -74,9 +101,11 @@ const CreateProduct = () => {
 
     const productData = {
       name: productName,
+      categoryId: selectedCategory,
       allBranches,
       basePrice: allBranches ? basePrice : null,
       branchPrices: allBranches ? [] : branchPrices,
+      applyCategoriesToAll,
     };
 
     try {
@@ -105,6 +134,22 @@ const CreateProduct = () => {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="category">Product Category</Label>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories?.map((category: any) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
@@ -142,6 +187,20 @@ const CreateProduct = () => {
               </div>
             ) : (
               <div className="space-y-4">
+                <div className="flex items-center space-x-2 mb-4">
+                  <Checkbox
+                    id="applyCategoriesToAll"
+                    checked={applyCategoriesToAll}
+                    onCheckedChange={(checked) => setApplyCategoriesToAll(checked as boolean)}
+                  />
+                  <label
+                    htmlFor="applyCategoriesToAll"
+                    className="text-sm font-medium leading-none"
+                  >
+                    Apply selected category to all branches
+                  </label>
+                </div>
+
                 <Label>Select Branches and Set Prices</Label>
                 <div className="space-y-4">
                   {branches?.map((branch: any) => (
@@ -158,18 +217,42 @@ const CreateProduct = () => {
                         {branch.name}
                       </label>
                       {selectedBranches.includes(branch.id) && (
-                        <Input
-                          type="number"
-                          placeholder="Price (₦)"
-                          className="w-32"
-                          value={
-                            branchPrices.find((bp) => bp.branchId === branch.id)
-                              ?.price || ""
-                          }
-                          onChange={(e) =>
-                            handlePriceChange(branch.id, e.target.value)
-                          }
-                        />
+                        <>
+                          <Input
+                            type="number"
+                            placeholder="Price (₦)"
+                            className="w-32"
+                            value={
+                              branchPrices.find((bp) => bp.branchId === branch.id)
+                                ?.price || ""
+                            }
+                            onChange={(e) =>
+                              handlePriceChange(branch.id, e.target.value)
+                            }
+                          />
+                          {!applyCategoriesToAll && (
+                            <Select
+                              value={
+                                branchPrices.find((bp) => bp.branchId === branch.id)
+                                  ?.categoryId || ""
+                              }
+                              onValueChange={(value) =>
+                                handleBranchCategoryChange(branch.id, value)
+                              }
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select category" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {categories?.map((category: any) => (
+                                  <SelectItem key={category.id} value={category.id}>
+                                    {category.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </>
                       )}
                     </div>
                   ))}

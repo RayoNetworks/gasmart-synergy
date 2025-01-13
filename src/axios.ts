@@ -235,6 +235,27 @@ const mockSalesReturns = [
   },
 ];
 
+const mockProductCategories = [
+  {
+    id: "1",
+    name: "Petroleum Products",
+    description: "Includes petrol, diesel, and kerosene",
+    createdAt: "2024-02-15",
+  },
+  {
+    id: "2",
+    name: "Lubricants",
+    description: "Engine oils and other lubricants",
+    createdAt: "2024-02-15",
+  },
+  {
+    id: "3",
+    name: "LPG Products",
+    description: "Cooking gas and related accessories",
+    createdAt: "2024-02-15",
+  },
+];
+
 // Create axios instance
 export const axiosClient = axios.create({
   baseURL: "",
@@ -365,6 +386,21 @@ axiosClient.interceptors.response.use(
       };
       mockProducts.push(newProduct);
       mockResponse.data = newProduct;
+    }
+
+    // Handle product categories requests
+    if (url?.startsWith('/product-categories')) {
+      if (method === 'get') {
+        mockResponse.data = mockProductCategories;
+      } else if (method === 'post') {
+        const newCategory = {
+          id: (mockProductCategories.length + 1).toString(),
+          ...JSON.parse(response.config.data),
+          createdAt: new Date().toISOString().split('T')[0],
+        };
+        mockProductCategories.push(newCategory);
+        mockResponse.data = newCategory;
+      }
     }
 
     return mockResponse;
