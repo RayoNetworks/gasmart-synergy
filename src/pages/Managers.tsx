@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import {
   Table,
@@ -46,16 +46,25 @@ const Managers = () => {
     setManagerType("");
   };
 
-  const { data: managers } = useQuery({
-    queryKey: ["managers ", managerType],
+  const { data: managers = [], isLoading, error } = useQuery({
+    queryKey: ["managers", managerType],
     queryFn: async () => {
+      console.log('Fetching managers with type:', managerType);
       const response = await axiosClient.get("/managers", {
-        // i can pass in params in tanstack query
         params: { managerType: managerType || undefined },
       });
-      return response.data;
+      console.log('Received managers data:', response.data);
+      return response.data || [];
     },
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading managers</div>;
+  }
 
   return (
     <div className="space-y-4">
@@ -72,7 +81,7 @@ const Managers = () => {
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Managers</SelectItem>
+            <SelectItem value="">All Managers</SelectItem>
             <SelectItem value="branch_manager">Branch Managers</SelectItem>
             <SelectItem value="outlet_manager">Outlet Managers</SelectItem>
           </SelectContent>
@@ -100,7 +109,7 @@ const Managers = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {managers?.map((manager: any) => (
+          {Array.isArray(managers) && managers.map((manager: any) => (
             <TableRow key={manager.id}>
               <TableCell>{manager.name}</TableCell>
               <TableCell>{manager.email}</TableCell>
@@ -132,7 +141,9 @@ const Managers = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() =>
-                        navigate(`/admin/crm/managers/create?id=${manager.id}`)
+                        navigate("/admin/crm/managers/create", { 
+                          state: { manager } 
+                        })
                       }
                     >
                       <Edit className="mr-2 h-4 w-4" />

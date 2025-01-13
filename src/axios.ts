@@ -13,10 +13,16 @@ const mockCustomers = [
     phone: "+234 123 4567",
     address: "123 Main St, Lagos",
     branchId: "1",
+    outletId: "1",
     branch: {
       id: "1",
       name: "Main Branch",
       address: "123 Main Street, Lagos",
+    },
+    outlet: {
+      id: "1",
+      name: "Lagos Central Outlet",
+      location: "Victoria Island, Lagos",
     },
     createdAt: "2024-03-15",
     status: "active"
@@ -28,10 +34,16 @@ const mockCustomers = [
     phone: "+234 987 6543",
     address: "456 Oak Ave, Abuja",
     branchId: "2",
+    outletId: "2",
     branch: {
       id: "2",
       name: "Port Harcourt Branch",
       address: "456 Marina Road, Port Harcourt",
+    },
+    outlet: {
+      id: "2",
+      name: "PH Waterfront Outlet",
+      location: "Waterfront, Port Harcourt",
     },
     createdAt: "2024-03-16",
     status: "active"
@@ -43,10 +55,16 @@ const mockCustomers = [
     phone: "+234 555 1234",
     address: "789 Pine Rd, Port Harcourt",
     branchId: "3",
+    outletId: "3",
     branch: {
       id: "3",
       name: "Abuja Branch",
       address: "789 Capital Way, Abuja",
+    },
+    outlet: {
+      id: "3",
+      name: "Abuja Central Outlet",
+      location: "Central Business District, Abuja",
     },
     createdAt: "2024-03-17",
     status: "inactive"
@@ -422,6 +440,7 @@ const mockManagers = [
       address: "123 Main Street, Lagos",
     },
     createdAt: "2024-03-15",
+    status: "active"
   },
   {
     id: "2",
@@ -437,7 +456,24 @@ const mockManagers = [
       location: "Victoria Island, Lagos",
     },
     createdAt: "2024-03-16",
+    status: "active"
   },
+  {
+    id: "3",
+    name: "Michael Brown",
+    email: "michael.brown@example.com",
+    phone: "+234 803 456 7890",
+    userType: "manager",
+    managerType: "branch_manager",
+    branchId: "2",
+    branch: {
+      id: "2",
+      name: "Port Harcourt Branch",
+      address: "456 Marina Road, Port Harcourt",
+    },
+    createdAt: "2024-03-17",
+    status: "active"
+  }
 ];
 
 // Create axios instance
@@ -487,6 +523,9 @@ axiosClient.interceptors.response.use(
           branch: mockBranches.find(
             branch => branch.id === JSON.parse(response.config.data).branchId
           ),
+          outlet: mockOutlets.find(
+            outlet => outlet.id === JSON.parse(response.config.data).outletId
+          ),
         };
         mockCustomers.push(newCustomer);
         mockResponse.data = newCustomer;
@@ -500,6 +539,7 @@ axiosClient.interceptors.response.use(
             ...mockCustomers[customerIndex],
             ...updatedData,
             branch: mockBranches.find(b => b.id === updatedData.branchId),
+            outlet: mockOutlets.find(o => o.id === updatedData.outletId),
           };
           mockResponse.data = mockCustomers[customerIndex];
         }
@@ -535,6 +575,26 @@ axiosClient.interceptors.response.use(
             manager.managerType === "outlet_manager" && manager.outletId === outlet.id
           )
         );
+      }
+    }
+
+    // Handle outlets requests with filtering
+    if (url?.startsWith('/outlets')) {
+      if (method === 'get') {
+        let filteredOutlets = [...mockOutlets];
+        const { branchId, outletName } = response.config.params || {};
+
+        if (branchId) {
+          filteredOutlets = filteredOutlets.filter(outlet => outlet.branchId === branchId);
+        }
+
+        if (outletName) {
+          filteredOutlets = filteredOutlets.filter(outlet => 
+            outlet.name.toLowerCase().includes(outletName.toLowerCase())
+          );
+        }
+
+        mockResponse.data = filteredOutlets;
       }
     }
 

@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import navigation from "@/common/navigation";
 import cashierNavigation from "@/common/navigation/cashier";
@@ -64,7 +63,11 @@ const CreateStaff = () => {
     queryKey: ["branch-outlets", selectedBranchId],
     queryFn: async () => {
       if (!selectedBranchId) return [];
-      const response = await axiosClient.get("/outlets");
+      console.log("Fetching outlets for branch:", selectedBranchId);
+      const response = await axiosClient.get("/outlets", {
+        params: { branchId: selectedBranchId }
+      });
+      console.log("Available outlets:", response.data);
       return response.data.filter((outlet: any) => outlet.branchId === selectedBranchId);
     },
     enabled: !!selectedBranchId,
