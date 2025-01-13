@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ViewProductVariations = () => {
   const { id } = useParams();
@@ -17,9 +18,14 @@ const ViewProductVariations = () => {
     queryKey: ['product', id],
     queryFn: async () => {
       const response = await axiosClient.get(`/products/${id}`);
+      console.log('Product data:', response.data);
       return response.data;
     }
   });
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -27,10 +33,17 @@ const ViewProductVariations = () => {
         <h1 className="text-3xl font-bold">Product Variations</h1>
       </div>
 
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">{product?.name}</h2>
-        <p className="text-gray-600">Category: {product?.category?.name}</p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>{product.name}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <p className="text-gray-600">Category: {product.category?.name}</p>
+            <p className="text-gray-600">Base Price: {product.allBranches ? `₦${product.basePrice}` : 'Branch-specific pricing'}</p>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="rounded-md border">
         <Table>
@@ -43,17 +56,26 @@ const ViewProductVariations = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {product?.variations?.map((variation: any) => (
-              variation.branchPrices.map((branchPrice: any) => (
-                <TableRow key={`${variation.id}-${branchPrice.branchId}`}>
+            {product.variations?.map((variation: any) => (
+              variation.allBranches ? (
+                <TableRow key={variation.id}>
                   <TableCell>{variation.type}</TableCell>
                   <TableCell>{variation.name}</TableCell>
-                  <TableCell>
-                    {product.branches?.find((b: any) => b.id === branchPrice.branchId)?.name || 'All Branches'}
-                  </TableCell>
-                  <TableCell>₦{branchPrice.price}</TableCell>
+                  <TableCell>All Branches</TableCell>
+                  <TableCell>₦{variation.basePrice}</TableCell>
                 </TableRow>
-              ))
+              ) : (
+                variation.branchPrices.map((branchPrice: any, index: number) => (
+                  <TableRow key={`${variation.id}-${branchPrice.branchId}`}>
+                    <TableCell>{variation.type}</TableCell>
+                    <TableCell>{variation.name}</TableCell>
+                    <TableCell>
+                      {product.branches?.find((b: any) => b.id === branchPrice.branchId)?.name || 'Unknown Branch'}
+                    </TableCell>
+                    <TableCell>₦{branchPrice.price}</TableCell>
+                  </TableRow>
+                ))
+              )
             ))}
           </TableBody>
         </Table>
