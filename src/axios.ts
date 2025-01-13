@@ -356,6 +356,17 @@ axiosClient.interceptors.response.use(
       return { ...response, data: mockProducts };
     }
 
+    // Handle product creation requests
+    if (url === '/products' && method === 'post') {
+      const newProduct = {
+        id: (mockProducts.length + 1).toString(),
+        ...JSON.parse(response.config.data),
+        createdAt: new Date().toISOString().split('T')[0],
+      };
+      mockProducts.push(newProduct);
+      mockResponse.data = newProduct;
+    }
+
     return mockResponse;
   },
   async (error) => {

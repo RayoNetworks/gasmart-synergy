@@ -1,6 +1,7 @@
 import { Role } from "@/lib/types";
 import Dashboard from "@/pages/Dashboard";
 import Products from "@/pages/Products";
+import CreateProduct from "@/pages/CreateProduct";
 import Reports from "@/pages/Reports";
 import Sales from "@/pages/Sales";
 import Settings from "@/pages/Settings";
@@ -16,7 +17,6 @@ import CreateBranch from "./pages/CreateBranch";
 import Locations from "./pages/Locations";
 import UserList from "./pages/UserList";
 import SalesReturn from "./pages/SalesReturn";
-
 import Staff from "./pages/Staff";
 import CreateStaff from "./pages/CreateStaff";
 import EditStaff from "./pages/EditStaff";
@@ -28,6 +28,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="sales/return" element={<SalesReturn />} />
     <Route path="sales/quotation" element={<div>Quotation</div>} />
     <Route path="products" element={<Products />} />
+    <Route path="products/create" element={<CreateProduct />} />
     <Route path="products/variation" element={<div>Product Variation</div>} />
     <Route path="reports" element={<Reports />} />
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />

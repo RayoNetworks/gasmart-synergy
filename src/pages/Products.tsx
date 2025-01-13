@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -13,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
 
 const Products = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
   const products = [
@@ -54,7 +56,7 @@ const Products = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Button>
+        <Button onClick={() => navigate("/admin/products/create")}>
           <Plus className="mr-2 h-4 w-4" /> Add Product
         </Button>
       </div>
