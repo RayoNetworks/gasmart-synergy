@@ -200,10 +200,16 @@ const mockUsers = [
     phone: "+234 123 4567",
     userType: "customer",
     branchId: "1",
+    outletId: "1",
     branch: {
       id: "1",
       name: "Main Branch",
       address: "123 Main Street, Lagos",
+    },
+    outlet: {
+      id: "1",
+      name: "Lagos Central Outlet",
+      location: "Victoria Island, Lagos",
     },
     createdAt: "2024-01-15",
   },
@@ -214,10 +220,16 @@ const mockUsers = [
     phone: "+234 987 6543",
     userType: "working_client",
     branchId: "2",
+    outletId: "2",
     branch: {
       id: "2",
       name: "Port Harcourt Branch",
       address: "456 Marina Road, Port Harcourt",
+    },
+    outlet: {
+      id: "2",
+      name: "PH Waterfront Outlet",
+      location: "Waterfront, Port Harcourt",
     },
     createdAt: "2024-02-01",
   },
@@ -228,10 +240,16 @@ const mockUsers = [
     phone: "+234 555 1234",
     userType: "staff",
     branchId: "3",
+    outletId: "3",
     branch: {
       id: "3",
       name: "Abuja Branch",
       address: "789 Capital Way, Abuja",
+    },
+    outlet: {
+      id: "3",
+      name: "Abuja Central Outlet",
+      location: "Central Business District, Abuja",
     },
     createdAt: "2024-02-10",
   },
@@ -630,7 +648,7 @@ axiosClient.interceptors.response.use(
     if (url?.startsWith("/users")) {
       if (method === "get") {
         if (url === "/users") {
-          const { userType, name, email, branch, createdAt } =
+          const { userType, name, email, branch, outlet, createdAt } =
             response.config.params || {};
           let filteredUsers = [...mockUsers];
 
@@ -650,6 +668,10 @@ axiosClient.interceptors.response.use(
             filteredUsers = filteredUsers.filter(
               (user) => user.branchId === branch
             );
+          if (outlet)
+            filteredUsers = filteredUsers.filter(
+              (user) => user.outletId === outlet
+            );
           if (createdAt)
             filteredUsers = filteredUsers.filter(
               (user) => user.createdAt === createdAt
@@ -668,6 +690,9 @@ axiosClient.interceptors.response.use(
           branch: mockBranches.find(
             (b) => b.id === JSON.parse(response.config.data).branchId
           ),
+          outlet: mockOutlets.find(
+            (o) => o.id === JSON.parse(response.config.data).outletId
+          ),
         };
         mockUsers.push(newUser);
         mockResponse.data = newUser;
@@ -680,6 +705,9 @@ axiosClient.interceptors.response.use(
             ...JSON.parse(response.config.data),
             branch: mockBranches.find(
               (b) => b.id === JSON.parse(response.config.data).branchId
+            ),
+            outlet: mockOutlets.find(
+              (o) => o.id === JSON.parse(response.config.data).outletId
             ),
           };
           mockUsers[userIndex] = updatedUser;

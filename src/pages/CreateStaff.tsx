@@ -38,15 +38,15 @@ const CreateStaff = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedRole, setSelectedRole] = useState<Role | "">("");
-  const [routePermissions, setRoutePermissions] = useState<RoutePermission[]>(
-    []
-  );
+  const [routePermissions, setRoutePermissions] = useState<RoutePermission[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     branchId: "",
+    outletId: "",
     userType: "staff",
     role: "",
     permissions: [],
@@ -58,6 +58,16 @@ const CreateStaff = () => {
       const response = await axiosClient.get("/branches");
       return response.data;
     },
+  });
+
+  const { data: outlets } = useQuery({
+    queryKey: ["branch-outlets", selectedBranchId],
+    queryFn: async () => {
+      if (!selectedBranchId) return [];
+      const response = await axiosClient.get("/outlets");
+      return response.data.filter((outlet: any) => outlet.branchId === selectedBranchId);
+    },
+    enabled: !!selectedBranchId,
   });
 
   const getNavigationByRole = (role: Role) => {
@@ -82,8 +92,7 @@ const CreateStaff = () => {
             name: sub?.name,
             href: sub?.href,
           }))
-        : // this is for the routes that do not have a subroutes
-          [
+        : [
             {
               name: item?.name,
               href: item?.href,
@@ -161,6 +170,15 @@ const CreateStaff = () => {
     }));
   };
 
+  const handleBranchChange = (branchId: string) => {
+    setSelectedBranchId(branchId);
+    setFormData(prev => ({
+      ...prev,
+      branchId,
+      outletId: "", // Reset outlet when branch changes
+    }));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-4">
@@ -214,9 +232,7 @@ const CreateStaff = () => {
             <Label htmlFor="branchId">Branch</Label>
             <Select
               value={formData.branchId}
-              onValueChange={(value) =>
-                handleChange({ target: { name: "branchId", value } })
-              }
+              onValueChange={handleBranchChange}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select branch" />
@@ -230,6 +246,29 @@ const CreateStaff = () => {
               </SelectContent>
             </Select>
           </div>
+
+          {formData.branchId && (
+            <div className="space-y-2">
+              <Label htmlFor="outletId">Outlet</Label>
+              <Select
+                value={formData.outletId}
+                onValueChange={(value) =>
+                  handleChange({ target: { name: "outletId", value } })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select outlet" />
+                </SelectTrigger>
+                <SelectContent>
+                  {outlets?.map((outlet: any) => (
+                    <SelectItem key={outlet.id} value={outlet.id}>
+                      {outlet.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Role</Label>
@@ -251,10 +290,7 @@ const CreateStaff = () => {
             <h2 className="text-lg font-semibold">Route Permissions</h2>
             <div className="space-y-4">
               {routePermissions.map((rp) => (
-                <div
-                  key={rp.route?.name}
-                  className="space-y-2 p-4 border rounded-lg"
-                >
+                <div key={rp.route?.name} className="space-y-2 p-4 border rounded-lg">
                   <h3 className="font-medium">{rp.route?.name}</h3>
                   <ToggleGroup type="multiple" className="justify-start">
                     <ToggleGroupItem
