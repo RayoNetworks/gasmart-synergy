@@ -458,7 +458,8 @@ axiosClient.interceptors.response.use(
     if (url === "/products") {
       if(method == 'get'){
         console.log('products')
-       mockResponse.data = [];
+       mockResponse.data = mockProducts;
+       console.log()
       }
       if(method =='post'){
         const newProduct = {
@@ -475,6 +476,7 @@ axiosClient.interceptors.response.use(
     if (url?.startsWith("/product-categories")) {
       if (method === "get") {
         mockResponse.data = mockProductCategories;
+        
       } else if (method === "post") {
         const newCategory = {
           id: (mockProductCategories.length + 1).toString(),

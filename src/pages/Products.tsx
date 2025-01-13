@@ -56,6 +56,9 @@ const Products = () => {
     },
   });
   const getBranchPrice = (product, branchId) => {
+// =======
+//   const getBranchPrice = (product: any, branchId: string) => {
+// >>>>>>> d6d744bacb5bde7fad21ebb8298f5df92d6f7b8b
     if (product.allBranches) {
       return parseFloat(product.basePrice);
     }
@@ -68,6 +71,7 @@ const Products = () => {
     const matchesBranch = selectedBranch === "all" || 
       (product.allBranches || product.branchPrices.some(bp => bp.branchId === selectedBranch));
     const matchesCategory = selectedCategory === "all" || product.categoryId === selectedCategory;
+    console.log(products)
     return matchesSearch && matchesBranch && matchesCategory;
   });
 
