@@ -25,6 +25,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
   Sheet,
@@ -192,30 +197,53 @@ const UserList = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setSelectedUser(user);
-                        setIsViewSheetOpen(true);
-                      }}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleViewBranch(user.branch?.id)}
-                    >
-                      <GitBranch className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleViewOutlet(user.outlet?.id)}
-                    >
-                      <Store className="h-4 w-4" />
-                    </Button>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setIsViewSheetOpen(true);
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-fit px-2 py-1">
+                        View Details
+                      </HoverCardContent>
+                    </HoverCard>
+
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewBranch(user.branch?.id)}
+                        >
+                          <GitBranch className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-fit px-2 py-1">
+                        View Branch
+                      </HoverCardContent>
+                    </HoverCard>
+
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewOutlet(user.outlet?.id)}
+                        >
+                          <Store className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-fit px-2 py-1">
+                        View Outlet
+                      </HoverCardContent>
+                    </HoverCard>
                   </div>
                 </TableCell>
               </TableRow>
