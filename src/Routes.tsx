@@ -27,6 +27,8 @@ import ViewProductVariations from "./pages/ViewProductVariations";
 import CreateOutlet from "./pages/CreateOutlet";
 import EditOutlet from "./pages/CreateOutlet";
 import BranchOutlets from "./pages/BranchOutlets";
+import Managers from "./pages/Managers";
+import CreateManager from "./pages/CreateManager";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -45,6 +47,8 @@ const getAdminRoutes = (role: Role) => (
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
     <Route path="crm/users" element={<UserList />} />
+    <Route path="crm/managers" element={<Managers />} />
+    <Route path="crm/managers/create" element={<CreateManager />} />
     <Route path="crm/customers" element={<Customers />} />
     <Route path="crm/customers/:id/edit" element={<EditCustomer />} />
     <Route path="crm/customers/:id/products" element={<CustomerProducts />} />

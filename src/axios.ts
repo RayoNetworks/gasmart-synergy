@@ -383,6 +383,36 @@ const mockOutlets = [
   },
 ];
 
+const mockManagers = [
+  {
+    id: "1",
+    name: "John Smith",
+    email: "john.smith@example.com",
+    phone: "+234 801 234 5678",
+    userType: "manager",
+    managerType: "branch_manager",
+    branchId: "1",
+    branch: {
+      id: "1",
+      name: "Main Branch",
+      address: "123 Main Street, Lagos",
+    },
+  },
+  {
+    id: "2",
+    name: "Sarah Johnson",
+    email: "sarah.johnson@example.com",
+    phone: "+234 802 345 6789",
+    userType: "manager",
+    managerType: "outlet_manager",
+    outletId: "1",
+    outlet: {
+      id: "1",
+      name: "Lagos Central Outlet",
+    },
+  },
+];
+
 // Create axios instance
 export const axiosClient = axios.create({
   baseURL: "",
@@ -408,6 +438,51 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
+
+    // Handle manager-related requests
+    if (url?.startsWith("/users")) {
+      if (method === "get") {
+        const { userType } = response.config.params || {};
+        if (userType === "manager") {
+          mockResponse.data = mockManagers;
+        }
+      } else if (method === "post") {
+        const userData = JSON.parse(response.config.data);
+        if (userData.userType === "manager") {
+          const newManager = {
+            id: (mockManagers.length + 1).toString(),
+            ...userData,
+            createdAt: new Date().toISOString().split("T")[0],
+          };
+          mockManagers.push(newManager);
+          mockResponse.data = newManager;
+        }
+      }
+    }
+
+    // Handle unassigned branches request
+    if (url === "/branches" && method === "get") {
+      const { hasManager } = response.config.params || {};
+      if (hasManager === false) {
+        mockResponse.data = mockBranches.filter(
+          branch => !mockManagers.some(manager => 
+            manager.managerType === "branch_manager" && manager.branchId === branch.id
+          )
+        );
+      }
+    }
+
+    // Handle unassigned outlets request
+    if (url === "/outlets" && method === "get") {
+      const { hasManager } = response.config.params || {};
+      if (hasManager === false) {
+        mockResponse.data = mockOutlets.filter(
+          outlet => !mockManagers.some(manager => 
+            manager.managerType === "outlet_manager" && manager.outletId === outlet.id
+          )
+        );
+      }
+    }
 
     // Handle outlets requests
     if (url?.startsWith('/outlets')) {
