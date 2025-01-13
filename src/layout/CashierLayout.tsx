@@ -4,13 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { logout } from "@/utils/auth";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import Receipt from "@/components/Receipt";
 import { 
   LogOut, 
   Fuel, 
   Plus, 
   Search, 
   CreditCard, 
-  Receipt,
+  Receipt as ReceiptIcon,
   Printer,
   Ban,
   ShoppingCart,
@@ -53,6 +54,8 @@ const CashierLayout = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [quantity, setQuantity] = useState<number>(0);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState<any>(null);
 
   // Fetch fuel products
   const { data: fuelProducts } = useQuery({
@@ -147,24 +150,32 @@ const CashierLayout = () => {
       return;
     }
 
-    // Here you would typically integrate with a payment gateway
-    toast({
-      title: "Processing Payment",
-      description: "Payment processing initiated",
-    });
-  };
+    // Create order details for receipt
+    const orderDetails = {
+      orderId: orderId,
+      items: cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total
+      })),
+      subtotal: calculateSubTotal(),
+      tax: calculateTax(),
+      total: calculateTotal(),
+      cashier: "John Doe", // Replace with actual cashier name
+      date: new Date().toLocaleString()
+    };
 
-  const handlePrintReceipt = () => {
-    if (cart.length === 0) {
-      toast({
-        title: "Error",
-        description: "No items to print",
-        variant: "destructive",
-      });
-      return;
-    }
-    // Implement receipt printing logic
-    window.print();
+    setCurrentOrder(orderDetails);
+    setShowReceipt(true);
+    
+    // Clear cart after payment
+    setCart([]);
+    
+    toast({
+      title: "Success",
+      description: "Payment processed successfully",
+    });
   };
 
   const clearCart = () => {
@@ -344,19 +355,11 @@ const CashierLayout = () => {
               Hold
             </Button>
             <Button className="flex items-center gap-2" variant="outline">
-              <Receipt className="h-4 w-4" />
+              <ReceiptIcon className="h-4 w-4" />
               Quotation
             </Button>
             <Button 
               className="flex items-center gap-2" 
-              variant="outline"
-              onClick={handlePrintReceipt}
-            >
-              <Printer className="h-4 w-4" />
-              Print
-            </Button>
-            <Button 
-              className="flex items-center gap-2 col-span-2" 
               variant="default"
               onClick={handlePayment}
             >
@@ -366,6 +369,15 @@ const CashierLayout = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Receipt component */}
+      {currentOrder && (
+        <Receipt
+          isOpen={showReceipt}
+          onClose={() => setShowReceipt(false)}
+          orderDetails={currentOrder}
+        />
+      )}
     </div>
   );
 };

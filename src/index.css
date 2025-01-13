@@ -91,4 +91,21 @@
     transform: translateX(-100%);
     animation: slideIn 0.5s ease-out forwards;
   }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #receipt,
+    #receipt * {
+      visibility: visible;
+    }
+    #receipt {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 80mm; /* Standard thermal receipt width */
+      padding: 1rem;
+    }
+  }
 }
