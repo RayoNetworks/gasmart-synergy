@@ -23,7 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Eye, Box, Building2, MoreHorizontal } from "lucide-react";
+import { Eye, Store, User, MoreHorizontal } from "lucide-react";
 
 interface SaleReturn {
   id: string;
@@ -32,10 +32,23 @@ interface SaleReturn {
   returnDate: string;
   reason: string;
   branchId: string;
+  outletId: string;
   branch: {
     id: string;
     name: string;
     address: string;
+  };
+  outlet: {
+    id: string;
+    name: string;
+    location: string;
+  };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    role: string;
   };
 }
 
@@ -57,6 +70,16 @@ const SalesReturn = () => {
     navigate(`/admin/branch`);
   };
 
+  const handleViewOutlet = (outletId: string) => {
+    navigate(`/admin/outlets`);
+    localStorage.setItem('viewOutletId', outletId);
+  };
+
+  const handleViewUser = (userId: string) => {
+    navigate(`/admin/crm/users`);
+    localStorage.setItem('viewUserId', userId);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -73,6 +96,8 @@ const SalesReturn = () => {
             <TableHead>Return Date</TableHead>
             <TableHead>Reason</TableHead>
             <TableHead>Branch</TableHead>
+            <TableHead>Outlet</TableHead>
+            <TableHead>Cashier</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -84,6 +109,13 @@ const SalesReturn = () => {
               <TableCell>{saleReturn.returnDate}</TableCell>
               <TableCell>{saleReturn.reason}</TableCell>
               <TableCell>{saleReturn.branch.name}</TableCell>
+              <TableCell>{saleReturn.outlet.name}</TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  <span>{saleReturn.user.name}</span>
+                  <span className="text-sm text-gray-500">{saleReturn.user.email}</span>
+                </div>
+              </TableCell>
               <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -102,16 +134,16 @@ const SalesReturn = () => {
                       View Details
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => navigate(`/admin/products/${saleReturn.id}`)}
+                      onClick={() => handleViewOutlet(saleReturn.outletId)}
                     >
-                      <Box className="mr-2 h-4 w-4" />
-                      View Product
+                      <Store className="mr-2 h-4 w-4" />
+                      View Outlet
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => handleViewBranch(saleReturn.branchId)}
+                      onClick={() => handleViewUser(saleReturn.user.id)}
                     >
-                      <Building2 className="mr-2 h-4 w-4" />
-                      View Branch
+                      <User className="mr-2 h-4 w-4" />
+                      View Cashier
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -149,6 +181,17 @@ const SalesReturn = () => {
                 <h4 className="font-medium">Branch Information</h4>
                 <p>{selectedReturn.branch.name}</p>
                 <p>{selectedReturn.branch.address}</p>
+              </div>
+              <div>
+                <h4 className="font-medium">Outlet Information</h4>
+                <p>{selectedReturn.outlet.name}</p>
+                <p>{selectedReturn.outlet.location}</p>
+              </div>
+              <div>
+                <h4 className="font-medium">Cashier Information</h4>
+                <p>{selectedReturn.user.name}</p>
+                <p>{selectedReturn.user.email}</p>
+                <p>{selectedReturn.user.phone}</p>
               </div>
             </div>
           )}

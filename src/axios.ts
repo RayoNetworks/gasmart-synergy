@@ -416,10 +416,23 @@ const mockSalesReturns = [
     returnDate: "2024-02-15",
     reason: "Defective valve",
     branchId: "1",
+    outletId: "1",
     branch: {
       id: "1",
       name: "Main Branch",
       address: "123 Main Street, Lagos",
+    },
+    outlet: {
+      id: "1",
+      name: "Lagos Central Outlet",
+      location: "Victoria Island, Lagos",
+    },
+    user: {
+      id: "1",
+      name: "John Doe",
+      email: "john@example.com",
+      phone: "+234 123 4567",
+      role: "cashier"
     }
   },
   {
@@ -429,10 +442,23 @@ const mockSalesReturns = [
     returnDate: "2024-02-14",
     reason: "Contaminated fuel",
     branchId: "2",
+    outletId: "2",
     branch: {
       id: "2",
       name: "Port Harcourt Branch",
       address: "456 Marina Road, Port Harcourt",
+    },
+    outlet: {
+      id: "2",
+      name: "PH Waterfront Outlet",
+      location: "Waterfront, Port Harcourt",
+    },
+    user: {
+      id: "2",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      phone: "+234 987 6543",
+      role: "cashier"
     }
   },
 ];
