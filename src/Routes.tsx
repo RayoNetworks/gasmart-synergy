@@ -34,7 +34,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="products/edit/:id" element={<CreateProduct />} />
     <Route path="products/variation/:id" element={<ProductVariation />} />
     <Route path="products/categories" element={<ProductCategories />} />
-    <Route path="products/variation" element={<div>Product Variation</div>} />
+    <Route path="products/variation" element={<ProductVariation/>} />
     <Route path="reports" element={<Reports />} />
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
