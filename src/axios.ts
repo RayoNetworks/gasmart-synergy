@@ -3,589 +3,7 @@ import {
   refresh_token as refreshToken,
   token as Token,
 } from "./common/constants/auth";
-
-// Mock data
-const mockCustomers = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+234 123 4567",
-    address: "123 Main St, Lagos",
-    branchId: "1",
-    outletId: "1",
-    branch: {
-      id: "1",
-      name: "Main Branch",
-      address: "123 Main Street, Lagos",
-    },
-    outlet: {
-      id: "1",
-      name: "Lagos Central Outlet",
-      location: "Victoria Island, Lagos",
-    },
-    createdAt: "2024-03-15",
-    status: "active"
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    phone: "+234 987 6543",
-    address: "456 Oak Ave, Abuja",
-    branchId: "2",
-    outletId: "2",
-    branch: {
-      id: "2",
-      name: "Port Harcourt Branch",
-      address: "456 Marina Road, Port Harcourt",
-    },
-    outlet: {
-      id: "2",
-      name: "PH Waterfront Outlet",
-      location: "Waterfront, Port Harcourt",
-    },
-    createdAt: "2024-03-16",
-    status: "active"
-  },
-  {
-    id: "3",
-    name: "Timothy Avell",
-    email: "tim@example.com",
-    phone: "+234 555 1234",
-    address: "789 Pine Rd, Port Harcourt",
-    branchId: "3",
-    outletId: "3",
-    branch: {
-      id: "3",
-      name: "Abuja Branch",
-      address: "789 Capital Way, Abuja",
-    },
-    outlet: {
-      id: "3",
-      name: "Abuja Central Outlet",
-      location: "Central Business District, Abuja",
-    },
-    createdAt: "2024-03-17",
-    status: "inactive"
-  },
-];
-
-const mockProducts = [
-  {
-    id: "1",
-    name: "LPG Cylinder 13kg",
-    categoryId: "3",
-    category: {
-      id: "3",
-      name: "LPG Products"
-    },
-    allBranches: false,
-    basePrice: null,
-    availableBranches: [
-      { id: "1", name: "Main Branch" },
-      { id: "2", name: "Port Harcourt Branch" },
-      { id: "3", name: "Abuja Branch" }
-    ],
-    branchPrices: [
-      { branchId: "1", price: "60.00", categoryId: "3" },
-      { branchId: "2", price: "62.00", categoryId: "3" },
-      { branchId: "3", price: "61.50", categoryId: "3" }
-    ],
-    variations: [
-      {
-        id: "1",
-        type: "cooking_gas",
-        name: "3kg Cylinder",
-        allBranches: false,
-        basePrice: null,
-        branchPrices: [
-          { branchId: "1", price: "25.00" },
-          { branchId: "2", price: "26.00" },
-          { branchId: "3", price: "25.50" }
-        ]
-      },
-      {
-        id: "2",
-        type: "cooking_gas",
-        name: "6kg Cylinder",
-        allBranches: false,
-        basePrice: null,
-        branchPrices: [
-          { branchId: "1", price: "35.00" },
-          { branchId: "2", price: "36.00" },
-          { branchId: "3", price: "35.50" }
-        ]
-      }
-    ],
-    stock: 48,
-    status: "In Stock",
-    price: 60.00
-  },
-  {
-    id: "2",
-    name: "Diesel",
-    categoryId: "1",
-    category: {
-      id: "1",
-      name: "Petroleum Products"
-    },
-    allBranches: true,
-    basePrice: "550.50",
-    availableBranches: ["*"],
-    branchPrices: [],
-    variations: [
-      {
-        id: "1",
-        type: "diesel",
-        name: "Bulk Purchase (>1000L)",
-        allBranches: true,
-        basePrice: "540.00",
-        branchPrices: []
-      },
-      {
-        id: "2",
-        type: "diesel",
-        name: "Wholesale (>500L)",
-        allBranches: true,
-        basePrice: "545.00",
-        branchPrices: []
-      }
-    ],
-    stock: 2500,
-    status: "In Stock",
-    price: 550.50
-  },
-  {
-    id: "3",
-    name: "Petrol",
-    categoryId: "1",
-    category: {
-      id: "1",
-      name: "Petroleum Products"
-    },
-    allBranches: true,
-    basePrice: "600.00",
-    availableBranches: ["*"],
-    branchPrices: [],
-    variations: [
-      {
-        id: "1",
-        type: "petrol",
-        name: "Bulk Purchase (>1000L)",
-        allBranches: true,
-        basePrice: "590.00",
-        branchPrices: []
-      }
-    ],
-    stock: 1800,
-    status: "In Stock",
-    price: 600.00
-  }
-];
-
-const mockBranches = [
-  {
-    id: "1",
-    name: "Main Branch",
-    address: "123 Main Street, Lagos",
-    phone: "+234 801 234 5678",
-    email: "main@example.com",
-    manager: "John Doe",
-    status: "active",
-    createdAt: "2024-01-15",
-  },
-  {
-    id: "2",
-    name: "Port Harcourt Branch",
-    address: "456 Marina Road, Port Harcourt",
-    phone: "+234 802 345 6789",
-    email: "ph@example.com",
-    manager: "Jane Smith",
-    status: "active",
-    createdAt: "2024-02-01",
-  },
-  {
-    id: "3",
-    name: "Abuja Branch",
-    address: "789 Capital Way, Abuja",
-    phone: "+234 803 456 7890",
-    email: "abuja@example.com",
-    manager: "Mike Johnson",
-    status: "inactive",
-    createdAt: "2024-02-10",
-  },
-];
-
-const mockUsers = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+234 123 4567",
-    userType: "staff",
-    role: "admin",
-    branchId: "1",
-    outletId: "1",
-    branch: {
-      id: "1",
-      name: "Main Branch",
-      address: "123 Main Street, Lagos",
-    },
-    outlet: {
-      id: "1",
-      name: "Lagos Central Outlet",
-      location: "Victoria Island, Lagos",
-    },
-    permissions: [
-      {
-        route: {
-          name: "Dashboard",
-          href: "/admin/dashboard"
-        },
-        permissions: {
-          create: true,
-          read: true,
-          update: true,
-          delete: true
-        }
-      },
-      {
-        route: {
-          name: "Products",
-          href: "/admin/products"
-        },
-        permissions: {
-          create: true,
-          read: true,
-          update: true,
-          delete: false
-        }
-      }
-    ],
-    createdAt: "2024-01-15",
-    status: "active"
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    phone: "+234 987 6543",
-    userType: "staff",
-    role: "cashier",
-    branchId: "2",
-    outletId: "2",
-    branch: {
-      id: "2",
-      name: "Port Harcourt Branch",
-      address: "456 Marina Road, Port Harcourt",
-    },
-    outlet: {
-      id: "2",
-      name: "PH Waterfront Outlet",
-      location: "Waterfront, Port Harcourt",
-    },
-    permissions: [
-      {
-        route: {
-          name: "Sales",
-          href: "/cashier/sales"
-        },
-        permissions: {
-          create: true,
-          read: true,
-          update: false,
-          delete: false
-        }
-      }
-    ],
-    createdAt: "2024-02-01",
-    status: "active"
-  },
-  {
-    id: "3",
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    phone: "+234 555 1234",
-    userType: "staff",
-    role: "auditor",
-    branchId: "3",
-    outletId: "3",
-    branch: {
-      id: "3",
-      name: "Abuja Branch",
-      address: "789 Capital Way, Abuja",
-    },
-    outlet: {
-      id: "3",
-      name: "Abuja Central Outlet",
-      location: "Central Business District, Abuja",
-    },
-    permissions: [
-      {
-        route: {
-          name: "Reports",
-          href: "/auditor/reports"
-        },
-        permissions: {
-          create: false,
-          read: true,
-          update: false,
-          delete: false
-        }
-      }
-    ],
-    createdAt: "2024-02-10",
-    status: "active"
-  }
-];
-
-const mockSales = [
-  {
-    id: 1,
-    product: "LPG Cylinder 13kg",
-    quantity: 2,
-    amount: 120.00,
-    date: "2024-03-20",
-    status: "Completed",
-    branch: {
-      id: "1",
-      name: "Main Branch",
-    },
-    outlet: {
-      id: "1",
-      name: "Lagos Central Outlet",
-      location: "Victoria Island, Lagos",
-    },
-    user: {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+234 123 4567",
-      role: "cashier"
-    }
-  },
-  {
-    id: 2,
-    product: "Diesel",
-    quantity: 50,
-    amount: 275.50,
-    date: "2024-03-20",
-    status: "Completed",
-    branch: {
-      id: "2",
-      name: "Port Harcourt Branch",
-    },
-    outlet: {
-      id: "2",
-      name: "PH Waterfront Outlet",
-      location: "Waterfront, Port Harcourt",
-    },
-    user: {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      phone: "+234 987 6543",
-      role: "cashier"
-    }
-  },
-  {
-    id: 3,
-    product: "Petrol",
-    quantity: 30,
-    amount: 180.00,
-    date: "2024-03-19",
-    status: "Completed",
-    branch: {
-      id: "3",
-      name: "Abuja Branch",
-    },
-    outlet: {
-      id: "3",
-      name: "Abuja Central Outlet",
-      location: "Central Business District, Abuja",
-    },
-    user: {
-      id: "3",
-      name: "Mike Johnson",
-      email: "mike@example.com",
-      phone: "+234 555 1234",
-      role: "cashier"
-    }
-  }
-];
-
-const mockSalesReturns = [
-  {
-    id: "1",
-    productName: "LPG Cylinder 13kg",
-    quantity: 1,
-    returnDate: "2024-02-15",
-    reason: "Defective valve",
-    branchId: "1",
-    outletId: "1",
-    branch: {
-      id: "1",
-      name: "Main Branch",
-      address: "123 Main Street, Lagos",
-    },
-    outlet: {
-      id: "1",
-      name: "Lagos Central Outlet",
-      location: "Victoria Island, Lagos",
-    },
-    user: {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+234 123 4567",
-      role: "cashier"
-    }
-  },
-  {
-    id: "2",
-    productName: "Diesel",
-    quantity: 20,
-    returnDate: "2024-02-14",
-    reason: "Contaminated fuel",
-    branchId: "2",
-    outletId: "2",
-    branch: {
-      id: "2",
-      name: "Port Harcourt Branch",
-      address: "456 Marina Road, Port Harcourt",
-    },
-    outlet: {
-      id: "2",
-      name: "PH Waterfront Outlet",
-      location: "Waterfront, Port Harcourt",
-    },
-    user: {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      phone: "+234 987 6543",
-      role: "cashier"
-    }
-  },
-];
-
-const mockProductCategories = [
-  {
-    id: "1",
-    name: "Petroleum Products",
-    description: "Includes petrol, diesel, and kerosene",
-    createdAt: "2024-02-15",
-  },
-  {
-    id: "2",
-    name: "Lubricants",
-    description: "Engine oils and other lubricants",
-    createdAt: "2024-02-15",
-  },
-  {
-    id: "3",
-    name: "LPG Products",
-    description: "Cooking gas and related accessories",
-    createdAt: "2024-02-15",
-  },
-];
-
-const mockOutlets = [
-  {
-    id: "1",
-    name: "Lagos Central Outlet",
-    location: "Victoria Island, Lagos",
-    branchId: "1",
-    branch: {
-      id: "1",
-      name: "Main Branch",
-    },
-    manager: "John Smith",
-    phone: "+234 801 234 5678",
-    email: "lagos.central@example.com",
-    status: "active",
-  },
-  {
-    id: "2",
-    name: "PH Waterfront Outlet",
-    location: "Waterfront, Port Harcourt",
-    branchId: "2",
-    branch: {
-      id: "2",
-      name: "Port Harcourt Branch",
-    },
-    manager: "Sarah Johnson",
-    phone: "+234 802 345 6789",
-    email: "ph.waterfront@example.com",
-    status: "active",
-  },
-  {
-    id: "3",
-    name: "Abuja Central Outlet",
-    location: "Central Business District, Abuja",
-    branchId: "3",
-    branch: {
-      id: "3",
-      name: "Abuja Branch",
-    },
-    manager: "Michael Brown",
-    phone: "+234 803 456 7890",
-    email: "abuja.central@example.com",
-    status: "inactive",
-  },
-];
-
-const mockManagers = [
-  {
-    id: "1",
-    name: "John Smith",
-    email: "john.smith@example.com",
-    phone: "+234 801 234 5678",
-    userType: "manager",
-    managerType: "branch_manager",
-    branchId: "1",
-    branch: {
-      id: "1",
-      name: "Main Branch",
-      address: "123 Main Street, Lagos",
-    },
-    createdAt: "2024-03-15",
-    status: "active"
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    email: "sarah.johnson@example.com",
-    phone: "+234 802 345 6789",
-    userType: "manager",
-    managerType: "outlet_manager",
-    outletId: "1",
-    outlet: {
-      id: "1",
-      name: "Lagos Central Outlet",
-      location: "Victoria Island, Lagos",
-    },
-    createdAt: "2024-03-16",
-    status: "active"
-  },
-  {
-    id: "3",
-    name: "Michael Brown",
-    email: "michael.brown@example.com",
-    phone: "+234 803 456 7890",
-    userType: "manager",
-    managerType: "branch_manager",
-    branchId: "2",
-    branch: {
-      id: "2",
-      name: "Port Harcourt Branch",
-      address: "456 Marina Road, Port Harcourt",
-    },
-    createdAt: "2024-03-17",
-    status: "active"
-  }
-];
+import { mockTanks } from "./mocks/tankData";
 
 // Create axios instance
 export const axiosClient = axios.create({
@@ -595,12 +13,57 @@ export const axiosClient = axios.create({
   },
 });
 
+// Mock data for lubricants
+const mockLubricants = [
+  {
+    id: "LUB001",
+    name: "Premium Engine Oil",
+    type: "Engine Oil",
+    viscosity: "SAE 40",
+    price: 5000,
+    stock: 150,
+    status: "In Stock",
+  },
+  {
+    id: "LUB002",
+    name: "Brake Fluid",
+    type: "Brake Oil",
+    viscosity: "DOT 4",
+    price: 2500,
+    stock: 50,
+    status: "Low Stock",
+  },
+];
+
+// Mock data for fuel products
+const mockFuelProducts = [
+  {
+    id: "FUEL001",
+    name: "Premium Motor Spirit",
+    type: "PMS",
+    price: 617,
+    stock: 5000,
+    status: "In Stock",
+    tankId: "TNK001",
+  },
+  {
+    id: "FUEL002",
+    name: "Automotive Gas Oil",
+    type: "Diesel",
+    price: 950,
+    stock: 3000,
+    status: "In Stock",
+    tankId: "TNK002",
+  },
+];
+
 // Mock API interceptor
 axiosClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig<any>) => {
     const token = localStorage.getItem(Token) ?? "";
     const refresh_token = localStorage.getItem(refreshToken) ?? "";
     config.headers.Authorization = `Bearer ${token} ${refresh_token}`;
+    console.log("Making request to:", config.url);
     return config;
   }
 );
@@ -612,6 +75,7 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
+<<<<<<< HEAD
     // this is for the manager related route request
     if (url?.startsWith("/managers")) {
       if (method == "get") {
@@ -987,10 +451,25 @@ axiosClient.interceptors.response.use(
     if (url === "/outlets") {
       mockResponse.data = mockOutlets;
     }
+=======
+>>>>>>> ca22cea9a0613abec7337fba97e2c6b52fd8f5fd
 
     // Handle tanks requests
     if (url === "/tanks") {
+      console.log("Mocking tanks response with data:", mockTanks);
       mockResponse.data = mockTanks;
+    }
+
+    // Handle lubricants requests
+    if (url === "/lubricants") {
+      console.log("Mocking lubricants response with data:", mockLubricants);
+      mockResponse.data = mockLubricants;
+    }
+
+    // Handle fuel products requests
+    if (url === "/fuel-products") {
+      console.log("Mocking fuel products response with data:", mockFuelProducts);
+      mockResponse.data = mockFuelProducts;
     }
 
     return mockResponse;
@@ -1011,71 +490,3 @@ axiosClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-const mockTanks = [
-  {
-    id: "1",
-    name: "Tank 01",
-    product: "Premium Motor Spirit",
-    capacity: 50000,
-    currentLevel: 75,
-    lastDelivery: "2024-03-15",
-    status: "ACTIVE",
-    deliveryLogs: [
-      {
-        id: "DL001",
-        date: "2024-03-15",
-        quantity: 25000,
-        supplier: "PetroSupply Ltd",
-        productType: "Premium Motor Spirit",
-        status: "COMPLETED"
-      },
-      {
-        id: "DL002",
-        date: "2024-03-10",
-        quantity: 30000,
-        supplier: "PetroSupply Ltd",
-        productType: "Premium Motor Spirit",
-        status: "COMPLETED"
-      }
-    ]
-  },
-  {
-    id: "2",
-    name: "Tank 02",
-    product: "Automotive Gas Oil",
-    capacity: 40000,
-    currentLevel: 15,
-    lastDelivery: "2024-03-12",
-    status: "ACTIVE",
-    deliveryLogs: [
-      {
-        id: "DL003",
-        date: "2024-03-12",
-        quantity: 20000,
-        supplier: "FuelMasters Co",
-        productType: "Automotive Gas Oil",
-        status: "COMPLETED"
-      }
-    ]
-  },
-  {
-    id: "3",
-    name: "Tank 03",
-    product: "Kerosene",
-    capacity: 30000,
-    currentLevel: 45,
-    lastDelivery: "2024-03-14",
-    status: "MAINTENANCE",
-    deliveryLogs: [
-      {
-        id: "DL004",
-        date: "2024-03-14",
-        quantity: 15000,
-        supplier: "EnergyFuel Inc",
-        productType: "Kerosene",
-        status: "COMPLETED"
-      }
-    ]
-  }
-];

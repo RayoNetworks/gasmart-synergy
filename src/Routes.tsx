@@ -30,6 +30,13 @@ import BranchOutlets from "./pages/BranchOutlets";
 import Managers from "./pages/Managers";
 import CreateManager from "./pages/CreateManager";
 import PumpManagement from "@/pages/PumpManagement";
+import TankManagement from "./pages/TankManagement";
+import LubricantsManagement from "./pages/LubricantsManagement";
+import FuelProducts from "./pages/FuelProducts";
+import FleetTracking from "./pages/FleetTracking";
+import GeoFencing from "./pages/GeoFencing";
+import FleetNotifications from "./pages/FleetNotifications";
+import RoutePlanning from "./pages/RoutePlanning";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -41,13 +48,21 @@ const getAdminRoutes = (role: Role) => (
     <Route path="products/create" element={<CreateProduct />} />
     <Route path="products/edit/:id" element={<CreateProduct />} />
     <Route path="products/variation" element={<ProductVariation />} />
-    <Route path="products/variation/:id/create" element={<CreateProductVariation />} />
-    <Route path="products/variation/:id/view" element={<ViewProductVariations />} />
+    <Route path="products/lubricants" element={<LubricantsManagement />} />
+    <Route path="products/fuel" element={<FuelProducts />} />
+    <Route
+      path="products/variation/:id/create"
+      element={<CreateProductVariation />}
+    />
+    <Route
+      path="products/variation/:id/view"
+      element={<ViewProductVariations />}
+    />
     <Route path="products/categories" element={<ProductCategories />} />
     <Route path="reports" element={<Reports />} />
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
-    <Route path="assets/tanks" element={<div>Tank Management</div>} />
+    <Route path="assets/tanks" element={<TankManagement />} />
     <Route path="assets/pumps" element={<PumpManagement />} />
     <Route path="crm/users" element={<UserList />} />
     <Route path="crm/managers" element={<Managers />} />
@@ -66,6 +81,10 @@ const getAdminRoutes = (role: Role) => (
     <Route path="branch/:id/edit" element={<EditBranch />} />
     <Route path="branch/:id/outlets" element={<BranchOutlets />} />
     <Route path="settings" element={<Settings />} />
+    <Route path="fleet/tracking" element={<FleetTracking />} />
+    <Route path="fleet/geofencing" element={<GeoFencing />} />
+    <Route path="fleet/notifications" element={<FleetNotifications />} />
+    <Route path="fleet/routes" element={<RoutePlanning />} />
   </Route>
 );
 
