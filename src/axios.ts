@@ -449,8 +449,9 @@ axiosClient.interceptors.response.use(
         let filteredManagers = [...mockManagers];
         
         if (managerType) {
-          filteredManagers = filteredManagers.filter(
-            manager => manager.managerType === managerType
+          filteredManagers = filteredManagers.filter((manager) =>
+          // this is to filter the manager based on the manager type and add a fall back, if the admin selects all.
+            managerType == "all" ? manager : manager.managerType === managerType
           );
         }
         
