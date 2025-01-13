@@ -12,45 +12,63 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { axiosClient } from "@/axios";
+import { useQuery } from "@tanstack/react-query";
 
 const Products = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const products = [
-    {
-      id: 1,
-      name: "LPG Cylinder 13kg",
-      type: "LPG",
-      stock: 48,
-      price: 60.00,
-      status: "In Stock"
-    },
-    {
-      id: 2,
-      name: "LPG Cylinder 5kg",
-      type: "LPG",
-      stock: 12,
-      price: 25.00,
-      status: "Low Stock"
-    },
-    {
-      id: 3,
-      name: "Diesel",
-      type: "Petroleum",
-      stock: 2500,
-      price: 5.51,
-      status: "In Stock"
-    },
-    {
-      id: 4,
-      name: "Petrol",
-      type: "Petroleum",
-      stock: 1800,
-      price: 6.00,
-      status: "In Stock"
+  // Fetch branches
+  const { data: branches } = useQuery({
+    queryKey: ['branches'],
+    queryFn: async () => {
+      const response = await axiosClient.get('/branches');
+      return response.data;
     }
-  ];
+  });
+
+  // Fetch categories
+  const { data: categories } = useQuery({
+    queryKey: ['product-categories'],
+    queryFn: async () => {
+      const response = await axiosClient.get('/product-categories');
+      return response.data;
+    }
+  });
+
+  // Fetch products
+  const { data: products } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const response = await axiosClient.get('/products');
+      return response.data;
+    }
+  });
+
+  // Filter products based on search term, branch, and category
+  const filteredProducts = products?.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesBranch = !selectedBranch || product.branchId === selectedBranch;
+    const matchesCategory = !selectedCategory || product.categoryId === selectedCategory;
+    return matchesSearch && matchesBranch && matchesCategory;
+  });
+
+  const getBranchPrice = (product, branchId) => {
+    if (product.branchPrices && product.branchPrices[branchId]) {
+      return product.branchPrices[branchId];
+    }
+    return product.price;
+  };
 
   return (
     <div className="space-y-6">
@@ -61,13 +79,41 @@ const Products = () => {
         </Button>
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
         <Input
           placeholder="Search products..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
+          className="md:w-1/3"
         />
+        
+        <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+          <SelectTrigger className="md:w-1/3">
+            <SelectValue placeholder="Filter by branch" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Branches</SelectItem>
+            {branches?.map((branch) => (
+              <SelectItem key={branch.id} value={branch.id}>
+                {branch.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <SelectTrigger className="md:w-1/3">
+            <SelectValue placeholder="Filter by category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Categories</SelectItem>
+            {categories?.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="rounded-md border">
@@ -75,19 +121,23 @@ const Products = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Stock</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead>Price</TableHead>
+              <TableHead>Stock</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {filteredProducts?.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>{product.type}</TableCell>
+                <TableCell>{product.category?.name || 'Uncategorized'}</TableCell>
+                <TableCell>
+                  ₦{selectedBranch 
+                    ? getBranchPrice(product, selectedBranch).toFixed(2)
+                    : product.price.toFixed(2)}
+                </TableCell>
                 <TableCell>{product.stock}</TableCell>
-                <TableCell>₦{product.price.toFixed(2)}</TableCell>
                 <TableCell>
                   <Badge variant={product.status === "Low Stock" ? "destructive" : "default"}>
                     {product.status}

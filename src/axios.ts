@@ -52,23 +52,53 @@ const mockProducts = [
     id: "1",
     name: "LPG Cylinder 13kg",
     price: 60.00,
-    quantity: 2,
-    purchaseDate: "2024-02-15",
+    categoryId: "3",
+    category: {
+      id: "3",
+      name: "LPG Products"
+    },
+    stock: 48,
+    status: "In Stock",
+    branchPrices: {
+      "1": 60.00,
+      "2": 62.00,
+      "3": 61.50
+    }
   },
   {
     id: "2",
     name: "Diesel",
     price: 550.50,
-    quantity: 100,
-    purchaseDate: "2024-02-10",
+    categoryId: "1",
+    category: {
+      id: "1",
+      name: "Petroleum Products"
+    },
+    stock: 2500,
+    status: "In Stock",
+    branchPrices: {
+      "1": 550.50,
+      "2": 552.00,
+      "3": 551.00
+    }
   },
   {
     id: "3",
     name: "Petrol",
     price: 600.00,
-    quantity: 50,
-    purchaseDate: "2024-02-01",
-  },
+    categoryId: "1",
+    category: {
+      id: "1",
+      name: "Petroleum Products"
+    },
+    stock: 1800,
+    status: "In Stock",
+    branchPrices: {
+      "1": 600.00,
+      "2": 602.00,
+      "3": 601.00
+    }
+  }
 ];
 
 const mockBranches = [
