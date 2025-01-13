@@ -149,6 +149,35 @@ const mockUsers = [
   },
 ];
 
+const mockSalesReturns = [
+  {
+    id: "1",
+    productName: "LPG Cylinder 13kg",
+    quantity: 1,
+    returnDate: "2024-02-15",
+    reason: "Defective valve",
+    branchId: "1",
+    branch: {
+      id: "1",
+      name: "Main Branch",
+      address: "123 Main Street, Lagos",
+    }
+  },
+  {
+    id: "2",
+    productName: "Diesel",
+    quantity: 20,
+    returnDate: "2024-02-14",
+    reason: "Contaminated fuel",
+    branchId: "2",
+    branch: {
+      id: "2",
+      name: "Port Harcourt Branch",
+      address: "456 Marina Road, Port Harcourt",
+    }
+  },
+];
+
 // Create axios instance
 export const axiosClient = axios.create({
   baseURL: "",
@@ -174,6 +203,11 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
+
+    // Handle sales returns requests
+    if (url === '/sales-returns') {
+      mockResponse.data = mockSalesReturns;
+    }
 
     // Handle branch-related requests
     if (url?.startsWith('/branches')) {

@@ -15,6 +15,7 @@ import EditBranch from "./pages/EditBranch";
 import CreateBranch from "./pages/CreateBranch";
 import Locations from "./pages/Locations";
 import UserList from "./pages/UserList";
+import SalesReturn from "./pages/SalesReturn";
 
 import Staff from "./pages/Staff";
 import CreateStaff from "./pages/CreateStaff";
@@ -24,7 +25,7 @@ const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
     <Route index element={<Dashboard />} />
     <Route path="sales" element={<Sales />} />
-    <Route path="sales/return" element={<div>Sale Return</div>} />
+    <Route path="sales/return" element={<SalesReturn />} />
     <Route path="sales/quotation" element={<div>Quotation</div>} />
     <Route path="products" element={<Products />} />
     <Route path="products/variation" element={<div>Product Variation</div>} />
