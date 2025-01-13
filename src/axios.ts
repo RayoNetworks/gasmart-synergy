@@ -104,7 +104,9 @@ const mockProducts = [
     status: "In Stock",
     stock: 1000,
     category: mockProductCategories[0],
-    branchPrices: []
+    branchPrices: [],
+    branch: null,
+    outlet: null
   },
   {
     id: "PRD002",
@@ -120,7 +122,26 @@ const mockProducts = [
     ],
     status: "In Stock",
     stock: 500,
-    category: mockProductCategories[1]
+    category: mockProductCategories[1],
+    branch: mockBranches[0],
+    outlet: mockOutlets[0]
+  },
+  {
+    id: "PRD003",
+    name: "Diesel Fuel",
+    categoryId: "CAT001",
+    description: "High-performance diesel fuel",
+    basePrice: 800,
+    price: 800,
+    allBranches: false,
+    branchPrices: [
+      { branchId: "BR001", price: 800 }
+    ],
+    status: "Low Stock",
+    stock: 100,
+    category: mockProductCategories[0],
+    branch: mockBranches[0],
+    outlet: mockOutlets[0]
   }
 ];
 
