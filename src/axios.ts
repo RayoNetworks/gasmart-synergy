@@ -149,6 +149,63 @@ const mockUsers = [
   },
 ];
 
+const mockSales = [
+  {
+    id: 1,
+    product: "LPG Cylinder 13kg",
+    quantity: 2,
+    amount: 120.00,
+    date: "2024-03-20",
+    status: "Completed",
+    branch: {
+      id: "1",
+      name: "Main Branch",
+    },
+    user: {
+      id: "1",
+      name: "John Doe",
+      email: "john@example.com",
+      phone: "+234 123 4567",
+    }
+  },
+  {
+    id: 2,
+    product: "Diesel",
+    quantity: 50,
+    amount: 275.50,
+    date: "2024-03-20",
+    status: "Completed",
+    branch: {
+      id: "2",
+      name: "Port Harcourt Branch",
+    },
+    user: {
+      id: "2",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      phone: "+234 987 6543",
+    }
+  },
+  {
+    id: 3,
+    product: "Petrol",
+    quantity: 30,
+    amount: 180.00,
+    date: "2024-03-19",
+    status: "Completed",
+    branch: {
+      id: "3",
+      name: "Abuja Branch",
+    },
+    user: {
+      id: "3",
+      name: "Mike Johnson",
+      email: "mike@example.com",
+      phone: "+234 555 1234",
+    }
+  }
+];
+
 const mockSalesReturns = [
   {
     id: "1",
@@ -203,6 +260,11 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
+
+    // Handle sales requests
+    if (url === '/sales') {
+      mockResponse.data = mockSales;
+    }
 
     // Handle sales returns requests
     if (url === '/sales-returns') {

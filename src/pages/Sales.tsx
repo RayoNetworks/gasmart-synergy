@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { axiosClient } from "@/axios";
 import {
   Table,
   TableBody,
@@ -15,57 +17,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, Eye } from "lucide-react";
+import { MoreHorizontal, Eye, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Sales = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock sales data with branch information
-  const sales = [
-    {
-      id: 1,
-      product: "LPG Cylinder 13kg",
-      quantity: 2,
-      amount: 120.00,
-      date: "2024-03-20",
-      status: "Completed",
-      branch: {
-        id: "1",
-        name: "Main Branch",
-      }
+  const { data: sales } = useQuery({
+    queryKey: ["sales"],
+    queryFn: async () => {
+      const response = await axiosClient.get("/sales");
+      return response.data;
     },
-    {
-      id: 2,
-      product: "Diesel",
-      quantity: 50,
-      amount: 275.50,
-      date: "2024-03-20",
-      status: "Completed",
-      branch: {
-        id: "2",
-        name: "Port Harcourt Branch",
-      }
-    },
-    {
-      id: 3,
-      product: "Petrol",
-      quantity: 30,
-      amount: 180.00,
-      date: "2024-03-19",
-      status: "Completed",
-      branch: {
-        id: "3",
-        name: "Abuja Branch",
-      }
-    }
-  ];
+  });
 
   const handleViewBranch = (branchId: string) => {
     navigate(`/admin/branch`);
-    // The branch page will need to handle showing the view modal for the specific branch
     localStorage.setItem('viewBranchId', branchId);
+  };
+
+  const handleViewUser = (userId: string) => {
+    navigate(`/admin/crm/users`);
+    localStorage.setItem('viewUserId', userId);
   };
 
   return (
@@ -89,6 +63,7 @@ const Sales = () => {
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>Branch</TableHead>
+              <TableHead>Customer</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Date</TableHead>
@@ -97,10 +72,11 @@ const Sales = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sales.map((sale) => (
+            {sales?.map((sale: any) => (
               <TableRow key={sale.id}>
                 <TableCell>{sale.product}</TableCell>
                 <TableCell>{sale.branch.name}</TableCell>
+                <TableCell>{sale.user.name}</TableCell>
                 <TableCell>{sale.quantity}</TableCell>
                 <TableCell>₦{sale.amount.toFixed(2)}</TableCell>
                 <TableCell>{sale.date}</TableCell>
@@ -120,6 +96,10 @@ const Sales = () => {
                       <DropdownMenuItem onClick={() => handleViewBranch(sale.branch.id)}>
                         <Eye className="mr-2 h-4 w-4" />
                         View Branch
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewUser(sale.user.id)}>
+                        <User className="mr-2 h-4 w-4" />
+                        View User
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
