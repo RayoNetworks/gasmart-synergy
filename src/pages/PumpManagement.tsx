@@ -130,27 +130,65 @@ const PumpManagement = () => {
   const getPumpIcon = (status: Pump["status"]) => {
     if (status === "FUNCTIONING") {
       return (
-        <div className="relative w-32 h-40">
-          <div className="absolute bottom-0 w-full h-28 bg-gradient-to-b from-blue-400 to-blue-600 rounded-t-lg shadow-lg">
-            <div className="absolute top-0 right-6 w-6 h-20 bg-green-500 rounded-full shadow-inner animate-pulse">
-              <div className="absolute top-0 w-full h-full bg-gradient-to-b from-green-400 to-green-600 rounded-full" />
+        <div className="relative w-48 h-56 bg-gray-100 rounded-lg shadow-lg p-4">
+          {/* Digital Display */}
+          <div className="absolute top-4 left-4 right-4 h-24 bg-white border border-gray-200 rounded-md p-2">
+            <div className="flex flex-col items-end space-y-1">
+              <span className="font-mono text-2xl font-bold text-black">70.00</span>
+              <span className="font-mono text-xl text-gray-600">28.31</span>
+              <span className="font-mono text-sm text-gray-400">18.500</span>
             </div>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-20 h-3 bg-gray-800 rounded-full" />
           </div>
-          <div className="absolute bottom-0 w-full h-6 bg-gray-800 rounded-b-lg shadow-lg" />
-          <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-green-500 rounded-full animate-ping" />
+          
+          {/* Nozzle Icon */}
+          <div className="absolute right-4 top-32">
+            <div className="relative w-6 h-16">
+              <div className="absolute right-0 w-4 h-12 bg-green-500 rounded-full">
+                <div className="absolute top-0 w-full h-full bg-gradient-to-b from-green-400 to-green-600 rounded-full" />
+              </div>
+              <div className="absolute bottom-0 right-1 w-2 h-4 bg-gray-800 rounded-b-sm" />
+            </div>
+          </div>
+
+          {/* Status Indicator */}
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-xs text-gray-600">ACTIVE</span>
+            </div>
+          </div>
         </div>
       );
     } else {
       return (
-        <div className="relative w-32 h-40">
-          <div className="absolute bottom-0 w-full h-28 bg-gradient-to-b from-gray-400 to-gray-600 rounded-t-lg shadow-lg opacity-50">
-            <div className="absolute top-0 right-6 w-6 h-20 bg-red-500 rounded-full shadow-inner">
-              <div className="absolute top-0 w-full h-full bg-gradient-to-b from-red-400 to-red-600 rounded-full" />
+        <div className="relative w-48 h-56 bg-gray-100 rounded-lg shadow-lg p-4 opacity-50">
+          {/* Digital Display */}
+          <div className="absolute top-4 left-4 right-4 h-24 bg-white border border-gray-200 rounded-md p-2">
+            <div className="flex flex-col items-end space-y-1">
+              <span className="font-mono text-2xl font-bold text-gray-400">00.00</span>
+              <span className="font-mono text-xl text-gray-400">00.00</span>
+              <span className="font-mono text-sm text-gray-300">00.000</span>
             </div>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-20 h-3 bg-gray-800 rounded-full" />
           </div>
-          <div className="absolute bottom-0 w-full h-6 bg-gray-800 rounded-b-lg shadow-lg opacity-50" />
+          
+          {/* Nozzle Icon */}
+          <div className="absolute right-4 top-32">
+            <div className="relative w-6 h-16">
+              <div className="absolute right-0 w-4 h-12 bg-red-500 rounded-full">
+                <div className="absolute top-0 w-full h-full bg-gradient-to-b from-red-400 to-red-600 rounded-full" />
+              </div>
+              <div className="absolute bottom-0 right-1 w-2 h-4 bg-gray-800 rounded-b-sm" />
+            </div>
+          </div>
+
+          {/* Status Indicator */}
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full" />
+              <span className="text-xs text-gray-600">OFFLINE</span>
+            </div>
+          </div>
+
           <AlertCircle className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500 h-12 w-12" />
         </div>
       );
