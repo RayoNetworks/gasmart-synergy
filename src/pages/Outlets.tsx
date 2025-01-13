@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -33,6 +34,8 @@ interface Outlet {
 }
 
 const Outlets = () => {
+  const navigate = useNavigate();
+
   const { data: outlets, isLoading } = useQuery({
     queryKey: ["outlets"],
     queryFn: async () => {
@@ -42,6 +45,11 @@ const Outlets = () => {
     },
   });
 
+  const handleViewBranch = (branchId: string) => {
+    localStorage.setItem('viewBranchId', branchId);
+    navigate('/admin/branch');
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -50,7 +58,7 @@ const Outlets = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Outlets</h1>
-        <Button>
+        <Button onClick={() => navigate("/admin/outlets/create")}>
           <Plus className="mr-2 h-4 w-4" /> Add Outlet
         </Button>
       </div>
@@ -99,13 +107,13 @@ const Outlets = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleViewBranch(outlet.branchId)}>
                       <Eye className="mr-2 h-4 w-4" />
-                      View
+                      View Branch
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate(`/admin/outlets/${outlet.id}/edit`)}>
                       <Edit className="mr-2 h-4 w-4" />
-                      Edit
+                      Edit Outlet
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-red-600">
                       <Trash className="mr-2 h-4 w-4" />

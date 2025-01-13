@@ -24,6 +24,8 @@ import ProductCategories from "./pages/ProductCategories";
 import ProductVariation from "./pages/ProductVariation";
 import CreateProductVariation from "./pages/CreateProductVariation";
 import ViewProductVariations from "./pages/ViewProductVariations";
+import CreateOutlet from "./pages/CreateOutlet";
+import EditOutlet from "./pages/CreateOutlet";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -49,6 +51,8 @@ const getAdminRoutes = (role: Role) => (
     <Route path="crm/staff/create" element={<CreateStaff />} />
     <Route path="crm/staff/:id/edit" element={<EditStaff />} />
     <Route path="outlets" element={<Outlets />} />
+    <Route path="outlets/create" element={<CreateOutlet />} />
+    <Route path="outlets/:id/edit" element={<EditOutlet />} />
     <Route path="branch" element={<Branch />} />
     <Route path="branch/create" element={<CreateBranch />} />
     <Route path="branch/:id/edit" element={<EditBranch />} />
