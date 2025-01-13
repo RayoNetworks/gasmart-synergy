@@ -14,7 +14,7 @@ import CustomerProducts from "./pages/CustomerProducts";
 import Branch from "./pages/Branch";
 import EditBranch from "./pages/EditBranch";
 import CreateBranch from "./pages/CreateBranch";
-import Locations from "./pages/Locations";
+import Outlets from "./pages/Outlets";
 import UserList from "./pages/UserList";
 import SalesReturn from "./pages/SalesReturn";
 import Staff from "./pages/Staff";
@@ -34,13 +34,10 @@ const getAdminRoutes = (role: Role) => (
     <Route path="products" element={<Products />} />
     <Route path="products/create" element={<CreateProduct />} />
     <Route path="products/edit/:id" element={<CreateProduct />} />
-
     <Route path="products/variation" element={<ProductVariation />} />
     <Route path="products/variation/:id/create" element={<CreateProductVariation />} />
     <Route path="products/variation/:id/view" element={<ViewProductVariations />} />
-
     <Route path="products/categories" element={<ProductCategories />} />
-    <Route path="products/variation" element={<ProductVariation/>} />
     <Route path="reports" element={<Reports />} />
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
@@ -51,7 +48,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="crm/staff" element={<Staff />} />
     <Route path="crm/staff/create" element={<CreateStaff />} />
     <Route path="crm/staff/:id/edit" element={<EditStaff />} />
-    <Route path="locations" element={<Locations />} />
+    <Route path="outlets" element={<Outlets />} />
     <Route path="branch" element={<Branch />} />
     <Route path="branch/create" element={<CreateBranch />} />
     <Route path="branch/:id/edit" element={<EditBranch />} />
