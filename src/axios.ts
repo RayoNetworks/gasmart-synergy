@@ -63,6 +63,32 @@ const mockProducts = [
       { branchId: "2", price: "62.00", categoryId: "3" },
       { branchId: "3", price: "61.50", categoryId: "3" }
     ],
+    variations: [
+      {
+        id: "1",
+        type: "cooking_gas",
+        name: "3kg Cylinder",
+        allBranches: false,
+        basePrice: null,
+        branchPrices: [
+          { branchId: "1", price: "25.00" },
+          { branchId: "2", price: "26.00" },
+          { branchId: "3", price: "25.50" }
+        ]
+      },
+      {
+        id: "2",
+        type: "cooking_gas",
+        name: "6kg Cylinder",
+        allBranches: false,
+        basePrice: null,
+        branchPrices: [
+          { branchId: "1", price: "35.00" },
+          { branchId: "2", price: "36.00" },
+          { branchId: "3", price: "35.50" }
+        ]
+      }
+    ],
     stock: 48,
     status: "In Stock",
     price: 60.00
@@ -78,6 +104,24 @@ const mockProducts = [
     allBranches: true,
     basePrice: "550.50",
     branchPrices: [],
+    variations: [
+      {
+        id: "1",
+        type: "diesel",
+        name: "Bulk Purchase (>1000L)",
+        allBranches: true,
+        basePrice: "540.00",
+        branchPrices: []
+      },
+      {
+        id: "2",
+        type: "diesel",
+        name: "Wholesale (>500L)",
+        allBranches: true,
+        basePrice: "545.00",
+        branchPrices: []
+      }
+    ],
     stock: 2500,
     status: "In Stock",
     price: 550.50
@@ -93,6 +137,16 @@ const mockProducts = [
     allBranches: true,
     basePrice: "600.00",
     branchPrices: [],
+    variations: [
+      {
+        id: "1",
+        type: "petrol",
+        name: "Bulk Purchase (>1000L)",
+        allBranches: true,
+        basePrice: "590.00",
+        branchPrices: []
+      }
+    ],
     stock: 1800,
     status: "In Stock",
     price: 600.00
