@@ -138,11 +138,15 @@ const CreateProduct = () => {
 
           <div className="space-y-2">
             <Label htmlFor="category">Product Category</Label>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select 
+              value={selectedCategory || "select-category"} 
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="select-category" disabled>Select a category</SelectItem>
                 {categories?.map((category: any) => (
                   <SelectItem key={category.id} value={category.id}>
                     {category.name}
@@ -234,7 +238,7 @@ const CreateProduct = () => {
                             <Select
                               value={
                                 branchPrices.find((bp) => bp.branchId === branch.id)
-                                  ?.categoryId || ""
+                                  ?.categoryId || "select-category"
                               }
                               onValueChange={(value) =>
                                 handleBranchCategoryChange(branch.id, value)
@@ -244,6 +248,7 @@ const CreateProduct = () => {
                                 <SelectValue placeholder="Select category" />
                               </SelectTrigger>
                               <SelectContent>
+                                <SelectItem value="select-category" disabled>Select category</SelectItem>
                                 {categories?.map((category: any) => (
                                   <SelectItem key={category.id} value={category.id}>
                                     {category.name}
