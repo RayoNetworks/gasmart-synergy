@@ -30,7 +30,7 @@ import {
 const Managers = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [managerType, setManagerType] = useState<string>("");
+  const [managerType, setManagerType] = useState<string>("all");
 
   const handleView = (manager: any) => {
     if (manager.managerType === "branch_manager") {
@@ -81,7 +81,7 @@ const Managers = () => {
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Managers</SelectItem>
+            <SelectItem value="all">All Managers</SelectItem>
             <SelectItem value="branch_manager">Branch Managers</SelectItem>
             <SelectItem value="outlet_manager">Outlet Managers</SelectItem>
           </SelectContent>

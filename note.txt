@@ -35,3 +35,9 @@ for the crm we will have manager's which will have the role of branch and outlet
 
 
 add a feature that when the admin will click on the view, it will take the name of the selected outlet and navigate to the outlet page, and trigger a filter to get the outlet information.
+
+
+pms, 
+
+
+product management, 

@@ -501,52 +501,71 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
 
     let mockResponse = { ...response };
-
+    // this is for the manager related route request
+    if (url?.startsWith("/managers")) {
+      if (method == "get") {
+        const { managerType } = response.config?.params;
+        // this is if the params are added, then filter the manager by the managerType
+        if (managerType) {
+          const mockManagersArr = [...mockManagers].filter((manager) =>
+            managerType == "all" ? manager : manager?.managerType == managerType
+          );
+          console.log(mockManagersArr);
+          mockResponse.data = mockManagersArr;
+        }
+      }
+    }
     // Handle customers-related requests
-    if (url?.startsWith('/customers')) {
-      if (method === 'get') {
-        if (url === '/customers') {
-          console.log('Fetching all customers');
+    if (url?.startsWith("/customers")) {
+      if (method === "get") {
+        if (url === "/customers") {
+          console.log("Fetching all customers");
           mockResponse.data = mockCustomers;
         } else {
-          const customerId = url.split('/')[2];
-          console.log('Fetching customer with ID:', customerId);
-          mockResponse.data = mockCustomers.find(customer => customer.id === customerId);
+          const customerId = url.split("/")[2];
+          console.log("Fetching customer with ID:", customerId);
+          mockResponse.data = mockCustomers.find(
+            (customer) => customer.id === customerId
+          );
         }
-      } else if (method === 'post') {
-        console.log('Creating new customer:', response.config.data);
+      } else if (method === "post") {
+        console.log("Creating new customer:", response.config.data);
         const newCustomer = {
           id: (mockCustomers.length + 1).toString(),
           ...JSON.parse(response.config.data),
-          createdAt: new Date().toISOString().split('T')[0],
-          status: 'active',
+          createdAt: new Date().toISOString().split("T")[0],
+          status: "active",
           branch: mockBranches.find(
-            branch => branch.id === JSON.parse(response.config.data).branchId
+            (branch) => branch.id === JSON.parse(response.config.data).branchId
           ),
           outlet: mockOutlets.find(
-            outlet => outlet.id === JSON.parse(response.config.data).outletId
+            (outlet) => outlet.id === JSON.parse(response.config.data).outletId
           ),
         };
         mockCustomers.push(newCustomer);
         mockResponse.data = newCustomer;
-      } else if (method === 'put') {
-        const customerId = url.split('/')[2];
-        console.log('Updating customer with ID:', customerId);
-        const customerIndex = mockCustomers.findIndex(c => c.id === customerId);
+      } else if (method === "put") {
+        const customerId = url.split("/")[2];
+        console.log("Updating customer with ID:", customerId);
+        const customerIndex = mockCustomers.findIndex(
+          (c) => c.id === customerId
+        );
         if (customerIndex !== -1) {
           const updatedData = JSON.parse(response.config.data);
           mockCustomers[customerIndex] = {
             ...mockCustomers[customerIndex],
             ...updatedData,
-            branch: mockBranches.find(b => b.id === updatedData.branchId),
-            outlet: mockOutlets.find(o => o.id === updatedData.outletId),
+            branch: mockBranches.find((b) => b.id === updatedData.branchId),
+            outlet: mockOutlets.find((o) => o.id === updatedData.outletId),
           };
           mockResponse.data = mockCustomers[customerIndex];
         }
-      } else if (method === 'delete') {
-        const customerId = url.split('/')[2];
-        console.log('Deleting customer with ID:', customerId);
-        const customerIndex = mockCustomers.findIndex(c => c.id === customerId);
+      } else if (method === "delete") {
+        const customerId = url.split("/")[2];
+        console.log("Deleting customer with ID:", customerId);
+        const customerIndex = mockCustomers.findIndex(
+          (c) => c.id === customerId
+        );
         if (customerIndex !== -1) {
           mockCustomers.splice(customerIndex, 1);
           mockResponse.data = { message: "Customer deleted successfully" };
@@ -559,9 +578,12 @@ axiosClient.interceptors.response.use(
       const { hasManager } = response.config.params || {};
       if (hasManager === false) {
         mockResponse.data = mockBranches.filter(
-          branch => !mockManagers.some(manager => 
-            manager.managerType === "branch_manager" && manager.branchId === branch.id
-          )
+          (branch) =>
+            !mockManagers.some(
+              (manager) =>
+                manager.managerType === "branch_manager" &&
+                manager.branchId === branch.id
+            )
         );
       }
     }
@@ -571,25 +593,30 @@ axiosClient.interceptors.response.use(
       const { hasManager } = response.config.params || {};
       if (hasManager === false) {
         mockResponse.data = mockOutlets.filter(
-          outlet => !mockManagers.some(manager => 
-            manager.managerType === "outlet_manager" && manager.outletId === outlet.id
-          )
+          (outlet) =>
+            !mockManagers.some(
+              (manager) =>
+                manager.managerType === "outlet_manager" &&
+                manager.outletId === outlet.id
+            )
         );
       }
     }
 
     // Handle outlets requests with filtering
-    if (url?.startsWith('/outlets')) {
-      if (method === 'get') {
+    if (url?.startsWith("/outlets")) {
+      if (method === "get") {
         let filteredOutlets = [...mockOutlets];
         const { branchId, outletName } = response.config.params || {};
 
         if (branchId) {
-          filteredOutlets = filteredOutlets.filter(outlet => outlet.branchId === branchId);
+          filteredOutlets = filteredOutlets.filter(
+            (outlet) => outlet.branchId === branchId
+          );
         }
 
         if (outletName) {
-          filteredOutlets = filteredOutlets.filter(outlet => 
+          filteredOutlets = filteredOutlets.filter((outlet) =>
             outlet.name.toLowerCase().includes(outletName.toLowerCase())
           );
         }
@@ -599,59 +626,67 @@ axiosClient.interceptors.response.use(
     }
 
     // Handle outlets requests
-    if (url?.startsWith('/outlets')) {
-      if (method === 'get') {
-        if (url === '/outlets') {
+    if (url?.startsWith("/outlets")) {
+      if (method === "get") {
+        if (url === "/outlets") {
           mockResponse.data = mockOutlets;
         } else {
           // Get single outlet
-          const outletId = url.split('/')[2];
-          mockResponse.data = mockOutlets.find(outlet => outlet.id === outletId);
+          const outletId = url.split("/")[2];
+          mockResponse.data = mockOutlets.find(
+            (outlet) => outlet.id === outletId
+          );
         }
-      } else if (method === 'post') {
+      } else if (method === "post") {
         const newOutlet = {
           id: (mockOutlets.length + 1).toString(),
           ...JSON.parse(response.config.data),
-          status: 'active',
+          status: "active",
           branch: mockBranches.find(
-            branch => branch.id === JSON.parse(response.config.data).branchId
+            (branch) => branch.id === JSON.parse(response.config.data).branchId
           ),
         };
         mockOutlets.push(newOutlet);
         mockResponse.data = newOutlet;
-      } else if (method === 'put') {
-        const outletId = url.split('/')[2];
-        const outletIndex = mockOutlets.findIndex(outlet => outlet.id === outletId);
-        
+      } else if (method === "put") {
+        const outletId = url.split("/")[2];
+        const outletIndex = mockOutlets.findIndex(
+          (outlet) => outlet.id === outletId
+        );
+
         if (outletIndex !== -1) {
           const updatedData = JSON.parse(response.config.data);
           mockOutlets[outletIndex] = {
             ...mockOutlets[outletIndex],
             ...updatedData,
-            branch: mockBranches.find(branch => branch.id === updatedData.branchId),
+            branch: mockBranches.find(
+              (branch) => branch.id === updatedData.branchId
+            ),
           };
           mockResponse.data = mockOutlets[outletIndex];
-          console.log('Updated outlet:', mockOutlets[outletIndex]);
+          console.log("Updated outlet:", mockOutlets[outletIndex]);
         }
       }
     }
 
     // Handle products requests
-    if (url?.startsWith('/products')) {
-      if (method === 'get') {
+    if (url?.startsWith("/products")) {
+      if (method === "get") {
         mockResponse.data = mockProducts;
-      } else if (method === 'post') {
+      } else if (method === "post") {
         const newProduct = {
           id: (mockProducts.length + 1).toString(),
           ...JSON.parse(response.config.data),
           status: "In Stock",
           stock: 0,
-          price: parseFloat(JSON.parse(response.config.data).allBranches 
-            ? JSON.parse(response.config.data).basePrice 
-            : JSON.parse(response.config.data).branchPrices[0]?.price || "0"),
+          price: parseFloat(
+            JSON.parse(response.config.data).allBranches
+              ? JSON.parse(response.config.data).basePrice
+              : JSON.parse(response.config.data).branchPrices[0]?.price || "0"
+          ),
           category: mockProductCategories.find(
-            cat => cat.id === JSON.parse(response.config.data).categoryId
-          )
+            (cat) => cat.id === JSON.parse(response.config.data).categoryId
+          ),
         };
         mockProducts.push(newProduct);
         mockResponse.data = newProduct;
@@ -791,11 +826,11 @@ axiosClient.interceptors.response.use(
 
     // Handle product creation requests
     if (url === "/products") {
-      if(method == 'get'){
-        console.log('products')
-       mockResponse.data = mockProducts;
+      if (method == "get") {
+        console.log("products");
+        mockResponse.data = mockProducts;
       }
-      if(method =='post'){
+      if (method == "post") {
         const newProduct = {
           id: (mockProducts.length + 1).toString(),
           ...JSON.parse(response.config.data),
@@ -810,7 +845,6 @@ axiosClient.interceptors.response.use(
     if (url?.startsWith("/product-categories")) {
       if (method === "get") {
         mockResponse.data = mockProductCategories;
-        
       } else if (method === "post") {
         const newCategory = {
           id: (mockProductCategories.length + 1).toString(),
