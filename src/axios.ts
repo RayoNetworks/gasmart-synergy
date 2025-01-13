@@ -19,6 +19,9 @@ const mockBranches = [
     address: "123 Main Street",
     city: "Lagos",
     state: "Lagos State",
+    phone: "08012345678",
+    email: "main.branch@example.com",
+    manager: "James Wilson",
     status: "active",
     createdAt: "2024-03-01"
   },
@@ -28,12 +31,26 @@ const mockBranches = [
     address: "45 East Road",
     city: "Port Harcourt",
     state: "Rivers State",
+    phone: "08087654321",
+    email: "east.branch@example.com",
+    manager: "Sarah Johnson",
     status: "active",
     createdAt: "2024-03-05"
+  },
+  {
+    id: "BR003",
+    name: "North Branch",
+    address: "78 Northern Way",
+    city: "Kano",
+    state: "Kano State",
+    phone: "08023456789",
+    email: "north.branch@example.com",
+    manager: "Ahmed Mohammed",
+    status: "active",
+    createdAt: "2024-03-10"
   }
 ];
 
-// Updated mock outlets with more detailed information
 const mockOutlets = [
   {
     id: "OUT001",
@@ -787,3 +804,4 @@ axiosClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
