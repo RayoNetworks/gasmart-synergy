@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, DollarSign, Fuel, AlertTriangle } from "lucide-react";
+import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -12,10 +12,12 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 
 const Dashboard = () => {
-  // Sample data for the heatmap (you would fetch this from your backend)
   const heatmapData = [
     { hour: "6am", value: 30 },
     { hour: "9am", value: 45 },
@@ -44,6 +46,60 @@ const Dashboard = () => {
     { date: "01 Feb", amount: 1900 },
     { date: "02 Feb", amount: 2680 },
     { date: "03 Feb", amount: 2350 },
+  ];
+
+  // Sales data
+  const salesData = [
+    { month: "Jan", revenue: 45000, transactions: 120 },
+    { month: "Feb", revenue: 52000, transactions: 145 },
+    { month: "Mar", revenue: 48000, transactions: 135 },
+    { month: "Apr", revenue: 61000, transactions: 160 },
+    { month: "May", revenue: 55000, transactions: 150 },
+    { month: "Jun", revenue: 67000, transactions: 180 },
+  ];
+
+  // Stock data
+  const stockDistribution = [
+    { name: "PMS", value: 35, color: "#FF8B3D" },
+    { name: "AGO", value: 25, color: "#4CAF50" },
+    { name: "DPK", value: 20, color: "#2196F3" },
+    { name: "LPG", value: 20, color: "#9C27B0" },
+  ];
+
+  // Assets data
+  const assetsData = [
+    { category: "Dispensers", operational: 45, maintenance: 5 },
+    { category: "Storage Tanks", operational: 28, maintenance: 2 },
+    { category: "Delivery Trucks", operational: 15, maintenance: 3 },
+    { category: "LPG Cylinders", operational: 850, maintenance: 50 },
+  ];
+
+  // Activity logs
+  const activityLogs = [
+    {
+      time: "2 minutes ago",
+      action: "Stock Update",
+      description: "PMS stock level updated to 35,000 liters",
+      type: "update",
+    },
+    {
+      time: "15 minutes ago",
+      action: "New Sale",
+      description: "₦125,000 sale completed at Lagos Branch",
+      type: "sale",
+    },
+    {
+      time: "1 hour ago",
+      action: "Maintenance Alert",
+      description: "Dispenser #4 scheduled for maintenance",
+      type: "alert",
+    },
+    {
+      time: "2 hours ago",
+      action: "Price Update",
+      description: "AGO price updated to ₦650/liter",
+      type: "update",
+    },
   ];
 
   return (
@@ -149,18 +205,213 @@ const Dashboard = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="sales">
+        <TabsContent value="sales" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <DollarSign className="h-4 w-4 text-green-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₦328,000</div>
+                <p className="text-xs text-muted-foreground">+12.5% from last month</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Transactions</CardTitle>
+                <Activity className="h-4 w-4 text-blue-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">890</div>
+                <p className="text-xs text-muted-foreground">+5.2% from last month</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Average Sale</CardTitle>
+                <TrendingUp className="h-4 w-4 text-yellow-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₦368.54</div>
+                <p className="text-xs text-muted-foreground">+2.1% from last month</p>
+              </CardContent>
+            </Card>
+          </div>
+
           <Card>
             <CardHeader>
-              <CardTitle>Sales Content</CardTitle>
+              <CardTitle>Monthly Revenue & Transactions</CardTitle>
             </CardHeader>
-            <CardContent>
-              Sales metrics and charts will go here
+            <CardContent className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={salesData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="right" orientation="right" />
+                  <Tooltip />
+                  <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#2196F3" name="Revenue" />
+                  <Line yAxisId="right" type="monotone" dataKey="transactions" stroke="#4CAF50" name="Transactions" />
+                </LineChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Add other tab contents similarly */}
+        <TabsContent value="stock" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Distribution</CardTitle>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={stockDistribution}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {stockDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Stock Alerts</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">PMS Stock Level</span>
+                      <span className="text-sm text-yellow-500">35%</span>
+                    </div>
+                    <Progress value={35} className="bg-yellow-100" indicatorClassName="bg-yellow-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">AGO Stock Level</span>
+                      <span className="text-sm text-green-500">65%</span>
+                    </div>
+                    <Progress value={65} className="bg-green-100" indicatorClassName="bg-green-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">DPK Stock Level</span>
+                      <span className="text-sm text-red-500">15%</span>
+                    </div>
+                    <Progress value={15} className="bg-red-100" indicatorClassName="bg-red-500" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="assets" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Asset Status Overview</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {assetsData.map((asset, index) => (
+                    <div key={index}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">{asset.category}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {asset.operational} operational, {asset.maintenance} in maintenance
+                        </span>
+                      </div>
+                      <Progress 
+                        value={(asset.operational / (asset.operational + asset.maintenance)) * 100} 
+                        className="bg-blue-100" 
+                        indicatorClassName="bg-blue-500" 
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Maintenance Schedule</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center p-2 bg-yellow-50 rounded-lg">
+                    <AlertTriangle className="h-4 w-4 text-yellow-500 mr-2" />
+                    <div>
+                      <p className="text-sm font-medium">Dispenser #4 Maintenance</p>
+                      <p className="text-xs text-muted-foreground">Scheduled for tomorrow</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center p-2 bg-green-50 rounded-lg">
+                    <Box className="h-4 w-4 text-green-500 mr-2" />
+                    <div>
+                      <p className="text-sm font-medium">Storage Tank Inspection</p>
+                      <p className="text-xs text-muted-foreground">Completed today</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="logs" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activities</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {activityLogs.map((log, index) => (
+                  <div key={index} className="flex items-start space-x-4 p-2 rounded-lg hover:bg-accent">
+                    <div className={`mt-0.5 p-1.5 rounded-full ${
+                      log.type === "update" ? "bg-blue-100" :
+                      log.type === "sale" ? "bg-green-100" :
+                      "bg-yellow-100"
+                    }`}>
+                      {log.type === "update" ? (
+                        <FileText className={`h-4 w-4 ${
+                          log.type === "update" ? "text-blue-500" :
+                          log.type === "sale" ? "text-green-500" :
+                          "text-yellow-500"
+                        }`} />
+                      ) : log.type === "sale" ? (
+                        <DollarSign className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{log.action}</p>
+                      <p className="text-sm text-muted-foreground">{log.description}</p>
+                      <p className="text-xs text-muted-foreground">{log.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
