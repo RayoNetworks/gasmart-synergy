@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, MoreHorizontal, Eye, Edit, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 const Managers = () => {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ const Managers = () => {
               <SelectValue placeholder="Filter by type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Managers</SelectItem>
+              <SelectItem value="all">All Managers</SelectItem>
               <SelectItem value="branch_manager">Branch Managers</SelectItem>
               <SelectItem value="outlet_manager">Outlet Managers</SelectItem>
             </SelectContent>
