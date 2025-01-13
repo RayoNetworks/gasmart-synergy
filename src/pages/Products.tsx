@@ -244,7 +244,7 @@ const Products = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
-                          navigate(`/admin/products/variation/${product.id}`)
+                          navigate(`/admin/products/variation/${product.id}/create`)
                         }
                       >
                         Create Variation
