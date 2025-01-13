@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/axios";
 import { Button } from "@/components/ui/button";
@@ -17,8 +17,12 @@ import {
 
 const CreateManager = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
-  const [managerType, setManagerType] = useState<"branch_manager" | "outlet_manager" | "">("");
+  const editingManager = location.state?.manager;
+  const [managerType, setManagerType] = useState<"branch_manager" | "outlet_manager" | "">(
+    editingManager?.managerType || ""
+  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -30,11 +34,27 @@ const CreateManager = () => {
     userType: "manager",
   });
 
+  useEffect(() => {
+    if (editingManager) {
+      setFormData({
+        name: editingManager.name,
+        email: editingManager.email,
+        phone: editingManager.phone,
+        managerType: editingManager.managerType,
+        branchId: editingManager.branchId || "",
+        outletId: editingManager.outletId || "",
+        userType: "manager",
+      });
+    }
+  }, [editingManager]);
+
   const { data: branches } = useQuery({
     queryKey: ["unassigned-branches"],
     queryFn: async () => {
       const response = await axiosClient.get("/branches?hasManager=false");
-      return response.data;
+      return editingManager?.branchId
+        ? [...response.data, editingManager.branch]
+        : response.data;
     },
     enabled: managerType === "branch_manager",
   });
@@ -43,24 +63,29 @@ const CreateManager = () => {
     queryKey: ["unassigned-outlets"],
     queryFn: async () => {
       const response = await axiosClient.get("/outlets?hasManager=false");
-      return response.data;
+      return editingManager?.outletId
+        ? [...response.data, editingManager.outlet]
+        : response.data;
     },
     enabled: managerType === "outlet_manager",
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: typeof formData) => axiosClient.post("/users", data),
+  const mutation = useMutation({
+    mutationFn: (data: typeof formData) =>
+      editingManager
+        ? axiosClient.put(`/managers/${editingManager.id}`, data)
+        : axiosClient.post("/managers", data),
     onSuccess: () => {
       toast({
         title: "Success",
-        description: "Manager created successfully",
+        description: `Manager ${editingManager ? "updated" : "created"} successfully`,
       });
       navigate("/admin/crm/managers");
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to create manager",
+        description: `Failed to ${editingManager ? "update" : "create"} manager`,
         variant: "destructive",
       });
     },
@@ -68,7 +93,7 @@ const CreateManager = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createMutation.mutate(formData);
+    mutation.mutate(formData);
   };
 
   const handleChange = (
@@ -92,7 +117,9 @@ const CreateManager = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">Create New Manager</h1>
+        <h1 className="text-2xl font-bold">
+          {editingManager ? "Edit" : "Create New"} Manager
+        </h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -210,8 +237,14 @@ const CreateManager = () => {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={createMutation.isPending}>
-            {createMutation.isPending ? "Creating..." : "Create Manager"}
+          <Button type="submit" disabled={mutation.isPending}>
+            {mutation.isPending
+              ? editingManager
+                ? "Updating..."
+                : "Creating..."
+              : editingManager
+              ? "Update Manager"
+              : "Create Manager"}
           </Button>
         </div>
       </form>
