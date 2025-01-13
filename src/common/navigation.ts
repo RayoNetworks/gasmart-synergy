@@ -16,6 +16,10 @@ import {
   BarChart3,
   Settings,
   GitBranch,
+  Boxes,
+  FileBarChart,
+  Fuel,
+  Gauge,
 } from "lucide-react";
 
 const navigation = [
@@ -58,6 +62,28 @@ const navigation = [
         icon: RefreshCw,
       },
       { name: "Stock Transfer", href: "/admin/stock/transfer", icon: Send },
+    ],
+  },
+  {
+    header: "Asset Management",
+    name: "Assets",
+    icon: Boxes,
+    subroutes: [
+      {
+        name: "Asset Reports",
+        href: "/admin/assets/reports",
+        icon: FileBarChart,
+      },
+      {
+        name: "Tank Management",
+        href: "/admin/assets/tanks",
+        icon: Fuel,
+      },
+      {
+        name: "Pump Management",
+        href: "/admin/assets/pumps",
+        icon: Gauge,
+      },
     ],
   },
   {
