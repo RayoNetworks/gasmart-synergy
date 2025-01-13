@@ -18,7 +18,13 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, Package, Building2 } from "lucide-react";
+import { Edit, Eye, Package, Building2, MapPin } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Customer {
   id: string;
@@ -27,10 +33,16 @@ interface Customer {
   phone: string;
   address: string;
   branchId: string;
+  outletId: string;
   branch: {
     id: string;
     name: string;
     address: string;
+  };
+  outlet: {
+    id: string;
+    name: string;
+    location: string;
   };
 }
 
@@ -53,6 +65,11 @@ const Customers = () => {
     navigate(`/admin/branch?view=${branchId}`);
   };
 
+  const handleViewOutlet = (outletName: string) => {
+    console.log("Viewing outlet:", outletName);
+    navigate(`/admin/outlets?outletName=${outletName}`);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -69,71 +86,75 @@ const Customers = () => {
               <TableHead>Contact</TableHead>
               <TableHead>Address</TableHead>
               <TableHead>Branch</TableHead>
+              <TableHead>Outlet</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array.isArray(customers) && customers.length > 0 ? (
-              customers.map((customer: Customer) => (
-                <TableRow key={customer.id}>
-                  <TableCell>{customer.name}</TableCell>
-                  <TableCell>
-                    <div>
-                      <p>{customer.phone}</p>
-                      <p className="text-sm text-gray-500">{customer.email}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell>{customer.address}</TableCell>
-                  <TableCell>
-                    <div>
-                      <p>{customer.branch.name}</p>
-                      <p className="text-sm text-gray-500">{customer.branch.address}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
+            {Array.isArray(customers) && customers.map((customer: Customer) => (
+              <TableRow key={customer.id}>
+                <TableCell>{customer.name}</TableCell>
+                <TableCell>
+                  <div>
+                    <p>{customer.phone}</p>
+                    <p className="text-sm text-gray-500">{customer.email}</p>
+                  </div>
+                </TableCell>
+                <TableCell>{customer.address}</TableCell>
+                <TableCell>
+                  <div>
+                    <p>{customer.branch?.name}</p>
+                    <p className="text-sm text-gray-500">{customer.branch?.address}</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <p>{customer.outlet?.name}</p>
+                    <p className="text-sm text-gray-500">{customer.outlet?.location}</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
                         onClick={() => {
                           setSelectedCustomer(customer);
                           setIsViewSheetOpen(true);
                         }}
                       >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
+                        <Eye className="mr-2 h-4 w-4" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
                         onClick={() => navigate(`/admin/crm/customers/${customer.id}/edit`)}
                       >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
                         onClick={() => navigate(`/admin/crm/customers/${customer.id}/products`)}
                       >
-                        <Package className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleViewBranch(customer.branchId)}
-                      >
-                        <Building2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center">
-                  No customers found
+                        <Package className="mr-2 h-4 w-4" />
+                        View Products
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewBranch(customer.branchId)}>
+                        <Building2 className="mr-2 h-4 w-4" />
+                        View Branch
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewOutlet(customer.outlet?.name)}>
+                        <MapPin className="mr-2 h-4 w-4" />
+                        View Outlet
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
@@ -167,8 +188,13 @@ const Customers = () => {
               </div>
               <div>
                 <h4 className="font-medium">Branch</h4>
-                <p>{selectedCustomer.branch.name}</p>
-                <p className="text-sm text-gray-500">{selectedCustomer.branch.address}</p>
+                <p>{selectedCustomer.branch?.name}</p>
+                <p className="text-sm text-gray-500">{selectedCustomer.branch?.address}</p>
+              </div>
+              <div>
+                <h4 className="font-medium">Outlet</h4>
+                <p>{selectedCustomer.outlet?.name}</p>
+                <p className="text-sm text-gray-500">{selectedCustomer.outlet?.location}</p>
               </div>
             </div>
           )}
