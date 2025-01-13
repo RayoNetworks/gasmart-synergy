@@ -232,18 +232,22 @@ const PumpManagement = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => {
-                      setSelectedPump(pump);
-                      setIsDialogOpen(true);
-                    }}>
+                    <DropdownMenuItem 
+                      onClick={() => {
+                        setSelectedPump(pump);
+                        setIsDialogOpen(true);
+                      }}
+                    >
                       <Eye className="mr-2 h-4 w-4" />
                       View Details
                     </DropdownMenuItem>
                     {pump.status !== "FUNCTIONING" && (
-                      <DropdownMenuItem onClick={() => {
-                        setSelectedPump(pump);
-                        setIsRepairDialogOpen(true);
-                      }}>
+                      <DropdownMenuItem 
+                        onClick={() => {
+                          setSelectedPump(pump);
+                          setIsRepairDialogOpen(true);
+                        }}
+                      >
                         <Wrench className="mr-2 h-4 w-4" />
                         Repair Pump
                       </DropdownMenuItem>
@@ -277,7 +281,13 @@ const PumpManagement = () => {
         ))}
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog 
+        open={isDialogOpen} 
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) setSelectedPump(null);
+        }}
+      >
         {selectedPump && (
           <DialogContent className="max-w-3xl">
             <DialogHeader>
@@ -357,7 +367,13 @@ const PumpManagement = () => {
         )}
       </Dialog>
 
-      <Dialog open={isRepairDialogOpen} onOpenChange={setIsRepairDialogOpen}>
+      <Dialog 
+        open={isRepairDialogOpen} 
+        onOpenChange={(open) => {
+          setIsRepairDialogOpen(open);
+          if (!open) setSelectedPump(null);
+        }}
+      >
         {selectedPump && (
           <DialogContent>
             <DialogHeader>
