@@ -47,10 +47,11 @@ const Managers = () => {
   };
 
   const { data: managers } = useQuery({
-    queryKey: ["managers", managerType],
+    queryKey: ["managers ", managerType],
     queryFn: async () => {
       const response = await axiosClient.get("/managers", {
-        params: { type: managerType || undefined },
+        // i can pass in params in tanstack query
+        params: { managerType: managerType || undefined },
       });
       return response.data;
     },
@@ -71,14 +72,14 @@ const Managers = () => {
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Managers</SelectItem>
+            <SelectItem value="all">All Managers</SelectItem>
             <SelectItem value="branch_manager">Branch Managers</SelectItem>
             <SelectItem value="outlet_manager">Outlet Managers</SelectItem>
           </SelectContent>
         </Select>
 
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={handleReset}
           className="flex items-center gap-2"
         >
