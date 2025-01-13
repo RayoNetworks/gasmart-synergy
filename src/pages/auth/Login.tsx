@@ -18,8 +18,6 @@ interface LoginFormValues {
   password: string;
 }
 
-
-
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -34,23 +32,33 @@ const Login = () => {
       try {
         console.log("Login - Submitting form with values:", values);
 
-        // const response = await axiosClient.post("/auth/login", values);
-        // console.log("Login - Server response:", response.data);
+        // Extract role from email
+        const role = values.email.split('@')[0];
+        console.log("Extracted role:", role);
 
-        // const { token, refresh_token } = response.data;
-        const { token, refresh_token } = { token: null, refresh_token: null };
+        // Mock login response
+        const mockResponse = {
+          token: "mock-token-12345",
+          refresh_token: "mock-refresh-token-12345",
+          user: {
+            name: "Test User",
+            email: values.email,
+            priviledges: "*",
+            role: role as Role
+          }
+        };
 
         // Store tokens in localStorage
-        localStorage.setItem(Token, token);
-        localStorage.setItem(RefreshToken, refresh_token);
+        localStorage.setItem(Token, mockResponse.token);
+        localStorage.setItem(RefreshToken, mockResponse.refresh_token);
 
         toast({
           title: "Success",
           description: "Login successful!",
         });
 
-        // Navigate to confirm-role page
-        navigate("/confirm-role", { replace: true });
+        // Navigate to confirm-role page with role parameter
+        navigate(`/confirm-role?role=${role}`, { replace: true });
       } catch (error: any) {
         console.error("Login - Error during login:", error);
 

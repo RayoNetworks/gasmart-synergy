@@ -7,7 +7,7 @@ import Sales from "@/pages/Sales";
 import Settings from "@/pages/Settings";
 import { Navigate, Route } from "react-router-dom";
 import { ForgetPassword, Login, SetPassword } from "./pages/auth";
-import { AdminLayout, AuthLayout } from "./layout";
+import { AdminLayout, AuthLayout, CashierLayout } from "./layout";
 import Customers from "./pages/Customers";
 import EditCustomer from "./pages/EditCustomer";
 import CustomerProducts from "./pages/CustomerProducts";
@@ -89,10 +89,16 @@ const getAdminRoutes = (role: Role) => (
 );
 
 const getCashierRoutes = () => (
-  <Route path="/cashier" element={<Navigate to={"/"} />}>
-    {/* // generate all cashier routes and pages but ask me for ui pictures inspiration first so I can clearify it for you */}
+  <Route path="/cashier" element={<CashierLayout />}>
+    <Route index element={<Dashboard />} />
+    <Route path="sales" element={<Sales />} />
+    <Route path="sales/return" element={<SalesReturn />} />
+    <Route path="sales/quotation" element={<div>Quotation</div>} />
+    <Route path="products" element={<Products />} />
+    <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
   </Route>
 );
+
 const getAuthRoutes = () => (
   <Route element={<AuthLayout />}>
     <Route path="/login" element={<Login />} />

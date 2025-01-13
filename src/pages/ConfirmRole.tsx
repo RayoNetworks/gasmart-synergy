@@ -1,7 +1,7 @@
 import { appRouteHelper } from "@/lib/route";
 import userStore, { userData } from "@/store/user.store";
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -11,7 +11,7 @@ import { Role } from "@/lib/types";
 //dummy get user
 const getDummyUser = (role: Role): userData => ({
   name: "Test User",
-  email: "test@gmail.com",
+  email: `${role}@example.com`,
   priviledges: "*",
   role: role,
 });
@@ -20,6 +20,7 @@ const ConfirmRole = () => {
   const { getUserData, user, setUser } = userStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isError, setIsErrorMessage] = useState<{
     message: string;
   }>({
@@ -36,11 +37,10 @@ const ConfirmRole = () => {
           return;
         }
 
-        // fetch user data
-        // await getUserData();
+        const role = searchParams.get('role') as Role || "admin";
+        console.log("Fetching user data for role:", role);
 
-        const userPerson = getDummyUser("cashier");
-
+        const userPerson = getDummyUser(role);
         setUser(userPerson);
 
         setIsLoading(false);
