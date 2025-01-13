@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -113,6 +114,13 @@ const PumpManagement = () => {
   const [selectedPump, setSelectedPump] = useState<Pump | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRepairDialogOpen, setIsRepairDialogOpen] = useState(false);
+  const [isAddPumpDialogOpen, setIsAddPumpDialogOpen] = useState(false);
+  const [newPump, setNewPump] = useState({
+    code: "",
+    product: "",
+    model: "",
+    serialNo: "",
+  });
 
   const getStatusColor = (status: Pump["status"]) => {
     switch (status) {
@@ -195,6 +203,34 @@ const PumpManagement = () => {
     }
   };
 
+  const handleAddPump = () => {
+    const pump: Pump = {
+      id: `PMP${Math.floor(Math.random() * 1000)}`,
+      ...newPump,
+      attendant: {
+        name: "Unassigned",
+        image: "/placeholder.svg"
+      },
+      startReading: 0,
+      endReading: 0,
+      price: 0,
+      totalSale: 0,
+      totalQty: 0,
+      lastMaintenance: new Date().toLocaleString(),
+      nextMaintenance: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString(),
+      status: "OFFLINE" as const
+    };
+    setPumps([...pumps, pump]);
+    setNewPump({
+      code: "",
+      product: "",
+      model: "",
+      serialNo: "",
+    });
+    setIsAddPumpDialogOpen(false);
+    toast.success("New pump added successfully!");
+  };
+
   const handleRepair = (pump: Pump) => {
     const updatedPumps = pumps.map((p) => {
       if (p.id === pump.id) {
@@ -258,7 +294,10 @@ const PumpManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Pump Management</h1>
-        <Button className="flex items-center gap-2">
+        <Button 
+          className="flex items-center gap-2"
+          onClick={() => setIsAddPumpDialogOpen(true)}
+        >
           <Plus className="h-4 w-4" />
           Add Pump
         </Button>
@@ -356,6 +395,61 @@ const PumpManagement = () => {
           </Card>
         ))}
       </div>
+
+      <Dialog 
+        open={isAddPumpDialogOpen} 
+        onOpenChange={setIsAddPumpDialogOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Pump</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="code">Pump Code</Label>
+              <Input
+                id="code"
+                value={newPump.code}
+                onChange={(e) => setNewPump({ ...newPump, code: e.target.value })}
+                placeholder="Enter pump code"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="product">Product</Label>
+              <Input
+                id="product"
+                value={newPump.product}
+                onChange={(e) => setNewPump({ ...newPump, product: e.target.value })}
+                placeholder="Enter product type"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="model">Model</Label>
+              <Input
+                id="model"
+                value={newPump.model}
+                onChange={(e) => setNewPump({ ...newPump, model: e.target.value })}
+                placeholder="Enter pump model"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="serialNo">Serial Number</Label>
+              <Input
+                id="serialNo"
+                value={newPump.serialNo}
+                onChange={(e) => setNewPump({ ...newPump, serialNo: e.target.value })}
+                placeholder="Enter serial number"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddPumpDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddPump}>Add Pump</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog 
         open={isDialogOpen} 
