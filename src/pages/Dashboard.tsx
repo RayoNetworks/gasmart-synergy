@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText, Users, ShoppingCart } from "lucide-react";
+import { Package, DollarSign, Fuel, AlertTriangle, Activity, Box, TrendingUp, FileText, Users, ShoppingCart, Tool, Boxes as BoxesIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -15,9 +15,13 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   const heatmapData = [
     { hour: "6am", value: 30 },
     { hour: "9am", value: 45 },
@@ -27,7 +31,6 @@ const Dashboard = () => {
     { hour: "9pm", value: 35 },
   ];
 
-  // Sample data for tank capacity
   const tankData = [
     { tank: "Tank 1", stock: 35000, capacity: 50000 },
     { tank: "Tank 2", stock: 42000, capacity: 50000 },
@@ -36,7 +39,6 @@ const Dashboard = () => {
     { tank: "Tank 5", stock: 39000, capacity: 50000 },
   ];
 
-  // Sample data for daily closure
   const closureData = [
     { date: "27 Jan", amount: 2100 },
     { date: "28 Jan", amount: 2400 },
@@ -48,7 +50,6 @@ const Dashboard = () => {
     { date: "03 Feb", amount: 2350 },
   ];
 
-  // Sales data
   const salesData = [
     { month: "Jan", revenue: 45000, transactions: 120 },
     { month: "Feb", revenue: 52000, transactions: 145 },
@@ -58,7 +59,6 @@ const Dashboard = () => {
     { month: "Jun", revenue: 67000, transactions: 180 },
   ];
 
-  // Stock data
   const stockDistribution = [
     { name: "PMS", value: 35, color: "#FF8B3D" },
     { name: "AGO", value: 25, color: "#4CAF50" },
@@ -66,7 +66,6 @@ const Dashboard = () => {
     { name: "LPG", value: 20, color: "#9C27B0" },
   ];
 
-  // Assets data
   const assetsData = [
     { category: "Dispensers", operational: 45, maintenance: 5 },
     { category: "Storage Tanks", operational: 28, maintenance: 2 },
@@ -74,7 +73,6 @@ const Dashboard = () => {
     { category: "LPG Cylinders", operational: 850, maintenance: 50 },
   ];
 
-  // Activity logs
   const activityLogs = [
     {
       time: "2 minutes ago",
@@ -102,7 +100,6 @@ const Dashboard = () => {
     },
   ];
 
-  // Add new summary metrics for stock and assets
   const summaryMetrics = [
     {
       title: "Total Stock Value",
@@ -110,7 +107,8 @@ const Dashboard = () => {
       change: "+12%",
       trend: "up",
       icon: Package,
-      description: "Current inventory value"
+      description: "Current inventory value",
+      onClick: () => navigate("/admin/reports?tab=stock"),
     },
     {
       title: "Monthly Revenue",
@@ -118,7 +116,8 @@ const Dashboard = () => {
       change: "+8%",
       trend: "up",
       icon: DollarSign,
-      description: "Revenue this month"
+      description: "Revenue this month",
+      onClick: () => navigate("/admin/sales"),
     },
     {
       title: "Active Customers",
@@ -126,7 +125,8 @@ const Dashboard = () => {
       change: "+15%",
       trend: "up",
       icon: Users,
-      description: "Total active customers"
+      description: "Total active customers",
+      onClick: () => navigate("/admin/crm/customers"),
     },
     {
       title: "Pending Orders",
@@ -134,7 +134,8 @@ const Dashboard = () => {
       change: "-5%",
       trend: "down",
       icon: ShoppingCart,
-      description: "Orders awaiting fulfillment"
+      description: "Orders awaiting fulfillment",
+      onClick: () => navigate("/admin/sales"),
     },
     {
       title: "Low Stock Items",
@@ -142,7 +143,8 @@ const Dashboard = () => {
       change: "+3",
       trend: "up",
       icon: AlertTriangle,
-      description: "Products below reorder point"
+      description: "Products below reorder point",
+      onClick: () => navigate("/admin/products"),
     },
     {
       title: "Active Assets",
@@ -150,7 +152,8 @@ const Dashboard = () => {
       change: "+2%",
       trend: "up",
       icon: Box,
-      description: "Operational equipment status"
+      description: "Operational equipment status",
+      onClick: () => navigate("/admin/assets/tanks"),
     },
     {
       title: "Maintenance Due",
@@ -158,30 +161,18 @@ const Dashboard = () => {
       change: "-2",
       trend: "down",
       icon: Tool,
-      description: "Assets requiring maintenance"
+      description: "Assets requiring maintenance",
+      onClick: () => navigate("/admin/assets/pumps"),
     },
     {
       title: "Stock Categories",
       value: "15",
       change: "0",
       trend: "neutral",
-      icon: Boxes,
-      description: "Active product categories"
+      icon: BoxesIcon,
+      description: "Active product categories",
+      onClick: () => navigate("/admin/products/categories"),
     }
-  ];
-
-  // Add asset status data
-  const assetStatusData = [
-    { name: "Operational", value: 85 },
-    { name: "Maintenance", value: 10 },
-    { name: "Inactive", value: 5 }
-  ];
-
-  // Add stock distribution data
-  const stockDistributionData = [
-    { name: "Optimal", value: 65 },
-    { name: "Warning", value: 25 },
-    { name: "Critical", value: 10 }
   ];
 
   return (
@@ -205,10 +196,13 @@ const Dashboard = () => {
         </TabsList>
 
         <TabsContent value="summary" className="space-y-4">
-          {/* Summary Metrics Grid */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {summaryMetrics.map((metric, index) => (
-              <Card key={index}>
+              <Card 
+                key={index} 
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={metric.onClick}
+              >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
                   <metric.icon className={`h-4 w-4 ${
@@ -234,7 +228,6 @@ const Dashboard = () => {
             ))}
           </div>
 
-          {/* Stock and Asset Overview */}
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
@@ -246,7 +239,7 @@ const Dashboard = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={stockDistributionData}
+                        data={stockDistribution}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
@@ -254,7 +247,7 @@ const Dashboard = () => {
                         paddingAngle={5}
                         dataKey="value"
                       >
-                        {stockDistributionData.map((entry, index) => (
+                        {stockDistribution.map((entry, index) => (
                           <Cell 
                             key={`cell-${index}`} 
                             fill={
@@ -311,9 +304,7 @@ const Dashboard = () => {
             </Card>
           </div>
 
-          {/* Keep existing tank capacity and day closure sections */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {/* Tank Capacity Chart */}
             <Card className="col-span-2">
               <CardHeader>
                 <CardTitle>Tank Capacity</CardTitle>
@@ -332,7 +323,6 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Day Closure Chart */}
             <Card>
               <CardHeader>
                 <CardTitle>Day Closure</CardTitle>
@@ -355,7 +345,6 @@ const Dashboard = () => {
           </div>
         </TabsContent>
 
-        {/* Keep existing tabs content */}
         <TabsContent value="sales" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
