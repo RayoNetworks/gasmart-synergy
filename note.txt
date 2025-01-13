@@ -19,3 +19,16 @@ the schema will be like = [{
 location,
 the location is all the point the branch are located.
 branch
+
+so the branch have outlets in them, 
+when you select a branch when creating a product, then the admin should select the outlet and their price.
+
+so for the detail
+
+
+
+for the update product, create a separate update product page where the admin can see the details of the product and it branch variation and can update the price of each branch
+
+create an outlet 
+
+for the crm we will have manager's which will have the role of branch and outlet. 
