@@ -109,6 +109,7 @@ const CreateProduct = () => {
     };
 
     try {
+      console.log("Creating product with data:", productData);
       await axiosClient.post("/products", productData);
       toast.success("Product created successfully");
       navigate("/admin/products");

@@ -143,6 +143,13 @@ const Products = () => {
     refetch();
   };
 
+  const getBranchAvailability = (product: any) => {
+    if (product.allBranches || (product.availableBranches && product.availableBranches[0] === "*")) {
+      return "All Branches";
+    }
+    return product.availableBranches?.map((branch: any) => branch.name).join(", ") || "No branches selected";
+  };
+
   const filteredProducts = products?.filter((product: any) => {
     const matchesSearch = product.name
       .toLowerCase()
@@ -236,6 +243,7 @@ const Products = () => {
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Price</TableHead>
+              <TableHead>Available In</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
@@ -252,7 +260,7 @@ const Products = () => {
                     ? getBranchPrice(product, selectedBranch).toFixed(2)
                     : product.price.toFixed(2)}
                 </TableCell>
-
+                <TableCell>{getBranchAvailability(product)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>
                   <Badge

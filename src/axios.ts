@@ -82,6 +82,11 @@ const mockProducts = [
     },
     allBranches: false,
     basePrice: null,
+    availableBranches: [
+      { id: "1", name: "Main Branch" },
+      { id: "2", name: "Port Harcourt Branch" },
+      { id: "3", name: "Abuja Branch" }
+    ],
     branchPrices: [
       { branchId: "1", price: "60.00", categoryId: "3" },
       { branchId: "2", price: "62.00", categoryId: "3" },
@@ -127,6 +132,7 @@ const mockProducts = [
     },
     allBranches: true,
     basePrice: "550.50",
+    availableBranches: ["*"],
     branchPrices: [],
     variations: [
       {
@@ -160,6 +166,7 @@ const mockProducts = [
     },
     allBranches: true,
     basePrice: "600.00",
+    availableBranches: ["*"],
     branchPrices: [],
     variations: [
       {
@@ -787,18 +794,25 @@ axiosClient.interceptors.response.use(
         mockResponse.data = mockProducts;
 
       } else if (method === "post") {
+        const productData = JSON.parse(response.config.data);
         const newProduct = {
           id: (mockProducts.length + 1).toString(),
-          ...JSON.parse(response.config.data),
+          ...productData,
+          availableBranches: productData.allBranches 
+            ? ["*"] 
+            : productData.branchPrices.map((bp: any) => ({
+                id: bp.branchId,
+                name: mockBranches.find((b: any) => b.id === bp.branchId)?.name || ''
+              })),
           status: "In Stock",
           stock: 0,
           price: parseFloat(
-            JSON.parse(response.config.data).allBranches
-              ? JSON.parse(response.config.data).basePrice
-              : JSON.parse(response.config.data).branchPrices[0]?.price || "0"
+            productData.allBranches
+              ? productData.basePrice
+              : productData.branchPrices[0]?.price || "0"
           ),
           category: mockProductCategories.find(
-            (cat) => cat.id === JSON.parse(response.config.data).categoryId
+            (cat) => cat.id === productData.categoryId
           ),
         };
         mockProducts.push(newProduct);
