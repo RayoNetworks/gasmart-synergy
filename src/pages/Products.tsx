@@ -48,57 +48,59 @@ import { toast } from "sonner";
 const Products = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [selectedBranch, setSelectedBranch] = useState("all");
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedOutlet, setSelectedOutlet] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
+  // Fetch branches
   const { data: branches, isLoading: isLoadingBranches } = useQuery({
     queryKey: ["branches"],
-
     queryFn: async () => {
       const response = await axiosClient.get("/branches");
       return response.data;
     },
   });
 
+  // Fetch outlets based on selected branch
+  const { data: outlets, isLoading: isLoadingOutlets } = useQuery({
+    queryKey: ["outlets", selectedBranch],
+    queryFn: async () => {
+      if (!selectedBranch) return [];
+      const response = await axiosClient.get("/outlets", {
+        params: { branchId: selectedBranch }
+      });
+      return response.data;
+    },
+    enabled: !!selectedBranch, // Only fetch when a branch is selected
+  });
+
   const { data: categories, isLoading: isLoadingCategories } = useQuery({
     queryKey: ["product-categories"],
-
     queryFn: async () => {
       const response = await axiosClient.get("/product-categories");
       return response.data;
     },
   });
 
-
-// this is to allow triggerring to fetch the data
-  const { data, refetch } = useQuery({
-    queryKey: ['products'],
-    queryFn: async () => {
-      const response = await axiosClient.get('/products');
-      return response.data;
-    }
-  });
-
-  const { data: products, isLoading: isLoadingProducts } = useQuery({
+  const { data: products, refetch, isLoading: isLoadingProducts } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const response = await axiosClient.get("/products");
       return response.data;
     },
   });
-  const getBranchPrice = (product, branchId) => {
-// =======
-//   const getBranchPrice = (product: any, branchId: string) => {
-// >>>>>>> d6d744bacb5bde7fad21ebb8298f5df92d6f7b8b
+
+  const getBranchPrice = (product: any, branchId: string) => {
     if (product.allBranches) {
       return parseFloat(product.basePrice);
     }
-    const branchPrice = product.branchPrices.find(bp => bp.branchId === branchId);
+    const branchPrice = product.branchPrices.find(
+      (bp: any) => bp.branchId === branchId
+    );
     return branchPrice ? parseFloat(branchPrice.price) : product.price;
   };
 
@@ -118,22 +120,29 @@ const Products = () => {
 
   const resetFilters = () => {
     setSearchTerm("");
-    setSelectedBranch("all");
+    setSelectedBranch("");
+    setSelectedOutlet("");
     setSelectedCategory("all");
   };
 
-  const filteredProducts = products?.filter(product => {
+  const handleBranchChange = (value: string) => {
+    setSelectedBranch(value);
+    setSelectedOutlet(""); // Reset outlet when branch changes
+  };
+
+  const filteredProducts = products?.filter((product: any) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesBranch = selectedBranch === "all" || 
-      (product.allBranches || product.branchPrices.some(bp => bp.branchId === selectedBranch));
+    const matchesBranch = !selectedBranch || 
+      (product.allBranches || product.branchPrices.some((bp: any) => bp.branchId === selectedBranch));
+    const matchesOutlet = !selectedOutlet || product.outletId === selectedOutlet;
     const matchesCategory = selectedCategory === "all" || product.categoryId === selectedCategory;
-    console.log(products)
-    return matchesSearch && matchesBranch && matchesCategory;
+    
+    return matchesSearch && matchesBranch && matchesOutlet && matchesCategory;
   });
 
-
-  if (isLoadingBranches || isLoadingCategories || isLoadingProducts)
-    return <>Loading</>;
+  if (isLoadingBranches || isLoadingCategories || isLoadingProducts) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -149,16 +158,16 @@ const Products = () => {
           placeholder="Search products..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="md:w-1/3"
+          className="md:w-1/4"
         />
 
-        <Select value={selectedBranch} onValueChange={setSelectedBranch}>
-          <SelectTrigger className="md:w-1/3">
-            <SelectValue placeholder="Filter by branch" />
+        <Select value={selectedBranch} onValueChange={handleBranchChange}>
+          <SelectTrigger className="md:w-1/4">
+            <SelectValue placeholder="Select branch" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Branches</SelectItem>
-            {branches?.map((branch) => (
+            <SelectItem value="">All Branches</SelectItem>
+            {branches?.map((branch: any) => (
               <SelectItem key={branch.id} value={branch.id}>
                 {branch.name}
               </SelectItem>
@@ -166,13 +175,29 @@ const Products = () => {
           </SelectContent>
         </Select>
 
+        {selectedBranch && (
+          <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
+            <SelectTrigger className="md:w-1/4">
+              <SelectValue placeholder="Select outlet" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Outlets</SelectItem>
+              {outlets?.map((outlet: any) => (
+                <SelectItem key={outlet.id} value={outlet.id}>
+                  {outlet.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+
         <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="md:w-1/3">
+          <SelectTrigger className="md:w-1/4">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Categories</SelectItem>
-            {categories?.map((category) => (
+            {categories?.map((category: any) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.name}
               </SelectItem>
