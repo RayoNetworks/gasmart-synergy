@@ -29,6 +29,7 @@ import {
   CheckCircle2,
   Eye
 } from "lucide-react";
+import { PumpTransactions } from "@/components/pump/PumpTransactions";
 
 interface Pump {
   id: string;
@@ -156,6 +157,8 @@ const PumpManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRepairDialogOpen, setIsRepairDialogOpen] = useState(false);
   const [isAddPumpDialogOpen, setIsAddPumpDialogOpen] = useState(false);
+  const [selectedPumpTransactions, setSelectedPumpTransactions] = useState<Transaction[]>([]);
+  const [isViewingTransactions, setIsViewingTransactions] = useState(false);
 
   const form = useForm<z.infer<typeof addPumpSchema>>({
     resolver: zodResolver(addPumpSchema),
@@ -253,7 +256,7 @@ const PumpManagement = () => {
     
     const pump: Pump = {
       id: `PMP${Math.floor(Math.random() * 1000)}`,
-      code: values.code,  // Now including the code from form values
+      code: values.code,
       product: values.product,
       model: values.model,
       serialNo: values.serialNo,
@@ -336,6 +339,37 @@ const PumpManagement = () => {
     setPumps(updatedPumps);
     toast.success("Pump brought online successfully!");
   };
+
+  const handleViewTransactions = (pump: Pump) => {
+    setSelectedPumpTransactions(pump.transactions);
+    setIsViewingTransactions(true);
+    setSelectedPump(pump);
+  };
+
+  if (isViewingTransactions && selectedPump) {
+    return (
+      <div className="space-y-6 p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Pump Transactions</h1>
+            <p className="text-muted-foreground">
+              Viewing transactions for Pump {selectedPump.code}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setIsViewingTransactions(false);
+              setSelectedPump(null);
+            }}
+          >
+            Back to Pumps
+          </Button>
+        </div>
+        <PumpTransactions transactions={selectedPumpTransactions} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -424,6 +458,10 @@ const PumpManagement = () => {
                         Shutdown
                       </DropdownMenuItem>
                     )}
+                    <DropdownMenuItem onClick={() => handleViewTransactions(pump)}>
+                      <History className="mr-2 h-4 w-4" />
+                      View Transactions
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

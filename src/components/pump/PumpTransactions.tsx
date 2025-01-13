@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { DollarSign, Clock, User } from "lucide-react";
+import { DollarSign, Clock, User, Loader2 } from "lucide-react";
 
 interface Transaction {
   id: string;
@@ -14,9 +14,40 @@ interface Transaction {
 
 interface PumpTransactionsProps {
   transactions: Transaction[];
+  isLoading?: boolean;
 }
 
-export const PumpTransactions = ({ transactions }: PumpTransactionsProps) => {
+export const PumpTransactions = ({ transactions, isLoading = false }: PumpTransactionsProps) => {
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Recent Transactions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-[300px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!transactions.length) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Recent Transactions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+            No transactions found
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
