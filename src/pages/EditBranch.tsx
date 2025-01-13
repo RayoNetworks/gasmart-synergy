@@ -36,7 +36,9 @@ const EditBranch = () => {
   const { data: branch, isLoading } = useQuery({
     queryKey: ["branch", id],
     queryFn: async () => {
+      console.log("Fetching branch data for ID:", id);
       const response = await axiosClient.get(`/branches/${id}`);
+      console.log("Fetched branch data:", response.data);
       return response.data;
     },
   });
@@ -44,14 +46,24 @@ const EditBranch = () => {
   // Update form when branch data is loaded
   useEffect(() => {
     if (branch) {
-      reset(branch);
+      console.log("Setting form values with branch data:", branch);
+      reset({
+        name: branch.name,
+        address: branch.address,
+        phone: branch.phone || "",
+        email: branch.email || "",
+        manager: branch.manager || "",
+        status: branch.status,
+      });
     }
   }, [branch, reset]);
 
   // Update branch mutation
   const updateMutation = useMutation({
-    mutationFn: (data: BranchFormData) =>
-      axiosClient.put(`/branches/${id}`, data),
+    mutationFn: (data: BranchFormData) => {
+      console.log("Submitting branch update:", data);
+      return axiosClient.put(`/branches/${id}`, data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["branches"] });
       toast({
