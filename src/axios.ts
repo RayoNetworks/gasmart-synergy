@@ -4,7 +4,8 @@ import {
   token as Token,
 } from "./common/constants/auth";
 
-export const axiosClient = axios.create({
+// Create axios instance
+const axiosClient = axios.create({
   baseURL: "",
   headers: {
     "Content-Type": "application/json",
@@ -573,7 +574,6 @@ axiosClient.interceptors.response.use(
     const method = response.config.method;
     let mockResponse = { ...response };
 
-    // Handle managers-related requests
     if (url?.startsWith("/managers")) {
       console.log("Handling managers request:", method, url);
       if (method === "get") {
@@ -867,7 +867,6 @@ axiosClient.interceptors.response.use(
       }
     }
 
-    // Handle sales returns requests
     if (url?.startsWith("/sales-returns")) {
       console.log("Handling sales returns request:", method, url);
       if (method === "get") {
