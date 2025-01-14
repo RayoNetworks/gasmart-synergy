@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
+import axios, { AxiosResponse, InternalAxiosRequestConfig, AxiosHeaders } from "axios";
 import { token, refresh_token } from "@/common/constants/auth";
 
 // Create axios instance
@@ -181,21 +181,23 @@ axiosClient.interceptors.response.use(
 );
 
 // Mock API functions with proper types
-const mockGet = async <T = any>(
+const mockGet = async <T = any, R = AxiosResponse<T>>(
   url: string,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse<T>> => {
+  config?: InternalAxiosRequestConfig
+): Promise<R> => {
   console.log("Mock GET request to:", url);
   const endpoint = url.split("/").pop();
+  
+  const headers = new AxiosHeaders();
   
   if (mockData[endpoint]) {
     return {
       data: mockData[endpoint],
       status: 200,
       statusText: 'OK',
-      headers: {},
-      config: config || {}
-    };
+      headers,
+      config: config || {} as InternalAxiosRequestConfig
+    } as R;
   }
   
   // Handle specific IDs in URLs
@@ -211,9 +213,9 @@ const mockGet = async <T = any>(
           data: item,
           status: 200,
           statusText: 'OK',
-          headers: {},
-          config: config || {}
-        };
+          headers,
+          config: config || {} as InternalAxiosRequestConfig
+        } as R;
       }
     }
   }
@@ -221,48 +223,54 @@ const mockGet = async <T = any>(
   throw new Error("Not found");
 };
 
-const mockPost = async <T = any>(
+const mockPost = async <T = any, R = AxiosResponse<T>>(
   url: string,
   data?: any,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse<T>> => {
+  config?: InternalAxiosRequestConfig
+): Promise<R> => {
   console.log("Mock POST request to:", url, "with data:", data);
+  const headers = new AxiosHeaders();
+  
   return {
     data: { ...data, id: Math.random().toString() },
     status: 201,
     statusText: 'Created',
-    headers: {},
-    config: config || {}
-  };
+    headers,
+    config: config || {} as InternalAxiosRequestConfig
+  } as R;
 };
 
-const mockPut = async <T = any>(
+const mockPut = async <T = any, R = AxiosResponse<T>>(
   url: string,
   data?: any,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse<T>> => {
+  config?: InternalAxiosRequestConfig
+): Promise<R> => {
   console.log("Mock PUT request to:", url, "with data:", data);
+  const headers = new AxiosHeaders();
+  
   return {
-    data: data,
+    data,
     status: 200,
     statusText: 'OK',
-    headers: {},
-    config: config || {}
-  };
+    headers,
+    config: config || {} as InternalAxiosRequestConfig
+  } as R;
 };
 
-const mockDelete = async <T = any>(
+const mockDelete = async <T = any, R = AxiosResponse<T>>(
   url: string,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse<T>> => {
+  config?: InternalAxiosRequestConfig
+): Promise<R> => {
   console.log("Mock DELETE request to:", url);
+  const headers = new AxiosHeaders();
+  
   return {
-    data: { success: true },
+    data: { success: true } as T,
     status: 200,
     statusText: 'OK',
-    headers: {},
-    config: config || {}
-  };
+    headers,
+    config: config || {} as InternalAxiosRequestConfig
+  } as R;
 };
 
 // Override axios methods with mock functions
