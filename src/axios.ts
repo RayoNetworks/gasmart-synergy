@@ -556,6 +556,103 @@ const mockUsers = [
   }
 ];
 
+// Mock data for product variations
+const mockProductVariations = [
+  {
+    id: "VAR001",
+    productId: "PRD001",
+    type: "cooking_gas",
+    name: "12.5kg Gas",
+    allBranches: true,
+    basePrice: 12500,
+    branchPrices: [],
+    status: "active",
+    createdAt: "2024-03-15"
+  },
+  {
+    id: "VAR002",
+    productId: "PRD001",
+    type: "cooking_gas",
+    name: "6kg Gas",
+    allBranches: true,
+    basePrice: 7500,
+    branchPrices: [],
+    status: "active",
+    createdAt: "2024-03-15"
+  },
+  {
+    id: "VAR003",
+    productId: "PRD002",
+    type: "lubricant_oil",
+    name: "SAE 40 Oil",
+    allBranches: false,
+    basePrice: null,
+    branchPrices: [
+      { branchId: "BR001", price: 5000 },
+      { branchId: "BR002", price: 5200 }
+    ],
+    status: "active",
+    createdAt: "2024-03-15"
+  },
+  {
+    id: "VAR004",
+    productId: "PRD002",
+    type: "lubricant_oil",
+    name: "SAE 50 Oil",
+    allBranches: false,
+    basePrice: null,
+    branchPrices: [
+      { branchId: "BR001", price: 5500 },
+      { branchId: "BR002", price: 5700 }
+    ],
+    status: "active",
+    createdAt: "2024-03-15"
+  }
+];
+
+// Update products to include variations
+const mockProductsWithVariations = [
+  {
+    id: "PRD001",
+    name: "Premium Motor Spirit",
+    categoryId: "CAT001",
+    description: "High-quality fuel for vehicles",
+    basePrice: 617,
+    price: 617,
+    allBranches: true,
+    status: "In Stock",
+    stock: 1000,
+    category: mockProductCategories[0],
+    branchPrices: [],
+    totalSales: 50000,
+    createdAt: "2024-03-01",
+    branch: null,
+    outlet: null,
+    variations: mockProductVariations.filter(v => v.productId === "PRD001")
+  },
+  {
+    id: "PRD002",
+    name: "Engine Oil",
+    categoryId: "CAT002",
+    description: "Premium engine lubricant",
+    basePrice: 5000,
+    price: 5000,
+    allBranches: false,
+    branchPrices: [
+      { branchId: "BR001", price: 5000 },
+      { branchId: "BR002", price: 5200 }
+    ],
+    status: "In Stock",
+    stock: 500,
+    totalSales: 25000,
+    createdAt: "2024-03-02",
+    category: mockProductCategories[1],
+    branch: mockBranches[0],
+    outlet: mockOutlets[0],
+    variations: mockProductVariations.filter(v => v.productId === "PRD002")
+  }
+];
+
 // Request interceptor
 axiosClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig<any>) => {
@@ -567,47 +664,39 @@ axiosClient.interceptors.request.use(
   }
 );
 
-// Response interceptor with CRUD operations for all entities
+// Response interceptor
 axiosClient.interceptors.response.use(
   async (response: AxiosResponse<any, any>) => {
     const url = response.config.url;
     const method = response.config.method;
     let mockResponse = { ...response };
 
-    if (url?.startsWith("/managers")) {
-      console.log("Handling managers request:", method, url);
+    // Handle product variations requests
+    if (url?.startsWith("/products") && url.includes("/variations")) {
+      console.log("Handling product variations request:", method, url);
+      const productId = url.split("/")[2];
+      
       if (method === "get") {
-        const { managerType } = response.config?.params || {};
-        mockResponse.data = managerType
-          ? mockManagers.filter(manager => 
-              managerType === "all" ? true : manager.managerType === managerType)
-          : mockManagers;
+        mockResponse.data = mockProductVariations.filter(
+          variation => variation.productId === productId
+        );
       } else if (method === "post") {
-        const newManager = {
-          id: `MGR${(mockManagers.length + 1).toString().padStart(3, '0')}`,
+        const newVariation = {
+          id: `VAR${(mockProductVariations.length + 1).toString().padStart(3, '0')}`,
+          productId,
           ...JSON.parse(response.config.data),
-          createdAt: new Date().toISOString().split("T")[0],
-          status: "active"
+          status: "active",
+          createdAt: new Date().toISOString().split("T")[0]
         };
-        mockManagers.push(newManager);
-        mockResponse.data = newManager;
-      } else if (method === "put") {
-        const managerId = url.split("/")[2];
-        const managerIndex = mockManagers.findIndex(m => m.id === managerId);
-        if (managerIndex !== -1) {
-          mockManagers[managerIndex] = {
-            ...mockManagers[managerIndex],
-            ...JSON.parse(response.config.data)
-          };
-          mockResponse.data = mockManagers[managerIndex];
+        mockProductVariations.push(newVariation);
+        
+        // Update product's variations
+        const product = mockProductsWithVariations.find(p => p.id === productId);
+        if (product) {
+          product.variations = mockProductVariations.filter(v => v.productId === productId);
         }
-      } else if (method === "delete") {
-        const managerId = url.split("/")[2];
-        const managerIndex = mockManagers.findIndex(m => m.id === managerId);
-        if (managerIndex !== -1) {
-          mockManagers.splice(managerIndex, 1);
-          mockResponse.data = { message: "Manager deleted successfully" };
-        }
+        
+        mockResponse.data = newVariation;
       }
     }
 
@@ -770,7 +859,7 @@ axiosClient.interceptors.response.use(
       console.log("Handling products request:", method, url);
       if (method === "get") {
         const { branch } = response.config?.params || {};
-        let filteredProducts = [...mockProducts];
+        let filteredProducts = [...mockProductsWithVariations];
         
         if (branch) {
           filteredProducts = filteredProducts.filter(product => 
@@ -782,35 +871,36 @@ axiosClient.interceptors.response.use(
       } else if (method === "post") {
         const productData = JSON.parse(response.config.data);
         const newProduct = {
-          id: `PRD${(mockProducts.length + 1).toString().padStart(3, '0')}`,
+          id: `PRD${(mockProductsWithVariations.length + 1).toString().padStart(3, '0')}`,
           ...productData,
           status: "In Stock",
           stock: 0,
           category: mockProductCategories.find(cat => cat.id === productData.categoryId),
           branch: productData.branchId ? mockBranches.find(b => b.id === productData.branchId) : null,
           outlet: null,
-          createdAt: new Date().toISOString().split("T")[0]
+          createdAt: new Date().toISOString().split("T")[0],
+          variations: []
         };
-        mockProducts.push(newProduct);
+        mockProductsWithVariations.push(newProduct);
         mockResponse.data = newProduct;
       } else if (method === "put") {
         const productId = url.split("/")[2];
-        const productIndex = mockProducts.findIndex(p => p.id === productId);
+        const productIndex = mockProductsWithVariations.findIndex(p => p.id === productId);
         if (productIndex !== -1) {
           const updatedData = JSON.parse(response.config.data);
-          mockProducts[productIndex] = {
-            ...mockProducts[productIndex],
+          mockProductsWithVariations[productIndex] = {
+            ...mockProductsWithVariations[productIndex],
             ...updatedData,
             category: mockProductCategories.find(cat => cat.id === updatedData.categoryId),
             branch: updatedData.branchId ? mockBranches.find(b => b.id === updatedData.branchId) : null
           };
-          mockResponse.data = mockProducts[productIndex];
+          mockResponse.data = mockProductsWithVariations[productIndex];
         }
       } else if (method === "delete") {
         const productId = url.split("/")[2];
-        const productIndex = mockProducts.findIndex(p => p.id === productId);
+        const productIndex = mockProductsWithVariations.findIndex(p => p.id === productId);
         if (productIndex !== -1) {
-          mockProducts.splice(productIndex, 1);
+          mockProductsWithVariations.splice(productIndex, 1);
           mockResponse.data = { message: "Product deleted successfully" };
         }
       }
