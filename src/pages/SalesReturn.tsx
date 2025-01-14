@@ -108,8 +108,8 @@ const SalesReturn = () => {
               <TableCell>{saleReturn.quantity}</TableCell>
               <TableCell>{saleReturn.returnDate}</TableCell>
               <TableCell>{saleReturn.reason}</TableCell>
-              <TableCell>{saleReturn.branch.name}</TableCell>
-              <TableCell>{saleReturn.outlet.name}</TableCell>
+              <TableCell>{saleReturn.branch?.name}</TableCell>
+              <TableCell>{saleReturn.outlet?.name}</TableCell>
               <TableCell>
                 <div className="flex flex-col">
                   <span>{saleReturn.user.name}</span>

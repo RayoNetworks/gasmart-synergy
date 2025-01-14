@@ -95,7 +95,9 @@ const Sales = () => {
                 <TableCell>₦{sale.amount.toFixed(2)}</TableCell>
                 <TableCell>{sale.date}</TableCell>
                 <TableCell>
-                  <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                  <span className={`px-2 py-1 rounded-full text-xs ${sale.status === 'Pending' ?
+                    'bg-yellow-100 text-yellow-800' :
+                    sale.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
                     {sale.status}
                   </span>
                 </TableCell>

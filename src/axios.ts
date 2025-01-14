@@ -11,6 +11,251 @@ export const axiosClient = axios.create({
 
 // Mock data for different endpoints
 const mockData = {
+  users: [
+    {
+      id: "1",
+      name: "John Doe",
+      email: "johndoe@example.com",
+      phone: "1234567890",
+      userType: "staff",
+      branch: {
+        id: "101",
+        name: "Main Branch",
+      },
+      outlet: {
+        id: "201",
+        name: "Downtown Outlet",
+      },
+      createdAt: "2024-01-01T08:00:00.000Z",
+    },
+    {
+      id: "2",
+      name: "Jane Smith",
+      email: "janesmith@example.com",
+      phone: "9876543210",
+      userType: "customer",
+      branch: null, // No branch assigned
+      outlet: {
+        id: "202",
+        name: "Uptown Outlet",
+      },
+      createdAt: "2024-01-05T10:30:00.000Z",
+    },
+    {
+      id: "3",
+      name: "Samuel Green",
+      email: "samuelgreen@example.com",
+      phone: "5678901234",
+      userType: "working_client",
+      branch: {
+        id: "102",
+        name: "West Side Branch",
+      },
+      outlet: {
+        id: "203",
+        name: "Westside Outlet",
+      },
+      createdAt: "2023-12-15T09:00:00.000Z",
+    },
+    {
+      id: "4",
+      name: "Alice Johnson",
+      email: "alicejohnson@example.com",
+      phone: "7654321098",
+      userType: "staff",
+      branch: {
+        id: "103",
+        name: "East Side Branch",
+      },
+      outlet: null, // No outlet assigned
+      createdAt: "2023-11-20T14:00:00.000Z",
+    },
+  ],
+  "sales-returns": [
+    {
+      id: "1",
+      productName: "LPG Gas Cylinder 12.5kg",
+      quantity: 1,
+      returnDate: "2025-01-10",
+      reason: "Damaged on delivery",
+      branchId: "101",
+      outletId: "501",
+      branch: {
+        id: "101",
+        name: "Main Branch",
+        address: "123 Main Street, Lagos",
+      },
+      outlet: {
+        id: "501",
+        name: "Central Outlet",
+        location: "Victoria Island, Lagos",
+      },
+      user: {
+        id: "201",
+        name: "John Doe",
+        email: "john.doe@example.com",
+        phone: "+2347012345678",
+        role: "Cashier",
+      },
+    },
+    {
+      id: "2",
+      productName: "Engine Oil 4L",
+      quantity: 2,
+      returnDate: "2025-01-11",
+      reason: "Wrong product delivered",
+      branchId: "102",
+      outletId: "502",
+      branch: {
+        id: "102",
+        name: "North Branch",
+        address: "456 Northern Road, Abuja",
+      },
+      outlet: {
+        id: "502",
+        name: "North Outlet",
+        location: "Wuse 2, Abuja",
+      },
+      user: {
+        id: "202",
+        name: "Jane Smith",
+        email: "jane.smith@example.com",
+        phone: "+2348098765432",
+        role: "Cashier",
+      },
+    },
+    {
+      id: "3",
+      productName: "Cooking Oil 5L",
+      quantity: 3,
+      returnDate: "2025-01-12",
+      reason: "Expired product",
+      branchId: "103",
+      outletId: "503",
+      branch: {
+        id: "103",
+        name: "East Branch",
+        address: "789 Eastern Ave, Enugu",
+      },
+      outlet: {
+        id: "503",
+        name: "East Outlet",
+        location: "Ogui Road, Enugu",
+      },
+      user: {
+        id: "203",
+        name: "Alice Johnson",
+        email: "alice.johnson@example.com",
+        phone: "+2347033334444",
+        role: "Cashier",
+      },
+    },
+    {
+      id: "4",
+      productName: "Petrol Can 10L",
+      quantity: 1,
+      returnDate: "2025-01-13",
+      reason: "Leakage detected",
+      branchId: "104",
+      outletId: "504",
+      branch: {
+        id: "104",
+        name: "West Branch",
+        address: "321 Western Blvd, Port Harcourt",
+      },
+      outlet: {
+        id: "504",
+        name: "West Outlet",
+        location: "GRA Phase 2, Port Harcourt",
+      },
+      user: {
+        id: "204",
+        name: "Bob Brown",
+        email: "bob.brown@example.com",
+        phone: "+2348067890123",
+        role: "Cashier",
+      },
+    },
+    {
+      id: "5",
+      productName: "Charcoal Bag 25kg",
+      quantity: 5,
+      returnDate: "2025-01-14",
+      reason: "Customer dissatisfaction",
+      branchId: "105",
+      outletId: null, // No outlet associated
+      branch: {
+        id: "105",
+        name: "South Branch",
+        address: "654 Southern Lane, Calabar",
+      },
+      outlet: null, // No outlet information
+      user: {
+        id: "205",
+        name: "Eve White",
+        email: "eve.white@example.com",
+        phone: "+2348076543210",
+        role: "Cashier",
+      },
+    },
+  ],
+  sales: [
+    {
+      id: "1",
+      product: "LPG Gas Cylinder 12.5kg",
+      branch: { id: "101", name: "Main Branch" },
+      outlet: { id: "501", name: "Central Outlet" },
+      user: { id: "201", name: "John Doe", email: "john.doe@example.com" },
+      quantity: 2,
+      amount: 17000,
+      date: "2025-01-14",
+      status: "Completed",
+    },
+    {
+      id: "2",
+      product: "Engine Oil 4L",
+      branch: { id: "102", name: "North Branch" },
+      outlet: { id: "502", name: "North Outlet" },
+      user: { id: "202", name: "Jane Smith", email: "jane.smith@example.com" },
+      quantity: 1,
+      amount: 12000,
+      date: "2025-01-13",
+      status: "Completed",
+    },
+    {
+      id: "3",
+      product: "Cooking Oil 5L",
+      branch: { id: "103", name: "East Branch" },
+      outlet: null, // No outlet associated
+      user: { id: "203", name: "Alice Johnson", email: "alice.johnson@example.com" },
+      quantity: 5,
+      amount: 25000,
+      date: "2025-01-12",
+      status: "Pending",
+    },
+    {
+      id: "4",
+      product: "Petrol Can 10L",
+      branch: { id: "104", name: "West Branch" },
+      outlet: { id: "503", name: "West Outlet" },
+      user: { id: "204", name: "Bob Brown", email: "bob.brown@example.com" },
+      quantity: 3,
+      amount: 21000,
+      date: "2025-01-11",
+      status: "Completed",
+    },
+    {
+      id: "5",
+      product: "Charcoal Bag 25kg",
+      branch: { id: "105", name: "South Branch" },
+      outlet: null,
+      user: { id: "205", name: "Eve White", email: "eve.white@example.com" },
+      quantity: 10,
+      amount: 40000,
+      date: "2025-01-10",
+      status: "Cancelled",
+    },
+  ],
   tanks: [
     {
       id: "1",
@@ -70,7 +315,11 @@ const mockData = {
       allBranches: true,
       categoryId: "1",
       category: { id: "1", name: "Gas Cylinders" },
-      branchPrices: []
+      branchPrices: [],
+      variations: [
+        { id: "1-1", name: "With Hose", price: 9000 },
+        { id: "1-2", name: "Without Hose", price: 8500 },
+      ],
     },
     {
       id: "2",
@@ -82,14 +331,62 @@ const mockData = {
       allBranches: true,
       categoryId: "2",
       category: { id: "2", name: "Lubricants" },
-      branchPrices: []
-    }
+      branchPrices: [],
+      variations: [
+        { id: "2-1", name: "Synthetic", price: 13000 },
+        { id: "2-2", name: "Semi-Synthetic", price: 12500 },
+      ],
+    },
+    {
+      id: "3",
+      name: "Cooking Oil 5L",
+      description: "Healthy cooking oil",
+      basePrice: 5000,
+      price: 5000,
+      status: "In Stock",
+      allBranches: true,
+      categoryId: "3",
+      category: { id: "3", name: "Cooking Supplies" },
+      branchPrices: [],
+      variations: [],
+    },
+    {
+      id: "4",
+      name: "Petrol Can 10L",
+      description: "High-quality petrol",
+      basePrice: 7000,
+      price: 7000,
+      status: "Out of Stock",
+      allBranches: false,
+      categoryId: "4",
+      category: { id: "4", name: "Fuel" },
+      branchPrices: [],
+      variations: [
+        { id: "4-1", name: "Regular Petrol", price: 7000 },
+        { id: "4-2", name: "Premium Petrol", price: 7500 },
+      ],
+    },
+    {
+      id: "5",
+      name: "Charcoal Bag 25kg",
+      description: "Eco-friendly charcoal for cooking",
+      basePrice: 4000,
+      price: 4000,
+      status: "In Stock",
+      allBranches: true,
+      categoryId: "5",
+      category: { id: "5", name: "Solid Fuels" },
+      branchPrices: [],
+      variations: [],
+    },
   ],
+
   "product-categories": [
     { id: "1", name: "Gas Cylinders", description: "Various gas cylinder sizes", createdAt: "2024-01-14" },
     { id: "2", name: "Lubricants", description: "Engine oils and lubricants", createdAt: "2024-01-14" },
     { id: "3", name: "Accessories", description: "Gas accessories", createdAt: "2024-01-14" }
   ],
+
   branches: [
     {
       id: "1",

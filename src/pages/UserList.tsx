@@ -82,11 +82,13 @@ const UserList = () => {
   });
 
   const handleViewBranch = (branchId: string) => {
-    navigate(`/admin/branch/${branchId}`);
+    // navigate(`/admin/branch/${branchId}`);
+    navigate(`/admin/branch`);
   };
 
   const handleViewOutlet = (outletId: string) => {
-    navigate(`/admin/outlets/${outletId}`);
+    // navigate(`/admin/outlets/${outletId}`);
+    navigate(`/admin/outlets`);
   };
 
   const handleViewUserDetails = (user: any) => {
@@ -106,8 +108,8 @@ const UserList = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">User List</h1>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={handleReset}
           className="flex items-center gap-2"
         >
