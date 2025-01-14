@@ -68,7 +68,7 @@ const navigation = [
     subroutes: [
       {
         name: "Manage Stock",
-        href: "/admin/reports?tab=stock",
+        href: "/admin/stock/manage",
         icon: Database,
       },
       {

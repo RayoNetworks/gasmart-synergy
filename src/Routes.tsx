@@ -62,6 +62,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="reports" element={<Reports />} />
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
+    <Route path="stock/management" element={<div>Stock Management</div>} />
     <Route path="assets/tanks" element={<TankManagement />} />
     <Route path="assets/pumps" element={<PumpManagement />} />
     <Route path="crm/users" element={<UserList />} />

@@ -11,6 +11,53 @@ export const axiosClient = axios.create({
 
 // Mock data for different endpoints
 const mockData = {
+  managers: [
+    {
+      id: "1",
+      name: "John Doe",
+      email: "john.doe@example.com",
+      phone: "123-456-7890",
+      managerType: "branch_manager",
+      branch: { id: "101", name: "Downtown Branch" },
+      outlet: null,
+    },
+    {
+      id: "2",
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+      phone: "234-567-8901",
+      managerType: "outlet_manager",
+      branch: null,
+      outlet: { id: "201", name: "Central Outlet" },
+    },
+    {
+      id: "3",
+      name: "Michael Johnson",
+      email: "michael.johnson@example.com",
+      phone: "345-678-9012",
+      managerType: "branch_manager",
+      branch: { id: "102", name: "Uptown Branch" },
+      outlet: null,
+    },
+    {
+      id: "4",
+      name: "Emily Davis",
+      email: "emily.davis@example.com",
+      phone: "456-789-0123",
+      managerType: "outlet_manager",
+      branch: null,
+      outlet: { id: "202", name: "Eastside Outlet" },
+    },
+    {
+      id: "5",
+      name: "William Brown",
+      email: "william.brown@example.com",
+      phone: "567-890-1234",
+      managerType: "branch_manager",
+      branch: { id: "103", name: "Westside Branch" },
+      outlet: null,
+    },
+  ],
   users: [
     {
       id: "1",

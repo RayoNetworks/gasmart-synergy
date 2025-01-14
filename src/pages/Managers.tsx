@@ -58,11 +58,16 @@ const Managers = () => {
     },
   });
 
+  console.log(managers);
+  
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (error) {
+    console.log(error);
+    
     return <div>Error loading managers</div>;
   }
 
