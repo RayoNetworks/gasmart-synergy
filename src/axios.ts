@@ -11,6 +11,54 @@ export const axiosClient = axios.create({
 
 // Mock data for different endpoints
 const mockData = {
+  tanks: [
+    {
+      id: "1",
+      name: "Alpha",
+      product: "Diesel",
+      capacity: 5000,
+      currentLevel: 15,
+      lastDelivery: "2025-01-10",
+      status: "ACTIVE",
+    },
+    {
+      id: "2",
+      name: "Beta",
+      product: "Petrol",
+      capacity: 7000,
+      currentLevel: 35,
+      lastDelivery: "2025-01-08",
+      status: "ACTIVE",
+    },
+    {
+      id: "3",
+      name: "Gamma",
+      product: "Kerosene",
+      capacity: 6000,
+      currentLevel: 50,
+      lastDelivery: "2025-01-07",
+      status: "INACTIVE",
+    },
+    {
+      id: "4",
+      name: "Delta",
+      product: "Diesel",
+      capacity: 8000,
+      currentLevel: 10,
+      lastDelivery: "2025-01-05",
+      status: "ACTIVE",
+    },
+    {
+      id: "5",
+      name: "Epsilon",
+      product: "Petrol",
+      capacity: 10000,
+      currentLevel: 65,
+      lastDelivery: "2025-01-04",
+      status: "ACTIVE",
+    },
+  ],
+
   products: [
     {
       id: "1",
@@ -187,9 +235,9 @@ const mockGet = async <T = any, R = AxiosResponse<T>>(
 ): Promise<R> => {
   console.log("Mock GET request to:", url);
   const endpoint = url.split("/").pop();
-  
+
   const headers = new AxiosHeaders();
-  
+
   if (mockData[endpoint]) {
     return {
       data: mockData[endpoint],
@@ -199,13 +247,13 @@ const mockGet = async <T = any, R = AxiosResponse<T>>(
       config: config || {} as InternalAxiosRequestConfig
     } as R;
   }
-  
+
   // Handle specific IDs in URLs
   const urlParts = url.split("/");
   if (urlParts.length > 2) {
     const collection = urlParts[1];
     const id = urlParts[2];
-    
+
     if (mockData[collection]) {
       const item = mockData[collection].find((item: any) => item.id === id);
       if (item) {
@@ -219,7 +267,7 @@ const mockGet = async <T = any, R = AxiosResponse<T>>(
       }
     }
   }
-  
+
   throw new Error("Not found");
 };
 
@@ -230,7 +278,7 @@ const mockPost = async <T = any, R = AxiosResponse<T>>(
 ): Promise<R> => {
   console.log("Mock POST request to:", url, "with data:", data);
   const headers = new AxiosHeaders();
-  
+
   return {
     data: { ...data, id: Math.random().toString() },
     status: 201,
@@ -247,7 +295,7 @@ const mockPut = async <T = any, R = AxiosResponse<T>>(
 ): Promise<R> => {
   console.log("Mock PUT request to:", url, "with data:", data);
   const headers = new AxiosHeaders();
-  
+
   return {
     data,
     status: 200,
@@ -263,7 +311,7 @@ const mockDelete = async <T = any, R = AxiosResponse<T>>(
 ): Promise<R> => {
   console.log("Mock DELETE request to:", url);
   const headers = new AxiosHeaders();
-  
+
   return {
     data: { success: true } as T,
     status: 200,
