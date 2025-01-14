@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { logout } from "@/utils/auth";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import Receipt from "@/components/Receipt";
-import { 
-  LogOut, 
-  Fuel, 
-  Plus, 
-  Search, 
-  CreditCard, 
+import {
+  LogOut,
+  Fuel,
+  Plus,
+  Search,
+  CreditCard,
   Receipt as ReceiptIcon,
   Printer,
   Ban,
@@ -18,7 +18,7 @@ import {
   Trash2
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -46,6 +46,35 @@ interface Customer {
   email: string;
 }
 
+const CashierProductCard = ({ product, onAddToCart }: any) => {
+  const [quantity, setQuantity] = useState(0);
+
+  return (
+    <Card key={product.id} className="cursor-pointer hover:bg-accent transition-colors">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-4 mb-2">
+          <Fuel className="h-8 w-8 text-primary" />
+          <div>
+            <h3 className="font-medium">{product.name}</h3>
+            <p className="text-sm text-muted-foreground">₦{product.price}/Ltr</p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Input
+            type="number"
+            placeholder="Liters"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            min="0"
+            step="0.1"
+          />
+          <Button onClick={() => onAddToCart(product, quantity, setQuantity)}>Add</Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 const CashierLayout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -53,7 +82,7 @@ const CashierLayout = () => {
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [quantity, setQuantity] = useState<number>(0);
+  const [discount, setDiscount] = useState(0);
   const [showReceipt, setShowReceipt] = useState(false);
   const [currentOrder, setCurrentOrder] = useState<any>(null);
 
@@ -86,7 +115,7 @@ const CashierLayout = () => {
     navigate("/login");
   };
 
-  const addToCart = (product: any) => {
+  const addToCart = (product: any, quantity: number, setQuantity: Dispatch<SetStateAction<number>>) => {
     if (quantity <= 0) {
       toast({
         title: "Error",
@@ -98,8 +127,8 @@ const CashierLayout = () => {
 
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
-      setCart(cart.map(item => 
-        item.id === product.id 
+      setCart(cart.map(item =>
+        item.id === product.id
           ? { ...item, quantity: item.quantity + quantity, total: (item.quantity + quantity) * item.price }
           : item
       ));
@@ -136,8 +165,12 @@ const CashierLayout = () => {
     return calculateSubTotal() * 0.075; // 7.5% VAT
   };
 
+  const calculateDiscount = () => {
+    return (calculateSubTotal() + calculateTax()) * discount / 100;
+  }
+
   const calculateTotal = () => {
-    return calculateSubTotal() + calculateTax();
+    return calculateSubTotal() + calculateTax() - calculateDiscount();
   };
 
   const handlePayment = () => {
@@ -159,6 +192,7 @@ const CashierLayout = () => {
         price: item.price,
         total: item.total
       })),
+      discount: calculateDiscount(),
       subtotal: calculateSubTotal(),
       tax: calculateTax(),
       total: calculateTotal(),
@@ -168,10 +202,10 @@ const CashierLayout = () => {
 
     setCurrentOrder(orderDetails);
     setShowReceipt(true);
-    
+
     // Clear cart after payment
     setCart([]);
-    
+
     toast({
       title: "Success",
       description: "Payment processed successfully",
@@ -197,13 +231,14 @@ const CashierLayout = () => {
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold">Point of Sale</h1>
           <Badge variant="outline">{orderId}</Badge>
+          <p className="">Oyibo Samuel</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">
             {new Date().toLocaleDateString()}
           </span>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={handleLogout}
             className="flex items-center gap-2"
           >
@@ -241,9 +276,9 @@ const CashierLayout = () => {
           <div className="flex gap-4 mb-4">
             <div className="flex-1 relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search products..." 
-                className="pl-8" 
+              <Input
+                placeholder="Search products..."
+                className="pl-8"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -253,28 +288,11 @@ const CashierLayout = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-2 gap-4 mb-4">
             {filteredProducts?.map((product: any) => (
-              <Card key={product.id} className="cursor-pointer hover:bg-accent transition-colors">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-4 mb-2">
-                    <Fuel className="h-8 w-8 text-primary" />
-                    <div>
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-muted-foreground">₦{product.price}/Ltr</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      type="number"
-                      placeholder="Liters"
-                      value={quantity}
-                      onChange={(e) => setQuantity(Number(e.target.value))}
-                      min="0"
-                      step="0.1"
-                    />
-                    <Button onClick={() => addToCart(product)}>Add</Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <CashierProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={
+                  addToCart} />
             ))}
           </div>
 
@@ -334,6 +352,17 @@ const CashierLayout = () => {
               <span>Tax (7.5%)</span>
               <span>₦{calculateTax().toFixed(2)}</span>
             </div>
+            <div className="flex flex-col   py-2">
+              <span className="font-bold">Discount</span>
+              <Input
+                type="number"
+                placeholder="Liters"
+                value={discount}
+                onChange={(e) => setDiscount(Number(e.target.value))}
+                min="0"
+                step="0.1"
+              />
+            </div>
             <div className="flex justify-between py-2 font-bold">
               <span>Total</span>
               <span>₦{calculateTotal().toFixed(2)}</span>
@@ -342,8 +371,8 @@ const CashierLayout = () => {
 
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2">
-            <Button 
-              className="flex items-center gap-2" 
+            <Button
+              className="flex items-center gap-2"
               variant="outline"
               onClick={clearCart}
             >
@@ -358,8 +387,8 @@ const CashierLayout = () => {
               <ReceiptIcon className="h-4 w-4" />
               Quotation
             </Button>
-            <Button 
-              className="flex items-center gap-2" 
+            <Button
+              className="flex items-center gap-2"
               variant="default"
               onClick={handlePayment}
             >

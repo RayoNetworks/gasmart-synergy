@@ -17,6 +17,7 @@ interface ReceiptProps {
     subtotal: number;
     tax: number;
     total: number;
+    discount: number;
     cashier: string;
     date: string;
   };
@@ -76,6 +77,10 @@ const Receipt = ({ isOpen, onClose, orderDetails }: ReceiptProps) => {
               <span>Tax (7.5%)</span>
               <span>₦{orderDetails.tax.toFixed(2)}</span>
             </div>
+            <div className="flex justify-between">
+              <span>Discount</span>
+              <span>₦{orderDetails.discount.toFixed(2)}</span>
+            </div>
             <div className="flex justify-between font-bold text-base">
               <span>Total</span>
               <span>₦{orderDetails.total.toFixed(2)}</span>
@@ -86,7 +91,7 @@ const Receipt = ({ isOpen, onClose, orderDetails }: ReceiptProps) => {
           <div className="text-center mt-6 text-sm text-gray-600">
             <p>Thanks for your patronage!</p>
             <div className="mt-2">
-              <svg 
+              <svg
                 className="mx-auto"
                 width="200"
                 height="40"

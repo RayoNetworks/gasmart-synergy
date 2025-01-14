@@ -85,12 +85,12 @@ const ProductVariation = () => {
                         <Eye className="mr-2 h-4 w-4" />
                         View Variations
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() =>
+                      {/* <DropdownMenuItem onClick={() =>
                         navigate(`/admin/products/variation/${product.id}/create`)
                       }>
                         <Plus className="mr-2 h-4 w-4" />
                         Add Variations
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

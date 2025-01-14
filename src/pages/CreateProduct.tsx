@@ -36,6 +36,8 @@ const CreateProduct = () => {
   const [basePrice, setBasePrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [priceType, setPriceType] = useState<"branch" | "outlet">("branch");
+  const [discount, setDiscount] = useState(0); // New state for discount percentage
+  const [quantity, setQuantity] = useState(1); // New state for product quantity
 
   const { data: branches } = useQuery({
     queryKey: ["branches"],
@@ -120,6 +122,9 @@ const CreateProduct = () => {
       return;
     }
 
+    // Apply discount to the total price based on quantity
+    const priceAfterDiscount = (parseFloat(basePrice) * (1 - discount / 100)) * quantity;
+
     const productData = {
       name: productName,
       categoryId: selectedCategory,
@@ -127,6 +132,9 @@ const CreateProduct = () => {
       basePrice: allBranches ? basePrice : null,
       branchPrices: priceType === "branch" ? branchPrices : [],
       outletPrices: priceType === "outlet" ? outletPrices : [],
+      discount, // Added discount
+      quantity, // Added quantity
+      priceAfterDiscount, // Added discounted price calculation
     };
 
     try {
@@ -240,49 +248,19 @@ const CreateProduct = () => {
                             className="flex space-x-4"
                           >
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="branch" id="branch" />
-                              <Label htmlFor="branch">Set price for entire branch</Label>
+                              <RadioGroupItem value="branch" id="branch-radio" />
+                              <Label htmlFor="branch-radio">Branch</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="outlet" id="outlet" />
-                              <Label htmlFor="outlet">Set price per outlet</Label>
+                              <RadioGroupItem value="outlet" id="outlet-radio" />
+                              <Label htmlFor="outlet-radio">Outlet</Label>
                             </div>
                           </RadioGroup>
-
-                          {priceType === "branch" ? (
-                            <Input
-                              type="number"
-                              placeholder="Price (₦)"
-                              className="w-32"
-                              value={
-                                branchPrices.find((bp) => bp.branchId === branch.id)
-                                  ?.price || ""
-                              }
-                              onChange={(e) =>
-                                handlePriceChange(branch.id, e.target.value)
-                              }
-                            />
-                          ) : (
-                            <div className="space-y-2">
-                              {outlets?.map((outlet: any) => (
-                                <div key={outlet.id} className="flex items-center space-x-4">
-                                  <span className="text-sm">{outlet.name}</span>
-                                  <Input
-                                    type="number"
-                                    placeholder="Price (₦)"
-                                    className="w-32"
-                                    value={
-                                      outletPrices.find((op) => op.outletId === outlet.id)
-                                        ?.price || ""
-                                    }
-                                    onChange={(e) =>
-                                      handleOutletPriceChange(outlet.id, e.target.value)
-                                    }
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          )}
+                          <Input
+                            value={branchPrices.find(bp => bp.branchId === branch.id)?.price || ""}
+                            onChange={(e) => handlePriceChange(branch.id, e.target.value)}
+                            placeholder="Set price for this branch"
+                          />
                         </div>
                       )}
                     </div>
@@ -291,18 +269,30 @@ const CreateProduct = () => {
               </div>
             )}
           </div>
+
+          <div className="space-y-4">
+            <Label>Discount (optional)</Label>
+            <Input
+              type="number"
+              value={discount}
+              onChange={(e) => setDiscount(Number(e.target.value))}
+              placeholder="Enter discount percentage"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <Label>Quantity</Label>
+            <Input
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              min={1}
+              placeholder="Enter product quantity"
+            />
+          </div>
         </div>
 
-        <div className="flex space-x-4">
-          <Button type="submit">Create Product</Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate("/admin/products")}
-          >
-            Cancel
-          </Button>
-        </div>
+        <Button type="submit">Create Product</Button>
       </form>
     </div>
   );
