@@ -364,8 +364,22 @@ const mockData = {
       category: { id: "1", name: "Gas Cylinders" },
       branchPrices: [],
       variations: [
-        { id: "1-1", name: "With Hose", price: 9000 },
-        { id: "1-2", name: "Without Hose", price: 8500 },
+        {
+          id: "1-1",
+          type: "Accessory",
+          name: "With Hose",
+          allBranches: true,
+          basePrice: 9000,
+          branchPrices: [],
+        },
+        {
+          id: "1-2",
+          type: "Accessory",
+          name: "Without Hose",
+          allBranches: true,
+          basePrice: 8500,
+          branchPrices: [],
+        },
       ],
     },
     {
@@ -380,8 +394,22 @@ const mockData = {
       category: { id: "2", name: "Lubricants" },
       branchPrices: [],
       variations: [
-        { id: "2-1", name: "Synthetic", price: 13000 },
-        { id: "2-2", name: "Semi-Synthetic", price: 12500 },
+        {
+          id: "2-1",
+          type: "Type",
+          name: "Synthetic",
+          allBranches: true,
+          basePrice: 13000,
+          branchPrices: [],
+        },
+        {
+          id: "2-2",
+          type: "Type",
+          name: "Semi-Synthetic",
+          allBranches: true,
+          basePrice: 12500,
+          branchPrices: [],
+        },
       ],
     },
     {
@@ -407,10 +435,33 @@ const mockData = {
       allBranches: false,
       categoryId: "4",
       category: { id: "4", name: "Fuel" },
-      branchPrices: [],
+      branchPrices: [
+        { branchId: "1", price: 7100 },
+        { branchId: "2", price: 7050 },
+      ],
       variations: [
-        { id: "4-1", name: "Regular Petrol", price: 7000 },
-        { id: "4-2", name: "Premium Petrol", price: 7500 },
+        {
+          id: "4-1",
+          type: "Grade",
+          name: "Regular Petrol",
+          allBranches: false,
+          basePrice: 7000,
+          branchPrices: [
+            { branchId: "1", price: 7100 },
+            { branchId: "2", price: 7050 },
+          ],
+        },
+        {
+          id: "4-2",
+          type: "Grade",
+          name: "Premium Petrol",
+          allBranches: false,
+          basePrice: 7500,
+          branchPrices: [
+            { branchId: "1", price: 7600 },
+            { branchId: "2", price: 7550 },
+          ],
+        },
       ],
     },
     {
@@ -427,6 +478,7 @@ const mockData = {
       variations: [],
     },
   ],
+
 
   "product-categories": [
     { id: "1", name: "Gas Cylinders", description: "Various gas cylinder sizes", createdAt: "2024-01-14" },

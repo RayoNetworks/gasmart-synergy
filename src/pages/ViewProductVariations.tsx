@@ -65,7 +65,7 @@ const ViewProductVariations = () => {
                   <TableCell>₦{variation.basePrice}</TableCell>
                 </TableRow>
               ) : (
-                variation.branchPrices.map((branchPrice: any, index: number) => (
+                variation?.branchPrices?.map((branchPrice: any, index: number) => (
                   <TableRow key={`${variation.id}-${branchPrice.branchId}`}>
                     <TableCell>{variation.type}</TableCell>
                     <TableCell>{variation.name}</TableCell>

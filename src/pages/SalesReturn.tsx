@@ -86,8 +86,10 @@ const SalesReturn = () => {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Sales Returns</h1>
-
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Sales Return</h1>
+        <button className="gap-2 bg-black rounded-full text-white px-4 py-2 hover:bg-black/80">Export PDF</button>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

@@ -59,7 +59,7 @@ const Dashboard = () => {
     { month: "Jun", revenue: 67000, transactions: 180 },
   ];
 
-  const stockDistribution = [
+   const stockDistribution = [
     { name: "PMS", value: 35, color: "#FF8B3D" },
     { name: "AGO", value: 25, color: "#4CAF50" },
     { name: "DPK", value: 20, color: "#2196F3" },

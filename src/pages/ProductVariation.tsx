@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MoreHorizontal } from "lucide-react";
+import { Eye, MoreHorizontal, Plus } from "lucide-react";
 
 const ProductVariation = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const ProductVariation = () => {
     queryFn: async () => {
       const response = await axiosClient.get('/products');
       // Filter products that have variations
-      return response.data.filter((product: any) => 
+      return response.data.filter((product: any) =>
         product.variations && product.variations.length > 0
       );
     }
@@ -43,6 +43,7 @@ const ProductVariation = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Product Variations</h1>
+
       </div>
 
       <div className="flex space-x-4">
@@ -78,11 +79,17 @@ const ProductVariation = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => 
+                      <DropdownMenuItem onClick={() =>
                         navigate(`/admin/products/variation/${product.id}/view`)
                       }>
                         <Eye className="mr-2 h-4 w-4" />
                         View Variations
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() =>
+                        navigate(`/admin/products/variation/${product.id}/create`)
+                      }>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Variations
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

@@ -53,6 +53,7 @@ const Sales = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Sales</h1>
+        <button className="gap-2 bg-black rounded-full text-white px-4 py-2 hover:bg-black/80">Export PDF</button>
       </div>
 
       <div className="flex items-center space-x-2">

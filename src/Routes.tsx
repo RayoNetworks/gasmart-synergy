@@ -37,6 +37,8 @@ import FleetTracking from "./pages/FleetTracking";
 import GeoFencing from "./pages/GeoFencing";
 import FleetNotifications from "./pages/FleetNotifications";
 import RoutePlanning from "./pages/RoutePlanning";
+import EditProduct from "./pages/EditProduct";
+import StockManagement from "./pages/StockManagement";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -46,7 +48,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="sales/quotation" element={<div>Quotation</div>} />
     <Route path="products" element={<Products />} />
     <Route path="products/create" element={<CreateProduct />} />
-    <Route path="products/edit/:id" element={<CreateProduct />} />
+    <Route path="products/edit/:id" element={<EditProduct />} />
     <Route path="products/variation" element={<ProductVariation />} />
     <Route path="products/lubricants" element={<LubricantsManagement />} />
     <Route path="products/fuel" element={<FuelProducts />} />
@@ -62,7 +64,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="reports" element={<Reports />} />
     <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
     <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
-    <Route path="stock/management" element={<div>Stock Management</div>} />
+    <Route path="stock/manage" element={<StockManagement />} />
     <Route path="assets/tanks" element={<TankManagement />} />
     <Route path="assets/pumps" element={<PumpManagement />} />
     <Route path="crm/users" element={<UserList />} />
