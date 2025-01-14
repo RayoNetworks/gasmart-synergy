@@ -90,7 +90,7 @@ const Branch = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return //please show loading ui here;
   }
 
   return (
