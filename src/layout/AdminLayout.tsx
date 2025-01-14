@@ -43,7 +43,7 @@ const AdminLayout = () => {
       <div className="flex min-h-screen w-full bg-background">
         <Sidebar>
           <SidebarHeader className="border-b border-border p-4">
-            <h2 className="text-lg font-semibold">Admin Dashboard</h2>
+            <h2 className="text-lg font-semibold text-primary">Admin Dashboard</h2>
           </SidebarHeader>
           <SidebarContent>
             {navigation.map((group, index) => (
