@@ -11,12 +11,15 @@ const AuthLayout = () => {
   console.log("AuthLayout - Token exists:", !!localStorage.getItem(token));
   console.log("AuthLayout - Redirecting to:", user ? appRouteHelper(user?.role) : null);
 
-  // this ensure that the user can not access these selected routes if they already have been authenticated
+  // Check if user is authenticated and has valid token
   if (user && localStorage.getItem(token)) {
     const redirectPath = appRouteHelper(user?.role);
+    console.log("User authenticated, redirecting to:", redirectPath);
     return <Navigate to={redirectPath} replace />;
   }
 
+  // If no user or token, allow access to auth routes (login, etc.)
+  console.log("No authenticated user, showing auth layout");
   return (
     <div className="min-h-screen bg-background">
       <Outlet />

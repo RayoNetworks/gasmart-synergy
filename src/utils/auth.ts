@@ -2,17 +2,24 @@ import { refresh_token as RefreshToken, token as Token } from "@/common/constant
 import userStore from "@/store/user.store";
 
 export const logout = () => {
-  // Clear all auth-related items from localStorage
-  localStorage.removeItem(Token);
-  localStorage.removeItem(RefreshToken);
+  console.log("Starting logout process...");
   
-  // Clear the user state from zustand store
-  const { setUser } = userStore();
-  setUser(null);
-  
-  // Log the logout action
-  console.log("Logged out successfully, clearing tokens and user state");
-  
-  // Force reload to ensure clean state
-  window.location.href = "/login";
+  try {
+    // Clear all auth-related items from localStorage
+    localStorage.removeItem(Token);
+    localStorage.removeItem(RefreshToken);
+    
+    // Clear the user state from zustand store
+    const { setUser } = userStore.getState();
+    setUser(null);
+    
+    console.log("Cleared tokens and user state");
+    
+    // Use window.location.replace for a clean redirect that won't be added to history
+    window.location.replace("/login");
+  } catch (error) {
+    console.error("Error during logout:", error);
+    // Ensure we still redirect even if there's an error
+    window.location.replace("/login");
+  }
 };
