@@ -871,9 +871,7 @@ axiosClient.interceptors.response.use(
     if (url?.startsWith("/sales-returns")) {
       console.log("Handling sales returns request:", method, url);
       if (method === "get") {
-        mockResponse.data = mock
-
-SalesReturns;
+        mockResponse.data = mockSalesReturns;
       } else if (method === "post") {
         const newReturn = {
           id: `SR${(mockSalesReturns.length + 1).toString().padStart(3, '0')}`,
