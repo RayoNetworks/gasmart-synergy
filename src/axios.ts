@@ -180,8 +180,8 @@ axiosClient.interceptors.response.use(
   }
 );
 
-// Mock GET requests
-axiosClient.get = jest.fn((url) => {
+// Mock API functions
+const mockGet = (url: string) => {
   console.log("Mock GET request to:", url);
   const endpoint = url.split("/").pop();
   
@@ -204,24 +204,27 @@ axiosClient.get = jest.fn((url) => {
   }
   
   return Promise.reject(new Error("Not found"));
-});
+};
 
-// Mock POST requests
-axiosClient.post = jest.fn((url, data) => {
+const mockPost = (url: string, data: any) => {
   console.log("Mock POST request to:", url, "with data:", data);
   return Promise.resolve({ data: { ...data, id: Math.random().toString() } });
-});
+};
 
-// Mock PUT requests
-axiosClient.put = jest.fn((url, data) => {
+const mockPut = (url: string, data: any) => {
   console.log("Mock PUT request to:", url, "with data:", data);
   return Promise.resolve({ data });
-});
+};
 
-// Mock DELETE requests
-axiosClient.delete = jest.fn((url) => {
+const mockDelete = (url: string) => {
   console.log("Mock DELETE request to:", url);
   return Promise.resolve({ data: { success: true } });
-});
+};
+
+// Override axios methods with mock functions
+axiosClient.get = mockGet;
+axiosClient.post = mockPost;
+axiosClient.put = mockPut;
+axiosClient.delete = mockDelete;
 
 export default axiosClient;
