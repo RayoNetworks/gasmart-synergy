@@ -55,7 +55,7 @@ const ProductVariation = () => {
         />
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border border-primary/50">
         <Table>
           <TableHeader>
             <TableRow>

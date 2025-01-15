@@ -226,7 +226,7 @@ const Staff = () => {
       </div>
 
       {/* Staff Table */}
-      <div className="rounded-md border">
+      <div className="rounded-md border border-primary/50">
         <Table>
           <TableHeader>
             <TableRow>

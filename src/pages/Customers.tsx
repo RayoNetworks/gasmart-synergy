@@ -78,7 +78,7 @@ const Customers = () => {
     <div className="container mx-auto py-10">
       <h1 className="text-2xl font-bold mb-6">Customers</h1>
       
-      <div className="rounded-md border">
+      <div className="rounded-md border border-primary/50">
         <Table>
           <TableHeader>
             <TableRow>
