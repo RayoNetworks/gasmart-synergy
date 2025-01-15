@@ -138,7 +138,7 @@ const Products = () => {
         </Button>
       </div>
 
-      <div className="rounded-md border border-primary">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>

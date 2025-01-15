@@ -43,8 +43,8 @@ const AdminLayout = () => {
   return (
     <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex min-h-screen w-full bg-background">
-        <Sidebar className="border-r border-primary/50">
-          <SidebarHeader className="border-b border-primary/50 p-4">
+        <Sidebar className="border-r border-[#FEF7CD]/30">
+          <SidebarHeader className="border-b border-[#FEF7CD]/30 p-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-primary">Admin Dashboard</h2>
               {isMobile && <SidebarTrigger />}
@@ -92,7 +92,7 @@ const AdminLayout = () => {
           </SidebarContent>
         </Sidebar>
         <div className="flex-1">
-          <div className="flex items-center justify-between p-4 border-b border-primary/50">
+          <div className="flex items-center justify-between p-4 border-b border-[#FEF7CD]/30">
             {isMobile && <SidebarTrigger><Menu className="h-6 w-6" /></SidebarTrigger>}
             <Button 
               variant="ghost" 
