@@ -74,7 +74,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md space-y-8 p-8 bg-card rounded-lg shadow-lg">
+      <div className="w-full max-w-md space-y-8 p-8 bg-card rounded-lg shadow-lg border border-[#FEF7CD]/30">
         <div className="text-center">
           <h2 className="text-2xl font-bold">Welcome Back</h2>
           <p className="text-muted-foreground mt-2">
