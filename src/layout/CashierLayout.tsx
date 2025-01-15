@@ -227,7 +227,7 @@ const CashierLayout = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Top Bar */}
-      <div className="border-b border-[#FEF7CD]/30 p-4 flex justify-between items-center bg-white">
+      <div className="border-b border-primary/50 p-4 flex justify-between items-center bg-white">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold">Point of Sale</h1>
           <Badge variant="outline">{orderId}</Badge>
@@ -251,7 +251,7 @@ const CashierLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex">
         {/* Left Side - Cart */}
-        <div className="w-2/3 border-r border-[#FEF7CD]/30 p-4 flex flex-col">
+        <div className="w-2/3 border-r border-primary/50 p-4 flex flex-col">
           {/* Customer Selection */}
           <div className="flex gap-4 mb-4">
             <Select value={selectedCustomer} onValueChange={setSelectedCustomer}>
