@@ -39,6 +39,8 @@ import FleetNotifications from "./pages/FleetNotifications";
 import RoutePlanning from "./pages/RoutePlanning";
 import EditProduct from "./pages/EditProduct";
 import StockManagement from "./pages/StockManagement";
+import StockAdjustment from "./pages/StockAdjustment";
+import StockTransfer from "./pages/StockTransfer";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -62,8 +64,8 @@ const getAdminRoutes = (role: Role) => (
     />
     <Route path="products/categories" element={<ProductCategories />} />
     <Route path="reports" element={<Reports />} />
-    <Route path="stock/adjustment" element={<div>Stock Adjustment</div>} />
-    <Route path="stock/transfer" element={<div>Stock Transfer</div>} />
+    <Route path="stock/adjustment" element={<StockAdjustment />} />
+    <Route path="stock/transfer" element={<StockTransfer />} />
     <Route path="stock/manage" element={<StockManagement />} />
     <Route path="assets/tanks" element={<TankManagement />} />
     <Route path="assets/pumps" element={<PumpManagement />} />
