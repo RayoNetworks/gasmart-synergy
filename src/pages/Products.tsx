@@ -55,6 +55,7 @@ interface Product {
   basePrice: number;
   price: number;
   status: string;
+  stock?: number; // Added stock property
   allBranches: boolean;
   branchPrices: Array<{
     branchId: string;
@@ -232,6 +233,10 @@ const Products = () => {
             <div>
               <h4 className="font-medium">Price</h4>
               <p className="text-sm text-gray-500">₦{selectedProduct?.price.toFixed(2)}</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Stock Available</h4>
+              <p className="text-sm text-gray-500">{selectedProduct?.stock || 0} units</p>
             </div>
             <div>
               <h4 className="font-medium">Status</h4>
