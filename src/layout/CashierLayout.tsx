@@ -228,10 +228,16 @@ const CashierLayout = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Top Bar */}
       <div className="border-b border-primary/50 p-4 flex justify-between items-center bg-white">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold">Point of Sale</h1>
-          <Badge variant="outline">{orderId}</Badge>
-          <p className="">Oyibo Samuel</p>
+        <div className="flex items-center gap-8">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-xl font-bold">Point of Sale</h1>
+            <div className="flex items-center gap-1 ">
+              <h2 className="capitalize font-semibold text-xs">main outlet</h2>
+
+              <Badge variant="outline">{orderId}</Badge>
+            </div>
+          </div>
+          <p className="">John Doe</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">

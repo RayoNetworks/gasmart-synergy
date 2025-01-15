@@ -40,6 +40,7 @@ const Receipt = ({ isOpen, onClose, orderDetails }: ReceiptProps) => {
               <p>Receipt #{orderDetails.orderId}</p>
               <p>Date: {orderDetails.date}</p>
               <p>Cashier: {orderDetails.cashier}</p>
+              <p>Outlet: Main Outlet</p>
             </div>
           </div>
 
