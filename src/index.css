@@ -75,7 +75,7 @@
   }
 
   .glass {
-    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl;
+    @apply bg-white/10 backdrop-blur-lg border-primary rounded-2xl;
   }
 
   .section-padding {
