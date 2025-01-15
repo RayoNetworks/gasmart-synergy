@@ -137,7 +137,6 @@ const Products = () => {
           <Plus className="mr-2 h-4 w-4" /> Add Product
         </Button>
       </div>
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
