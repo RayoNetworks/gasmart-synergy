@@ -125,22 +125,22 @@ const CashierLayout = () => {
       return;
     }
 
-    const existingItem = cart.find(item => item.id === product.id);
-    if (existingItem) {
-      setCart(cart.map(item =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + quantity, total: (item.quantity + quantity) * item.price }
-          : item
-      ));
-    } else {
-      setCart([...cart, {
-        id: product.id,
-        name: product.name,
-        quantity: quantity,
-        price: product.price,
-        total: quantity * product.price
-      }]);
-    }
+    // const existingItem = cart.find(item => item.id === product.id);
+    // if (existingItem) {
+    //   setCart(cart.map(item =>
+    //     item.id === product.id
+    //       ? { ...item, quantity: item.quantity + quantity, total: (item.quantity + quantity) * item.price }
+    //       : item
+    //   ));
+    // } else {
+    setCart([...cart, {
+      id: product.id,
+      name: product.name,
+      quantity: quantity,
+      price: product.price,
+      total: quantity * product.price
+    }]);
+    // }
 
     setQuantity(0);
     toast({
