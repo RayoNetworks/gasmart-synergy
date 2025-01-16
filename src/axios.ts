@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import axios, { AxiosResponse, InternalAxiosRequestConfig, AxiosHeaders } from "axios";
 import { token, refresh_token } from "@/common/constants/auth";
 
@@ -579,6 +580,18 @@ const mockData = {
   ]
 };
 
+//ensure that id is for all mock data is always unique
+Object.keys(mockData).forEach(key => {
+  if (Array.isArray(mockData[key])) {
+    mockData[key].forEach((item: any) => {
+      item.id = uuidv4();
+    });
+  }
+});
+
+
+
+
 // Intercept requests and return mock data
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("lpg_token");
@@ -694,17 +707,24 @@ const mockPut = async <T = any, R = AxiosResponse<T>>(
   data?: any,
   config?: InternalAxiosRequestConfig
 ): Promise<R> => {
-  console.log("Mock PUT request to:", url, "with data:", data);
+
   const headers = new AxiosHeaders();
+  const requestPaths = url.split('/')
 
 
-  const endpoint = url.split("/").pop();
+
+
+  const id = requestPaths.pop();
+  const endpoint = requestPaths.pop();
+
+  // console.log("Mock PUT request to:", url, "with data:", data);
+
 
   mockData[endpoint] = mockData[endpoint].map((item: any) => {
-    if (item.id === data.id) {
-      return { ...data, id: data.id }
+    if (item.id === id) {
+      return { ...item, ...data }
     };
-    return data
+    return item;
   })
 
 

@@ -172,7 +172,6 @@ const EditProduct = () => {
       branchPrices: priceType === "branch" ? branchPrices : [],
       outletPrices: priceType === "outlet" ? outletPrices : [],
       price: allBranches ? Number(basePrice) : 8500,
-      ...product,
     };
 
     try {
