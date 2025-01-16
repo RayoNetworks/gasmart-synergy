@@ -88,9 +88,9 @@ const CashierLayout = () => {
 
   // Fetch fuel products
   const { data: fuelProducts } = useQuery({
-    queryKey: ['fuel-products'],
+    queryKey: ['products'],
     queryFn: async () => {
-      const response = await axiosClient.get("/fuel-products");
+      const response = await axiosClient.get("/products");
       console.log("Fetched fuel products:", response.data);
       return response.data;
     }
