@@ -166,35 +166,13 @@ const EditProduct = () => {
     }
 
     const productData = {
-      id,
       categoryId: selectedCategory,
       allBranches,
       basePrice: allBranches ? basePrice : null,
       branchPrices: priceType === "branch" ? branchPrices : [],
       outletPrices: priceType === "outlet" ? outletPrices : [],
-      name: "LPG Gas Cylinder 12.5kg",
-      description: "Standard cooking gas cylinder",
       price: allBranches ? Number(basePrice) : 8500,
-      status: "In Stock",
-      category: { id: "1", name: "Gas Cylinders" },
-      variations: [
-        {
-          id: "1-1",
-          type: "Accessory",
-          name: "With Hose",
-          allBranches: true,
-          basePrice: 9000,
-          branchPrices: [],
-        },
-        {
-          id: "1-2",
-          type: "Accessory",
-          name: "Without Hose",
-          allBranches: true,
-          basePrice: 8500,
-          branchPrices: [],
-        },
-      ],
+      ...product,
     };
 
     try {
