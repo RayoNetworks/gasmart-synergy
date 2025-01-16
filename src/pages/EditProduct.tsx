@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {DatePicker} from "@/components/ui/data-picker" // Ensure this is a valid import for your DatePicker component
+import { DatePicker } from "@/components/ui/data-picker" // Ensure this is a valid import for your DatePicker component
 import exp from "constants";
 
 interface BranchPrice {
@@ -166,11 +166,35 @@ const EditProduct = () => {
     }
 
     const productData = {
+      id,
       categoryId: selectedCategory,
       allBranches,
       basePrice: allBranches ? basePrice : null,
       branchPrices: priceType === "branch" ? branchPrices : [],
       outletPrices: priceType === "outlet" ? outletPrices : [],
+      name: "LPG Gas Cylinder 12.5kg",
+      description: "Standard cooking gas cylinder",
+      price: allBranches ? Number(basePrice) : 8500,
+      status: "In Stock",
+      category: { id: "1", name: "Gas Cylinders" },
+      variations: [
+        {
+          id: "1-1",
+          type: "Accessory",
+          name: "With Hose",
+          allBranches: true,
+          basePrice: 9000,
+          branchPrices: [],
+        },
+        {
+          id: "1-2",
+          type: "Accessory",
+          name: "Without Hose",
+          allBranches: true,
+          basePrice: 8500,
+          branchPrices: [],
+        },
+      ],
     };
 
     try {
@@ -189,7 +213,7 @@ const EditProduct = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Edit Product</h1>
       </div>
-  
+
       <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl">
         <div className="space-y-4">
           {/* Product Name */}
@@ -197,7 +221,7 @@ const EditProduct = () => {
             <Label>Product Name</Label>
             <p className="text-lg font-medium">{product?.name || "Loading..."}</p>
           </div>
-  
+
           {/* Product Category */}
           <div className="space-y-2">
             <Label htmlFor="category">
@@ -225,7 +249,7 @@ const EditProduct = () => {
               </SelectContent>
             </Select>
           </div>
-  
+
           {/* Branch Availability */}
           <div className="space-y-2">
             <Label className="block mb-4">
@@ -258,7 +282,7 @@ const EditProduct = () => {
               </div>
             )}
           </div>
-  
+
           {/* Base Price */}
           <div className="space-y-2">
             <Label htmlFor="basePrice">
@@ -276,7 +300,7 @@ const EditProduct = () => {
               placeholder="Enter base price"
             />
           </div>
-  
+
           {/* Branch-Specific Prices */}
           {!allBranches && (
             <div className="space-y-4">
@@ -285,88 +309,88 @@ const EditProduct = () => {
                 Set custom prices, effective dates, and durations for each branch.
               </p>
               {branchPrices.map((branchPrice) => (
-  <div
-    key={branchPrice.branchId}
-    className="p-4 border border-gray-300 rounded-md space-y-2"
-  >
-    <p className="text-sm font-medium">
-      Branch:{" "}
-      {branches?.find((b) => b.id === branchPrice.branchId)?.name || "Unknown"}
-    </p>
+                <div
+                  key={branchPrice.branchId}
+                  className="p-4 border border-gray-300 rounded-md space-y-2"
+                >
+                  <p className="text-sm font-medium">
+                    Branch:{" "}
+                    {branches?.find((b) => b.id === branchPrice.branchId)?.name || "Unknown"}
+                  </p>
 
-    {/* Price Input */}
-    <div>
-      <Label htmlFor={`price-${branchPrice.branchId}`}>
-        Price <span className="text-red-500">*</span>
-      </Label>
-      <Input
-        id={`price-${branchPrice.branchId}`}
-        type="number"
-        value={branchPrice.price}
-        onChange={(e) =>
-          handlePriceChange(branchPrice.branchId, e.target.value)
-        }
-        placeholder="Enter price for this branch"
-      />
-    </div>
+                  {/* Price Input */}
+                  <div>
+                    <Label htmlFor={`price-${branchPrice.branchId}`}>
+                      Price <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id={`price-${branchPrice.branchId}`}
+                      type="number"
+                      value={branchPrice.price}
+                      onChange={(e) =>
+                        handlePriceChange(branchPrice.branchId, e.target.value)
+                      }
+                      placeholder="Enter price for this branch"
+                    />
+                  </div>
 
-    {/* Effective Date */}
-    <div>
-      <Label htmlFor={`effectiveDate-${branchPrice.branchId}`}>
-        Effective Date <span className="text-red-500">*</span>
-      </Label>
-      <p className="text-sm text-gray-500">
-        Select the date when this price should start.
-      </p>
-      <DatePicker
-        // id={`effectiveDate-${branchPrice.branchId}`}
-        value={
-          branchPrice.effectiveDate
-            ? new Date(branchPrice.effectiveDate)
-            : null
-        }
-        onChange={(date) =>
-          handleEffectiveDateChange(
-            branchPrice.branchId,
-            date?.toISOString() || ""
-          )
-        }
-      />
-    </div>
+                  {/* Effective Date */}
+                  <div>
+                    <Label htmlFor={`effectiveDate-${branchPrice.branchId}`}>
+                      Effective Date <span className="text-red-500">*</span>
+                    </Label>
+                    <p className="text-sm text-gray-500">
+                      Select the date when this price should start.
+                    </p>
+                    <DatePicker
+                      // id={`effectiveDate-${branchPrice.branchId}`}
+                      value={
+                        branchPrice.effectiveDate
+                          ? new Date(branchPrice.effectiveDate)
+                          : null
+                      }
+                      onChange={(date) =>
+                        handleEffectiveDateChange(
+                          branchPrice.branchId,
+                          date?.toISOString() || ""
+                        )
+                      }
+                    />
+                  </div>
 
-    {/* Duration */}
-    <div>
-      <Label htmlFor={`duration-${branchPrice.branchId}`}>
-        Duration (Optional)
-      </Label>
-      <p className="text-sm text-gray-500">
-        Select how long this price will remain active.
-      </p>
-      <Select
-        value={branchPrice.duration || "select-duration"}
-        onValueChange={(value) =>
-          handleDurationChange(branchPrice.branchId, value)
-        }
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select duration" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="1-week">1 Week</SelectItem>
-          <SelectItem value="1-month">1 Month</SelectItem>
-          <SelectItem value="3-months">3 Months</SelectItem>
-          <SelectItem value="6-months">6 Months</SelectItem>
-          <SelectItem value="1-year">1 Year</SelectItem>
-          <SelectItem value="indefinite">Indefinite</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  </div>
-))}
+                  {/* Duration */}
+                  <div>
+                    <Label htmlFor={`duration-${branchPrice.branchId}`}>
+                      Duration (Optional)
+                    </Label>
+                    <p className="text-sm text-gray-500">
+                      Select how long this price will remain active.
+                    </p>
+                    <Select
+                      value={branchPrice.duration || "select-duration"}
+                      onValueChange={(value) =>
+                        handleDurationChange(branchPrice.branchId, value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select duration" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-week">1 Week</SelectItem>
+                        <SelectItem value="1-month">1 Month</SelectItem>
+                        <SelectItem value="3-months">3 Months</SelectItem>
+                        <SelectItem value="6-months">6 Months</SelectItem>
+                        <SelectItem value="1-year">1 Year</SelectItem>
+                        <SelectItem value="indefinite">Indefinite</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              ))}
 
             </div>
           )}
-  
+
           {/* Submit Button */}
           <Button type="submit" className="w-full">
             Save Changes
@@ -375,8 +399,8 @@ const EditProduct = () => {
       </form>
     </div>
   );
-  
-  
+
+
 }
 
 export default EditProduct;

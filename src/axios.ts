@@ -697,6 +697,18 @@ const mockPut = async <T = any, R = AxiosResponse<T>>(
   console.log("Mock PUT request to:", url, "with data:", data);
   const headers = new AxiosHeaders();
 
+
+  const endpoint = url.split("/").pop();
+
+  mockData[endpoint] = mockData[endpoint].map((item: any) => {
+    if (item.id === data.id) {
+      return { ...data, id: data.id }
+    };
+    return data
+  })
+
+
+
   return {
     data,
     status: 200,
