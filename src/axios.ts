@@ -675,6 +675,11 @@ const mockPost = async <T = any, R = AxiosResponse<T>>(
   console.log("Mock POST request to:", url, "with data:", data);
   const headers = new AxiosHeaders();
 
+  const endpoint = url.split("/").pop();
+
+  mockData[endpoint] = [{ ...data, id: Math.random().toString() }, ...mockData[endpoint]];
+
+
   return {
     data: { ...data, id: Math.random().toString() },
     status: 201,

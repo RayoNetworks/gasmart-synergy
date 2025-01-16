@@ -160,7 +160,7 @@ const Products = () => {
                 <TableCell>{product.category?.name}</TableCell>
                 <TableCell>{product.branch?.name || 'All Branches'}</TableCell>
                 <TableCell>{product.outlet?.name || 'All Outlets'}</TableCell>
-                <TableCell>₦{product.price.toFixed(2)}</TableCell>
+                <TableCell>₦{product?.price?.toFixed(2)}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs ${
                     product.status === "In Stock" 

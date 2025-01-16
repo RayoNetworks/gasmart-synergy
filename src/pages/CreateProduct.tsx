@@ -71,7 +71,7 @@ const CreateProduct = () => {
     if (selectedBranches.includes(branchId)) {
       setSelectedBranches(selectedBranches.filter((id) => id !== branchId));
       setBranchPrices(branchPrices.filter((bp) => bp.branchId !== branchId));
-      setOutletPrices(outletPrices.filter((op) => 
+      setOutletPrices(outletPrices.filter((op) =>
         !outlets?.find((o: any) => o.branchId === branchId && o.id === op.outletId)
       ));
     } else {
@@ -91,7 +91,7 @@ const CreateProduct = () => {
   const handleOutletPriceChange = (outletId: string, price: string) => {
     const existingPrice = outletPrices.find(op => op.outletId === outletId);
     if (existingPrice) {
-      setOutletPrices(outletPrices.map(op => 
+      setOutletPrices(outletPrices.map(op =>
         op.outletId === outletId ? { ...op, price } : op
       ));
     } else {
@@ -101,7 +101,7 @@ const CreateProduct = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!productName) {
       toast.error("Please enter a product name");
       return;
@@ -125,6 +125,8 @@ const CreateProduct = () => {
     // Apply discount to the total price based on quantity
     const priceAfterDiscount = (parseFloat(basePrice) * (1 - discount / 100)) * quantity;
 
+
+
     const productData = {
       name: productName,
       categoryId: selectedCategory,
@@ -134,8 +136,31 @@ const CreateProduct = () => {
       outletPrices: priceType === "outlet" ? outletPrices : [],
       discount, // Added discount
       quantity, // Added quantity
-      priceAfterDiscount, // Added discounted price calculation
+      priceAfterDiscount,
+      description: "Pure drinking water in a 10L bottle", // Dummy description
+      price: allBranches ? Number(basePrice) : 1500, // Dummy price
+      status: "In Stock", // Dummy status
+      category: { id: "6", name: "Drinks" }, // Dummy category
+      variations: [
+        {
+          id: "6-1",
+          type: "Package",
+          name: "With Handle",
+          allBranches: true,
+          basePrice: 1600,
+          branchPrices: [],
+        },
+        {
+          id: "6-2",
+          type: "Package",
+          name: "Without Handle",
+          allBranches: true,
+          basePrice: 1500,
+          branchPrices: [],
+        },
+      ],
     };
+
 
     try {
       console.log("Creating product with data:", productData);
@@ -178,8 +203,8 @@ const CreateProduct = () => {
             <p className="text-sm text-gray-500">
               Select the category that best describes this product.
             </p>
-            <Select 
-              value={selectedCategory || "select-category"} 
+            <Select
+              value={selectedCategory || "select-category"}
               onValueChange={setSelectedCategory}
             >
               <SelectTrigger>
@@ -262,8 +287,8 @@ const CreateProduct = () => {
 
                       {selectedBranches.includes(branch.id) && (
                         <div className="ml-6 space-y-4">
-                          <RadioGroup 
-                            value={priceType} 
+                          <RadioGroup
+                            value={priceType}
                             onValueChange={(value: "branch" | "outlet") => setPriceType(value)}
                             className="flex space-x-4"
                           >
