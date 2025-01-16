@@ -157,7 +157,12 @@ const CreateProduct = () => {
       <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="productName">Product Name</Label>
+            <Label htmlFor="productName">
+              Product Name <span className="text-red-500">*</span>
+            </Label>
+            <p className="text-sm text-gray-500">
+              Enter a descriptive name for your product.
+            </p>
             <Input
               id="productName"
               placeholder="e.g., Premium Motor Spirit (PMS), Lubricant Oil, LPG Gas"
@@ -167,7 +172,12 @@ const CreateProduct = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category">Product Category</Label>
+            <Label htmlFor="category">
+              Product Category <span className="text-red-500">*</span>
+            </Label>
+            <p className="text-sm text-gray-500">
+              Select the category that best describes this product.
+            </p>
             <Select 
               value={selectedCategory || "select-category"} 
               onValueChange={setSelectedCategory}
@@ -187,7 +197,12 @@ const CreateProduct = () => {
           </div>
 
           <div className="space-y-2">
-            <Label className="block mb-4">Branch Availability</Label>
+            <Label className="block mb-4">
+              Branch Availability <span className="text-red-500">*</span>
+            </Label>
+            <p className="text-sm text-gray-500 mb-2">
+              Choose whether this product is available in all branches or specific ones.
+            </p>
             <div className="flex items-center space-x-2 mb-4">
               <Checkbox
                 id="allBranches"
@@ -211,7 +226,12 @@ const CreateProduct = () => {
 
             {allBranches ? (
               <div className="space-y-2">
-                <Label htmlFor="basePrice">Base Price (₦)</Label>
+                <Label htmlFor="basePrice">
+                  Base Price (₦) <span className="text-red-500">*</span>
+                </Label>
+                <p className="text-sm text-gray-500">
+                  Set the default price for this product across all branches.
+                </p>
                 <Input
                   id="basePrice"
                   type="number"
@@ -225,7 +245,7 @@ const CreateProduct = () => {
                 <Label>Select Branches and Set Prices</Label>
                 <div className="space-y-4">
                   {branches?.map((branch: any) => (
-                    <div key={branch.id} className="space-y-4">
+                    <div key={branch.id} className="p-4 border border-gray-300 rounded-md space-y-4">
                       <div className="flex items-center space-x-4">
                         <Checkbox
                           id={`branch-${branch.id}`}
@@ -256,11 +276,18 @@ const CreateProduct = () => {
                               <Label htmlFor="outlet-radio">Outlet</Label>
                             </div>
                           </RadioGroup>
-                          <Input
-                            value={branchPrices.find(bp => bp.branchId === branch.id)?.price || ""}
-                            onChange={(e) => handlePriceChange(branch.id, e.target.value)}
-                            placeholder="Set price for this branch"
-                          />
+                          <div>
+                            <Label htmlFor={`price-${branch.id}`}>
+                              Price <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                              id={`price-${branch.id}`}
+                              value={branchPrices.find(bp => bp.branchId === branch.id)?.price || ""}
+                              onChange={(e) => handlePriceChange(branch.id, e.target.value)}
+                              placeholder="Set price for this branch"
+                              type="number"
+                            />
+                          </div>
                         </div>
                       )}
                     </div>
@@ -270,9 +297,13 @@ const CreateProduct = () => {
             )}
           </div>
 
-          <div className="space-y-4">
-            <Label>Discount (optional)</Label>
+          <div className="space-y-2">
+            <Label htmlFor="discount">Discount</Label>
+            <p className="text-sm text-gray-500">
+              Set an optional discount percentage for this product.
+            </p>
             <Input
+              id="discount"
               type="number"
               value={discount}
               onChange={(e) => setDiscount(Number(e.target.value))}
@@ -280,9 +311,15 @@ const CreateProduct = () => {
             />
           </div>
 
-          <div className="space-y-4">
-            <Label>Quantity</Label>
+          <div className="space-y-2">
+            <Label htmlFor="quantity">
+              Quantity <span className="text-red-500">*</span>
+            </Label>
+            <p className="text-sm text-gray-500">
+              Specify the initial stock quantity for this product.
+            </p>
             <Input
+              id="quantity"
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
@@ -292,7 +329,7 @@ const CreateProduct = () => {
           </div>
         </div>
 
-        <Button type="submit">Create Product</Button>
+        <Button type="submit" className="w-full">Create Product</Button>
       </form>
     </div>
   );
