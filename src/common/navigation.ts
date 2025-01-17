@@ -128,6 +128,18 @@ const navigation = [
       { name: "Managers", href: "/admin/crm/managers", icon: UserPlus }
     ],
   },
+  {
+    header: "Integration",
+    name: "integrate",
+    icon: Users,
+    subroutes: [
+      { name: "Hardware", href: "/admin/integrate/hardware", icon: UserPlus },//create page to have functionality to connect to printer and any other hardwares
+      { name: "Software", href: "/admin/integrate/software", icon: UserPlus },//create page to have functionality to connect to third party software applicatiion which company owns i.e their google drive account and more
+      
+    ],
+  },
+
+
 
 
   {
