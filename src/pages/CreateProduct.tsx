@@ -173,6 +173,8 @@ const CreateProduct = () => {
     }
   };
 
+  //ensure outlets is listed under branches and the price in different outlets can be different when creating product
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
