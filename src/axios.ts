@@ -580,7 +580,7 @@ const mockData = {
   ]
 };
 
-//ensure that id is for all mock data is always unique
+//ensure that id for all mock data is always unique
 Object.keys(mockData).forEach(key => {
   if (Array.isArray(mockData[key])) {
     mockData[key].forEach((item: any) => {
