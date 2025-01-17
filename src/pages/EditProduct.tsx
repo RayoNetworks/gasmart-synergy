@@ -15,8 +15,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { DatePicker } from "@/components/ui/data-picker" // Ensure this is a valid import for your DatePicker component
-import exp from "constants";
+import { DatePicker } from "@/components/ui/data-picker"; // Ensure this is a valid import for your DatePicker component
 
 interface BranchPrice {
   branchId: string;
@@ -46,7 +45,9 @@ const EditProduct = () => {
   const { data: product } = useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
+      console.log("Fetching product data for ID:", id);
       const response = await axiosClient.get(`/products/${id}`);
+      console.log("Retrieved product data:", response.data);
 
       setSelectedCategory(response.data.categoryId);
       setAllBranches(response.data.allBranches);
@@ -149,18 +150,22 @@ const EditProduct = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Starting product update process");
 
     if (!selectedCategory) {
+      console.log("Validation failed: Missing category");
       toast.error("Please select a category");
       return;
     }
 
     if (!allBranches && selectedBranches.length === 0) {
+      console.log("Validation failed: No branches selected");
       toast.error("Please select at least one branch");
       return;
     }
 
     if (allBranches && !basePrice) {
+      console.log("Validation failed: Missing base price");
       toast.error("Please enter a base price");
       return;
     }
@@ -175,17 +180,16 @@ const EditProduct = () => {
     };
 
     try {
-      console.log("editing product with data:", productData);
+      console.log("Sending update product request with data:", productData);
       await axiosClient.put(`/products/${id}`, productData);
+      console.log("Product updated successfully");
       toast.success("Product edited successfully");
       navigate("/admin/products");
     } catch (error) {
+      console.error("Error updating product:", error);
       toast.error("Failed to edit product");
-      console.error("Error editing product:", error);
     }
   };
-
-  //ensure outlets is listed under branches and the price in different outlets can be different when creating product
 
   return (
     <div className="space-y-6">
@@ -322,7 +326,6 @@ const EditProduct = () => {
                       Select the date when this price should start.
                     </p>
                     <DatePicker
-                      // id={`effectiveDate-${branchPrice.branchId}`}
                       value={
                         branchPrice.effectiveDate
                           ? new Date(branchPrice.effectiveDate)
@@ -366,7 +369,6 @@ const EditProduct = () => {
                   </div>
                 </div>
               ))}
-
             </div>
           )}
 
@@ -378,8 +380,6 @@ const EditProduct = () => {
       </form>
     </div>
   );
-
-
-}
+};
 
 export default EditProduct;

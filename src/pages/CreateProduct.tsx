@@ -101,31 +101,34 @@ const CreateProduct = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Starting product creation process");
 
     if (!productName) {
+      console.log("Validation failed: Missing product name");
       toast.error("Please enter a product name");
       return;
     }
 
     if (!selectedCategory) {
+      console.log("Validation failed: Missing category");
       toast.error("Please select a category");
       return;
     }
 
     if (!allBranches && selectedBranches.length === 0) {
+      console.log("Validation failed: No branches selected");
       toast.error("Please select at least one branch");
       return;
     }
 
     if (allBranches && !basePrice) {
+      console.log("Validation failed: Missing base price");
       toast.error("Please enter a base price");
       return;
     }
 
-    // Apply discount to the total price based on quantity
     const priceAfterDiscount = (parseFloat(basePrice) * (1 - discount / 100)) * quantity;
-
-
+    console.log("Calculated price after discount:", priceAfterDiscount);
 
     const productData = {
       name: productName,
@@ -161,19 +164,17 @@ const CreateProduct = () => {
       ],
     };
 
-
     try {
-      console.log("Creating product with data:", productData);
+      console.log("Sending create product request with data:", productData);
       await axiosClient.post("/products", productData);
+      console.log("Product created successfully");
       toast.success("Product created successfully");
       navigate("/admin/products");
     } catch (error) {
-      toast.error("Failed to create product");
       console.error("Error creating product:", error);
+      toast.error("Failed to create product");
     }
   };
-
-  //ensure outlets is listed under branches and the price in different outlets can be different when creating product
 
   return (
     <div className="space-y-6">
