@@ -25,6 +25,10 @@ import {
   Map,
   Bell,
   Route,
+  Printer,
+  Cloud,
+  Download,
+  ClipboardCheck,
 } from "lucide-react";
 
 const navigation = [
@@ -101,12 +105,8 @@ const navigation = [
     name: "Sales",
     icon: ShoppingCart,
     subroutes: [
-      { name: "Sales", href: "/admin/sales", icon: Heart },
-      { name: "Audit", href: "/admin/audit-sales", icon: Heart },//create audit page i.e that is the page to audit sales. all functionalies for auditing sales should be included, icon should be related also//
-
-      //not part of command
-      // { name: "Sale Return", href: "/admin/sales/return", icon: RefreshCw },
-      // { name: "Quotation", href: "/admin/sales/quotation", icon: FileText },
+      { name: "Sales", href: "/admin/sales", icon: ShoppingCart },
+      { name: "Audit", href: "/admin/audit-sales", icon: ClipboardCheck },
     ],
   },
   {
@@ -115,7 +115,6 @@ const navigation = [
     icon: Users,
     subroutes: [
       { name: "Customers", href: "/admin/crm/customers", icon: Users },
-
     ],
   },
   {
@@ -131,21 +130,16 @@ const navigation = [
   {
     header: "Integration",
     name: "integrate",
-    icon: Users,
+    icon: Cloud,
     subroutes: [
-      { name: "Hardware", href: "/admin/integrate/hardware", icon: UserPlus },//create page to have functionality to connect to printer and any other hardwares
-      { name: "Software", href: "/admin/integrate/software", icon: UserPlus },//create page to have functionality to connect to third party software applicatiion which company owns i.e their google drive account and more
-      
+      { name: "Hardware", href: "/admin/integrate/hardware", icon: Printer },
+      { name: "Software", href: "/admin/integrate/software", icon: Cloud },
     ],
   },
-
-
-
-
   {
     header: 'Analytics',
     name: "Analytics",
-    icon: BarChart3,//change icon to something very suitable
+    icon: BarChart3,
     subroutes: [
       {
         name: 'Reports',
@@ -154,8 +148,8 @@ const navigation = [
       },
       {
         name: 'Download Reports',
-        href: "/admin/download-reports",//create pages to have a list of differents download reports corresponding to the report type
-        icon: BarChart3,//change icon to something very suitable
+        href: "/admin/download-reports",
+        icon: Download,
       }
     ]
   },
@@ -168,38 +162,6 @@ const navigation = [
       { name: "Branch", href: "/admin/branch", icon: GitBranch },
     ],
   },
-  // {
-  //   header: "Fleet Management",
-  //   name: "Fleet",
-  //   icon: Truck,
-  //   subroutes: [
-  //     {
-  //       name: "Vehicle Tracking",
-  //       href: "/admin/fleet/tracking",
-  //       icon: Map,
-  //     },
-  //     {
-  //       name: "Geo-Fencing",
-  //       href: "/admin/fleet/geofencing",
-  //       icon: MapPin,
-  //     },
-  //     {
-  //       name: "Notifications",
-  //       href: "/admin/fleet/notifications",
-  //       icon: Bell,
-  //     },
-  //     {
-  //       name: "Route Planning",
-  //       href: "/admin/fleet/routes",
-  //       icon: Route,
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "Settings",
-  //   href: "/admin/settings",
-  //   icon: Settings,
-  // },
 ];
 
 export default navigation;

@@ -41,6 +41,10 @@ import EditProduct from "./pages/EditProduct";
 import StockManagement from "./pages/StockManagement";
 import StockAdjustment from "./pages/StockAdjustment";
 import StockTransfer from "./pages/StockTransfer";
+import AuditSales from "./pages/AuditSales";
+import HardwareIntegration from "./pages/HardwareIntegration";
+import SoftwareIntegration from "./pages/SoftwareIntegration";
+import DownloadReports from "./pages/DownloadReports";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -48,6 +52,7 @@ const getAdminRoutes = (role: Role) => (
     <Route path="sales" element={<Sales />} />
     <Route path="sales/return" element={<SalesReturn />} />
     <Route path="sales/quotation" element={<div>Quotation</div>} />
+    <Route path="audit-sales" element={<AuditSales />} />
     <Route path="products" element={<Products />} />
     <Route path="products/create" element={<CreateProduct />} />
     <Route path="products/edit/:id" element={<EditProduct />} />
@@ -64,6 +69,7 @@ const getAdminRoutes = (role: Role) => (
     />
     <Route path="products/categories" element={<ProductCategories />} />
     <Route path="reports" element={<Reports />} />
+    <Route path="download-reports" element={<DownloadReports />} />
     <Route path="stock/adjustment" element={<StockAdjustment />} />
     <Route path="stock/transfer" element={<StockTransfer />} />
     <Route path="stock/manage" element={<StockManagement />} />
@@ -86,6 +92,8 @@ const getAdminRoutes = (role: Role) => (
     <Route path="branch/:id/edit" element={<EditBranch />} />
     <Route path="branch/:id/outlets" element={<BranchOutlets />} />
     <Route path="settings" element={<Settings />} />
+    <Route path="integrate/hardware" element={<HardwareIntegration />} />
+    <Route path="integrate/software" element={<SoftwareIntegration />} />
     <Route path="fleet/tracking" element={<FleetTracking />} />
     <Route path="fleet/geofencing" element={<GeoFencing />} />
     <Route path="fleet/notifications" element={<FleetNotifications />} />
