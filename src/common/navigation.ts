@@ -46,7 +46,7 @@ const navigation = [
       {
         name: "Product Categories",
         href: "/admin/products/categories",
-        icon: ArrowUpDown,
+        icon: Package,
       },
       {
         name: "Lubricants & Oils",
@@ -106,6 +106,8 @@ const navigation = [
     icon: ShoppingCart,
     subroutes: [
       { name: "Sales", href: "/admin/sales", icon: ShoppingCart },
+      { name: "Sales Return", href: "/admin/sales/return", icon: RefreshCw },
+      { name: "Sales Quotation", href: "/admin/sales/quotation", icon: FileText },
       { name: "Audit", href: "/admin/audit-sales", icon: ClipboardCheck },
     ],
   },
@@ -115,6 +117,7 @@ const navigation = [
     icon: Users,
     subroutes: [
       { name: "Customers", href: "/admin/crm/customers", icon: Users },
+      { name: "Customer Loyalty", href: "/admin/crm/loyalty", icon: Heart },
     ],
   },
   {
@@ -134,6 +137,17 @@ const navigation = [
     subroutes: [
       { name: "Hardware", href: "/admin/integrate/hardware", icon: Printer },
       { name: "Software", href: "/admin/integrate/software", icon: Cloud },
+    ],
+  },
+  {
+    header: "Fleet Management",
+    name: "Fleet",
+    icon: Truck,
+    subroutes: [
+      { name: "Tracking", href: "/admin/fleet/tracking", icon: Map },
+      { name: "Geofencing", href: "/admin/fleet/geofencing", icon: MapPin },
+      { name: "Notifications", href: "/admin/fleet/notifications", icon: Bell },
+      { name: "Route Planning", href: "/admin/fleet/routes", icon: Route },
     ],
   },
   {
