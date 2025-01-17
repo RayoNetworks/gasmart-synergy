@@ -322,7 +322,7 @@ const mockData = {
       product: "Cooking Oil 5L",
       branch: { id: "103", name: "East Branch" },
       outlet: null, // No outlet associated
-      user: { id: "203", name: "Alice Johnson", email: "alice.johnson@example.com" },
+      user: { id: "203", name: "Alice Johnson", email: "alicejohnson@example.com" },
       quantity: 5,
       amount: 25000,
       date: "2025-01-12",
@@ -785,30 +785,19 @@ const mockPut = async <T = any, R = AxiosResponse<T>>(
   } as R;
 };
 
-
-
 //ensure delete button uses this function to delete mockData
 const mockDelete = async <T = any, R = AxiosResponse<T>>(
   url: string,
   config?: InternalAxiosRequestConfig
 ): Promise<R> => {
-
+  console.log("Mock DELETE request to:", url);
+  
   const headers = new AxiosHeaders();
-  const requestPaths = url.split('/')
-
-
-
-
+  const requestPaths = url.split('/');
   const id = requestPaths.pop();
   const endpoint = requestPaths.pop();
 
-  // console.log("Mock PUT request to:", url, "with data:", data);
-
-
   mockData[endpoint] = mockData[endpoint].filter((item: any) => item.id !== id);
-
-
-
 
   return {
     data: { success: true } as T,

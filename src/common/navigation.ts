@@ -29,6 +29,9 @@ import {
   Cloud,
   Download,
   ClipboardCheck,
+  Shield,
+  UserCheck,
+  UserCog,
 } from "lucide-react";
 
 const navigation = [
@@ -123,11 +126,11 @@ const navigation = [
   {
     header: "User Roles and Permission",
     name: "roles",
-    icon: Users,
+    icon: Shield,
     subroutes: [
-      { name: "User List", href: "/admin/crm/users", icon: UserPlus },
-      { name: "Staff", href: "/admin/crm/staff", icon: UserPlus },
-      { name: "Managers", href: "/admin/crm/managers", icon: UserPlus }
+      { name: "User List", href: "/admin/crm/users", icon: Users },
+      { name: "Staff", href: "/admin/crm/staff", icon: UserCheck },
+      { name: "Managers", href: "/admin/crm/managers", icon: UserCog }
     ],
   },
   {
