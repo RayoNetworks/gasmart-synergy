@@ -7,10 +7,10 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 
 
 const stockDistribution = [
-    { name: "PMS", value: 35, color: "#FF8B3D" },
-    { name: "AGO", value: 25, color: "#4CAF50" },
-    { name: "DPK", value: 20, color: "#2196F3" },
-    { name: "LPG", value: 20, color: "#9C27B0" },
+    { name: "LPG", value: 35, color: "#FF8B3D" },
+    { name: "Lubricants", value: 25, color: "#4CAF50" },
+    { name: "Accessories", value: 20, color: "#2196F3" },
+    // { name: "LPG", value: 20, color: "#9C27B0" },
 ];
 const StockManagement = () => {
     const navigate = useNavigate();
@@ -57,21 +57,21 @@ const StockManagement = () => {
                         <div className="space-y-4">
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium">PMS Stock Level</span>
+                                    <span className="text-sm font-medium">LPG Stock Level</span>
                                     <span className="text-sm text-yellow-500">35%</span>
                                 </div>
                                 <Progress value={35} className="bg-yellow-100" indicatorClassName="bg-yellow-500" />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium">AGO Stock Level</span>
+                                    <span className="text-sm font-medium">Lubricants Stock Level</span>
                                     <span className="text-sm text-green-500">65%</span>
                                 </div>
                                 <Progress value={65} className="bg-green-100" indicatorClassName="bg-green-500" />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium">DPK Stock Level</span>
+                                    <span className="text-sm font-medium">Accessory Stock Level</span>
                                     <span className="text-sm text-red-500">15%</span>
                                 </div>
                                 <Progress value={15} className="bg-red-100" indicatorClassName="bg-red-500" />
