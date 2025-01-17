@@ -119,6 +119,53 @@ const mockData = {
       createdAt: "2023-11-20T14:00:00.000Z",
     },
   ],
+  audit: [
+    {
+      id: "1",
+      transactionId: "TXN12345",
+      date: "2025-01-15T08:30:00Z",
+      amount: 5000.0,
+      cashier: "John Doe",
+      status: "verified",
+      discrepancies: null,
+    },
+    {
+      id: "2",
+      transactionId: "TXN12346",
+      date: "2025-01-15T10:15:00Z",
+      amount: 7000.5,
+      cashier: "Jane Smith",
+      status: "unverified",
+      discrepancies: "Amount mismatch",
+    },
+    {
+      id: "3",
+      transactionId: "TXN12347",
+      date: "2025-01-14T14:45:00Z",
+      amount: 4500.0,
+      cashier: "Chris Lee",
+      status: "verified",
+      discrepancies: null,
+    },
+    {
+      id: "4",
+      transactionId: "TXN12348",
+      date: "2025-01-13T09:00:00Z",
+      amount: 15000.75,
+      cashier: "Taylor Brown",
+      status: "unverified",
+      discrepancies: "Missing receipt",
+    },
+    {
+      id: "5",
+      transactionId: "TXN12349",
+      date: "2025-01-12T12:00:00Z",
+      amount: 2000.0,
+      cashier: "Alex Wilson",
+      status: "verified",
+      discrepancies: null,
+    },
+  ],
   "sales-returns": [
     {
       id: "1",
@@ -738,12 +785,30 @@ const mockPut = async <T = any, R = AxiosResponse<T>>(
   } as R;
 };
 
+
+
+//ensure delete button uses this function to delete mockData
 const mockDelete = async <T = any, R = AxiosResponse<T>>(
   url: string,
   config?: InternalAxiosRequestConfig
 ): Promise<R> => {
-  console.log("Mock DELETE request to:", url);
+
   const headers = new AxiosHeaders();
+  const requestPaths = url.split('/')
+
+
+
+
+  const id = requestPaths.pop();
+  const endpoint = requestPaths.pop();
+
+  // console.log("Mock PUT request to:", url, "with data:", data);
+
+
+  mockData[endpoint] = mockData[endpoint].filter((item: any) => item.id !== id);
+
+
+
 
   return {
     data: { success: true } as T,
