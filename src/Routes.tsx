@@ -45,6 +45,8 @@ import AuditSales from "./pages/AuditSales";
 import HardwareIntegration from "./pages/HardwareIntegration";
 import SoftwareIntegration from "./pages/SoftwareIntegration";
 import DownloadReports from "./pages/DownloadReports";
+import ProductDiscount from "./pages/ProductDiscount";
+import ProductConversion from "./pages/ProductConversion";
 
 const getAdminRoutes = (role: Role) => (
   <Route path={`/${role}`} element={<AdminLayout />}>
@@ -59,6 +61,8 @@ const getAdminRoutes = (role: Role) => (
     <Route path="products/variation" element={<ProductVariation />} />
     <Route path="products/lubricants" element={<LubricantsManagement />} />
     <Route path="products/fuel" element={<FuelProducts />} />
+    <Route path="products/discount" element={<ProductDiscount />} />
+    <Route path="products/product-conversion" element={<ProductConversion />} />
     <Route
       path="products/variation/:id/create"
       element={<CreateProductVariation />}

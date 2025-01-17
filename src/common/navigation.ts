@@ -32,6 +32,8 @@ import {
   Shield,
   UserCheck,
   UserCog,
+  Percent,
+  Scale,
 } from "lucide-react";
 
 const navigation = [
@@ -52,14 +54,14 @@ const navigation = [
         icon: Package,
       },
       {
-        name: "Product Discount Management",//create page to have functionality to manage discount for all products, user can choose quantity in which discount will start to show apply, icon should be a suitable icon also
+        name: "Product Discount Management",
         href: "/admin/products/discount",
-        icon: Package,
+        icon: Percent,
       },
       {
-        name: "Product Kgs to Liters Conversion",//This page should help admin specify how do convert 1kg to 1liters and other units used then make sure the quantity used when creating product or editing product is in kgs cause admin can enter products in kgs but the end result can be in liters or popular unit used for saling so the conversion should help specify that, icon should also be suitable
+        name: "Product Kgs to Liters Conversion",
         href: "/admin/products/product-conversion",
-        icon: Package,
+        icon: Scale,
       },
       {
         name: "Lubricants & Oils",
